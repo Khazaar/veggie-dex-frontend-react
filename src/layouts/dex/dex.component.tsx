@@ -1,15 +1,12 @@
 import "./style.css";
 import React from "react";
-import { ConnectWalletComponent } from "../../components/connectWallet/connectWallet.component";
-import logo from "../../assets/images/Logo_2.png";
-import { SelectNetworkComponent } from "../../components/selectNetwork/selectNetwork.component";
+
+import { AddLiquidityComponent } from "../../components/addLiquidity/addLiquidity.component";
 
 export const DexComponent = () => {
     return (
         <div className="DexComponent">
-            <div>
-                <p>Dex Component</p>
-            </div>
+            <AddLiquidityComponent></AddLiquidityComponent>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 .content-wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     padding-top: 1rem;
     width: 100%;

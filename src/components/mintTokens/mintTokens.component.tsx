@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
+    Button,
     Card,
     CardContent,
     CardHeader,
@@ -10,12 +11,11 @@ import {
     OutlinedInput,
     Select,
     SelectChangeEvent,
+    TextField,
     Typography,
 } from "@mui/material";
 
 import "./style.css";
-import { tokenAsset } from "../../interfaces/tokenAssets.interface";
-import { HeaderComponent } from "../../layouts/header/header.component";
 import {
     Apple,
     Potato,
@@ -28,7 +28,8 @@ import React from "react";
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
-    const [tokenToMint, settokenToMint] = React.useState<ISmartContract>();
+    const [tokenToMint, setTokenToMint] = useState<ISmartContract>(Apple);
+    const [amountToMint, setAmountToMint] = useState<number>(10000);
     const MenuProps = {
         PaperProps: {
             style: {
@@ -38,42 +39,67 @@ export const MintTokensComponent = () => {
         },
     };
 
-    const handleChange = (event: SelectChangeEvent<ISmartContract>) => {
-        const {
-            target: { value },
-        } = event;
-        settokenToMint(value as ISmartContract);
-        console.log(value);
+    const clickMint = async () => {
+        if (amountToMint > 0) {
+            console.log(
+                `Going to mint token ${tokenToMint.nameLong} in amount: ${amountToMint}`
+            );
+            if (amountToMint > 1000000) {
+                console.log(`Please, mint less then 1000000 tokens`);
+            } else {
+                await smartContractService.mintTokens(
+                    tokenToMint.instance,
+                    BigInt(amountToMint)
+                );
+            }
+        }
     };
 
     return (
-        <div className="user-assets">
-            <Card>
-                <CardHeader title="Mint Tokens"></CardHeader>
-                <CardContent>
-                    <FormControl sx={{ m: 1, width: 300 }}>
+        <Card className="MintTokensComponent">
+            <CardHeader title="Mint Tokens"></CardHeader>
+            <CardContent>
+                <div className="select-text-wrapper">
+                    <FormControl className="item-wrapper">
                         <InputLabel id="select-token-to-mint-label">
                             Token
                         </InputLabel>
                         <Select
+                            value={tokenToMint}
                             labelId="select-token-to-mint-label"
                             id="select-token-to-mint"
-                            onChange={handleChange}
+                            onChange={(event) => {
+                                setTokenToMint(
+                                    event.target.value as ISmartContract
+                                );
+                                console.log(tokenToMint.nameLong);
+                            }}
                             MenuProps={MenuProps}
-                            input={<OutlinedInput label="Name" />}
                         >
-                            {tokenContracts.map((name) => (
-                                <MenuItem
-                                    value={name.nameShort}
-                                    key={name.nameShort}
-                                >
-                                    {name.nameShort}
+                            {tokenContracts.map((tkn) => (
+                                //@ts-ignore - necessary to load object into value
+                                <MenuItem value={tkn} key={tkn.nameShort}>
+                                    {tkn.nameShort}
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
-                </CardContent>
-            </Card>
-        </div>
+                    <TextField
+                        className="item-wrapper"
+                        id="outlined-basic"
+                        label="Outlined"
+                        variant="outlined"
+                        value={amountToMint}
+                        onChange={(event) => {
+                            setAmountToMint(parseInt(event.target.value));
+                        }}
+                    />
+                </div>
+
+                <Button variant="contained" color="success" onClick={clickMint}>
+                    Mint
+                </Button>
+            </CardContent>
+        </Card>
     );
 };

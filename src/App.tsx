@@ -26,9 +26,15 @@ const theme = createTheme({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 20,
+                    borderRadius: 40,
                     backgroundColor: "transparent",
-                    border: `2px solid ${colorGreenLight}`,
+                    border: `3px solid ${colorGreenLight}`,
+                    width: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    marginBottom: "12px",
+                    padding: "12px",
                 },
             },
         },
@@ -37,6 +43,26 @@ const theme = createTheme({
                 root: {
                     color: colorGreenLight,
                     textTransform: "uppercase",
+                    display: "flex",
+                    alignItems: "center",
+                    margin: "0px",
+                    padding: "6px 0px 0px 0px",
+                    fontSize: "2.5rem",
+                },
+            },
+        },
+
+        MuiCardContent: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: "transparent",
+
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    marginBottom: "0",
+                    padding: "0",
                 },
             },
         },
@@ -49,14 +75,10 @@ const theme = createTheme({
         },
     },
 
-    palette: {
-        primary: {
-            main: red[500],
-        },
-    },
     typography: {
         h4: {
             color: colorGreenLight,
+            fontSize: "1.5rem",
         },
     },
 });
