@@ -1,0 +1,10 @@
+.HeaderComponent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.image-wrapper {
+    width: 25rem;
+}

@@ -1,18 +1,14 @@
 import { useContext, useState } from "react";
-import { ethers } from "ethers";
-import { SmartContractService } from "../../services/smart-contract.service";
-import { ConnectService } from "../../services/connect.service";
 import { SmartContractServiceContext } from "../../App";
+import { Button } from "@mui/material";
 
 import "./style.css";
-import React from "react";
 
 export const ConnectWalletComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const [signerAddress, setSignerAddress] = useState("");
     const [message, setMessage] = useState("Please, connect your wallet");
     const [buttonText, setButtonText] = useState("Connect wallet");
-    //let buttonText: string = "Connect wallet";
 
     async function clickConnect() {
         try {
@@ -29,13 +25,11 @@ export const ConnectWalletComponent = () => {
         }
     }
 
-    // if (signerAddress) {
-    //     setButtonText("Wallet connected");
-    // }
-
     return (
         <div className="vd-connect-wallet">
-            <button onClick={clickConnect}>{buttonText}</button>
+            <Button variant="contained" color="success" onClick={clickConnect}>
+                {buttonText}
+            </Button>
             <p>{message}</p>
         </div>
     );
