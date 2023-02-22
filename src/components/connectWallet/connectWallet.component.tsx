@@ -30,7 +30,7 @@ export const ConnectWalletComponent = () => {
             <Button variant="contained" color="success" onClick={clickConnect}>
                 {buttonText}
             </Button>
-            <p>{message}</p>
+            <p className="p-style">{message}</p>
         </div>
     );
 };

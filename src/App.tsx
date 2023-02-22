@@ -19,22 +19,23 @@ const theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 20,
+                    borderRadius: 16,
                 },
             },
         },
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 40,
+                    borderRadius: 20,
                     backgroundColor: "transparent",
                     border: `3px solid ${colorGreenLight}`,
                     width: "400px",
                     display: "flex",
                     alignItems: "center",
                     flexDirection: "column",
-                    marginBottom: "12px",
-                    padding: "12px",
+
+                    marginTop: "12px",
+                    padding: "0",
                 },
             },
         },
@@ -62,14 +63,44 @@ const theme = createTheme({
                     alignItems: "center",
                     flexDirection: "column",
                     marginBottom: "0",
-                    padding: "0",
+                    padding: "0 0 0 0",
+                    "&:last-child": {
+                        paddingBottom: 10,
+                    },
                 },
             },
         },
-        MuiOutlinedInput: {
+        MuiFormControl: {
             styleOverrides: {
                 root: {
-                    background: "white",
+                    textTransform: "uppercase",
+                    backgroundColor: "white",
+                    m: 0,
+                    width: "100%",
+                    p: 1,
+                    borderRadius: 10,
+
+                    "& .MuiSelect-notchedOutline": {
+                        borderColor: "blue",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "red",
+                    },
+                },
+            },
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    textTransform: "uppercase",
+                },
+            },
+        },
+
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 10,
                 },
             },
         },

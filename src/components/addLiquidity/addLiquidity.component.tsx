@@ -8,7 +8,6 @@ import {
     FormControl,
     InputLabel,
     MenuItem,
-    OutlinedInput,
     Select,
     SelectChangeEvent,
     TextField,
@@ -16,6 +15,7 @@ import {
 } from "@mui/material";
 
 import "./style.css";
+import "../../assets/styles/styles.css";
 import {
     Apple,
     Potato,
@@ -40,71 +40,83 @@ export const AddLiquidityComponent = () => {
             <CardHeader title="Add Liquidity"></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
-                    <FormControl className="item-wrapper">
-                        <InputLabel id="select-token-to-mint-label">
-                            Token A
-                        </InputLabel>
-                        <Select
-                            value={tokenA}
-                            labelId="select-tokenA-to-addLiq-label"
-                            id="select-token-to-mint"
+                    <div className="item-wrapper-left">
+                        <FormControl variant="filled">
+                            <InputLabel id="select-tokenA-to-addLiq-label">
+                                Token A
+                            </InputLabel>
+                            <Select
+                                value={tokenA}
+                                labelId="select-tokenA-to-addLiq-label"
+                                id="select-token-to-mint"
+                                onChange={(event) => {
+                                    setTokenA(
+                                        event.target.value as ISmartContract
+                                    );
+                                    console.log(tokenA.nameLong);
+                                }}
+                            >
+                                {tokenContracts.map((tkn) => (
+                                    //@ts-ignore - necessary to load object into value
+                                    <MenuItem value={tkn} key={tkn.nameShort}>
+                                        {tkn.nameShort}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="item-wrapper-right">
+                        <TextField
+                            className="item-wrapper"
+                            id="outlined-basic"
+                            label="Amount"
+                            variant="filled"
+                            value={amountA}
                             onChange={(event) => {
-                                setTokenA(event.target.value as ISmartContract);
-                                console.log(tokenA.nameLong);
+                                setAmountA(parseInt(event.target.value));
                             }}
-                        >
-                            {tokenContracts.map((tkn) => (
-                                //@ts-ignore - necessary to load object into value
-                                <MenuItem value={tkn} key={tkn.nameShort}>
-                                    {tkn.nameShort}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        className="item-wrapper"
-                        id="outlined-basic"
-                        label="Outlined"
-                        variant="outlined"
-                        value={amountA}
-                        onChange={(event) => {
-                            setAmountA(parseInt(event.target.value));
-                        }}
-                    />
+                        />
+                    </div>
                 </div>
 
                 <div className="select-text-wrapper">
-                    <FormControl className="item-wrapper">
-                        <InputLabel id="select-token-to-mint-label">
-                            Token B
-                        </InputLabel>
-                        <Select
-                            value={tokenB}
-                            labelId="select-tokenA-to-addLiq-label"
-                            id="select-token-to-mint"
+                    <div className="item-wrapper-left">
+                        <FormControl variant="filled" className="item-wrapper">
+                            <InputLabel id="select-token-to-mint-label">
+                                Token B
+                            </InputLabel>
+                            <Select
+                                value={tokenB}
+                                labelId="select-tokenA-to-addLiq-label"
+                                id="select-token-to-mint"
+                                onChange={(event) => {
+                                    setTokenB(
+                                        event.target.value as ISmartContract
+                                    );
+                                    console.log(tokenA.nameLong);
+                                }}
+                            >
+                                {tokenContracts.map((tkn) => (
+                                    //@ts-ignore - necessary to load object into value
+                                    <MenuItem value={tkn} key={tkn.nameShort}>
+                                        {tkn.nameShort}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="item-wrapper-right">
+                        <TextField
+                            className="item-wrapper"
+                            id="outlined-basic"
+                            label="Amount"
+                            variant="filled"
+                            value={amountB}
                             onChange={(event) => {
-                                setTokenB(event.target.value as ISmartContract);
-                                console.log(tokenA.nameLong);
+                                setAmountB(parseInt(event.target.value));
                             }}
-                        >
-                            {tokenContracts.map((tkn) => (
-                                //@ts-ignore - necessary to load object into value
-                                <MenuItem value={tkn} key={tkn.nameShort}>
-                                    {tkn.nameShort}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        className="item-wrapper"
-                        id="outlined-basic"
-                        label="Outlined"
-                        variant="outlined"
-                        value={amountB}
-                        onChange={(event) => {
-                            setAmountB(parseInt(event.target.value));
-                        }}
-                    />
+                        />
+                    </div>
                 </div>
 
                 <Button

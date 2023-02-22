@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Button,
@@ -8,14 +8,12 @@ import {
     FormControl,
     InputLabel,
     MenuItem,
-    OutlinedInput,
     Select,
-    SelectChangeEvent,
     TextField,
-    Typography,
 } from "@mui/material";
 
 import "./style.css";
+import "../../assets/styles/styles.css";
 import {
     Apple,
     Potato,
@@ -30,14 +28,6 @@ export const MintTokensComponent = () => {
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [tokenToMint, setTokenToMint] = useState<ISmartContract>(Apple);
     const [amountToMint, setAmountToMint] = useState<number>(10000);
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: 100,
-                width: 250,
-            },
-        },
-    };
 
     const clickMint = async () => {
         if (amountToMint > 0) {
@@ -60,40 +50,42 @@ export const MintTokensComponent = () => {
             <CardHeader title="Mint Tokens"></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
-                    <FormControl className="item-wrapper">
-                        <InputLabel id="select-token-to-mint-label">
-                            Token
-                        </InputLabel>
-                        <Select
-                            value={tokenToMint}
-                            labelId="select-token-to-mint-label"
-                            id="select-token-to-mint"
+                    <div className="item-wrapper-left">
+                        <FormControl variant="filled">
+                            <InputLabel id="select-token-to-mint-label">
+                                Token
+                            </InputLabel>
+                            <Select
+                                value={tokenToMint}
+                                labelId="select-token-to-mint-label"
+                                id="select-token-to-mint"
+                                onChange={(event) => {
+                                    setTokenToMint(
+                                        event.target.value as ISmartContract
+                                    );
+                                    console.log(tokenToMint.nameLong);
+                                }}
+                            >
+                                {tokenContracts.map((tkn) => (
+                                    //@ts-ignore - necessary to load object into value
+                                    <MenuItem value={tkn} key={tkn.nameShort}>
+                                        {tkn.nameShort}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="item-wrapper-right">
+                        <TextField
+                            id="outlined-basic"
+                            label="Amount"
+                            variant="filled"
+                            value={amountToMint}
                             onChange={(event) => {
-                                setTokenToMint(
-                                    event.target.value as ISmartContract
-                                );
-                                console.log(tokenToMint.nameLong);
+                                setAmountToMint(parseInt(event.target.value));
                             }}
-                            MenuProps={MenuProps}
-                        >
-                            {tokenContracts.map((tkn) => (
-                                //@ts-ignore - necessary to load object into value
-                                <MenuItem value={tkn} key={tkn.nameShort}>
-                                    {tkn.nameShort}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        className="item-wrapper"
-                        id="outlined-basic"
-                        label="Outlined"
-                        variant="outlined"
-                        value={amountToMint}
-                        onChange={(event) => {
-                            setAmountToMint(parseInt(event.target.value));
-                        }}
-                    />
+                        />
+                    </div>
                 </div>
 
                 <Button variant="contained" color="success" onClick={clickMint}>

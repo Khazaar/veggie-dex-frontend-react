@@ -28,13 +28,12 @@ export const SelectNetworkComponent = () => {
 
     return (
         <div className="">
-            <FormControl sx={{ m: 1, width: 300 }}>
-                <InputLabel id="demo-multiple-name-label">Network</InputLabel>
+            <FormControl variant="filled" sx={{ minWidth: 150 }}>
+                <InputLabel id="select-network-label1">Network</InputLabel>
                 <Select
-                    labelId="select-network-label"
+                    labelId="select-network-label1"
                     id="select-network"
                     onChange={handleChange}
-                    input={<OutlinedInput label="Name" />}
                     value={network}
                 >
                     {networks.map((name) => (
