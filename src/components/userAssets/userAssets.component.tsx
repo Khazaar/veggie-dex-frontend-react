@@ -16,53 +16,60 @@ import {
 
 import "./style.css";
 import { tokenAsset } from "../../interfaces/tokenAssets.interface";
+import { useRefresh } from "../../hooks/useRefresh";
 
 export const UserAssetsComponent = () => {
-    let ASSET_DATA: tokenAsset[] = [
+    let initAssets: tokenAsset[] = [
         { position: 2, name: "Apple", amount: BigInt(0) },
         { position: 3, name: "Potato", amount: BigInt(0) },
         { position: 3, name: "Tomato", amount: BigInt(0) },
         { position: 4, name: "LSR", amount: BigInt(0) },
     ];
     const [ETHBalance, setETHBalance] = useState("");
+    const [assetsData, setAssetsData] = useState<tokenAsset[]>(initAssets);
 
     const smartContractService = useContext(SmartContractServiceContext);
-    useEffect(() => {
-        const fetchData = async () => {
-            const potatoBalance: BigInt =
-                await smartContractService.getTokensBalance(
-                    smartContractService.connectService.contractPotato
-                );
-            const tomatoBalance: BigInt =
-                await smartContractService.getTokensBalance(
-                    smartContractService.connectService.contractTomato
-                );
 
-            const appleBalance: BigInt =
-                await smartContractService.getTokensBalance(
-                    smartContractService.connectService.contractApple
-                );
+    const fetchData = async () => {
+        let updatedAssets = assetsData;
+        const potatoBalance: BigInt =
+            await smartContractService.getTokensBalance(
+                smartContractService.connectService.contractPotato
+            );
+        const tomatoBalance: BigInt =
+            await smartContractService.getTokensBalance(
+                smartContractService.connectService.contractTomato
+            );
 
-            const lsrBalance: BigInt =
-                await smartContractService.getTokensBalance(
-                    smartContractService.connectService.contractLSR
-                );
-            ASSET_DATA[0].amount = appleBalance;
-            ASSET_DATA[1].amount = potatoBalance;
-            ASSET_DATA[2].amount = tomatoBalance;
-            ASSET_DATA[3].amount = lsrBalance;
-            setETHBalance(await smartContractService.getSignerBalance());
-        };
-        fetchData();
-    });
+        const appleBalance: BigInt =
+            await smartContractService.getTokensBalance(
+                smartContractService.connectService.contractApple
+            );
+
+        const lsrBalance: BigInt = await smartContractService.getTokensBalance(
+            smartContractService.connectService.contractLSR
+        );
+
+        updatedAssets[0].amount = appleBalance;
+        updatedAssets[1].amount = potatoBalance;
+        updatedAssets[2].amount = tomatoBalance;
+        updatedAssets[3].amount = lsrBalance;
+        setAssetsData(updatedAssets);
+        setETHBalance(await smartContractService.getSignerBalance());
+    };
+
+    useRefresh(smartContractService, fetchData);
 
     return (
         <div className="user-assets">
             <Card>
                 <CardHeader title="User Assets"></CardHeader>
                 <CardContent>
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableContainer
+                        component={Paper}
+                        sx={{ margin: "6px", width: 300 }}
+                    >
+                        <Table aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Token</TableCell>
@@ -70,7 +77,7 @@ export const UserAssetsComponent = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {ASSET_DATA.map((row) => (
+                                {assetsData.map((row) => (
                                     <TableRow
                                         key={row.name}
                                         sx={{
@@ -83,7 +90,7 @@ export const UserAssetsComponent = () => {
                                         <TableCell component="th" scope="row">
                                             {row.name}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell>
                                             {row.amount.toString()}
                                         </TableCell>
                                     </TableRow>

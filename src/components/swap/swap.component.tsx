@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Button,
@@ -9,7 +9,9 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
     TextField,
+    Typography,
 } from "@mui/material";
 
 import "./style.css";
@@ -23,19 +25,18 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import React from "react";
 
-export const AddLiquidityComponent = () => {
+export const SwapComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [tokenA, setTokenA] = useState<ISmartContract>(Apple);
     const [tokenB, setTokenB] = useState<ISmartContract>(Potato);
     const [amountA, setAmountA] = useState<number>(5000);
-    const [amountB, setAmountB] = useState<number>(5000);
 
-    const clickAddLiquidity = async () => {};
+    const clickSwap = async () => {};
 
     return (
-        <Card className="AddLiquidityComponent">
-            <CardHeader title="Add Liquidity"></CardHeader>
+        <Card className="SwapComponent">
+            <CardHeader title="Swap"></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
                     <div className="item-wrapper-left">
@@ -79,7 +80,11 @@ export const AddLiquidityComponent = () => {
 
                 <div className="select-text-wrapper">
                     <div className="item-wrapper-left">
-                        <FormControl variant="filled" className="item-wrapper">
+                        <FormControl
+                            variant="filled"
+                            className="item-wrapper"
+                            sx={{ width: 188 }}
+                        >
                             <InputLabel id="select-token-to-mint-label">
                                 Token B
                             </InputLabel>
@@ -103,26 +108,10 @@ export const AddLiquidityComponent = () => {
                             </Select>
                         </FormControl>
                     </div>
-                    <div className="item-wrapper-right">
-                        <TextField
-                            className="item-wrapper"
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="filled"
-                            value={amountB}
-                            onChange={(event) => {
-                                setAmountB(parseInt(event.target.value));
-                            }}
-                        />
-                    </div>
                 </div>
 
-                <Button
-                    variant="contained"
-                    color="success"
-                    onClick={clickAddLiquidity}
-                >
-                    Add Liquidity
+                <Button variant="contained" color="success" onClick={clickSwap}>
+                    Swap
                 </Button>
             </CardContent>
         </Card>

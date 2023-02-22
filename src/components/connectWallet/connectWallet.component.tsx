@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import { Button } from "@mui/material";
 
@@ -9,6 +9,14 @@ export const ConnectWalletComponent = () => {
     const [signerAddress, setSignerAddress] = useState("");
     const [message, setMessage] = useState("Please, connect your wallet");
     const [buttonText, setButtonText] = useState("Connect wallet");
+    useEffect(() => {
+        const fetchData = async () => {
+            await smartContractService.connectService.initConnectService();
+        };
+        fetchData().catch((error) => {
+            console.log(error);
+        });
+    });
 
     async function clickConnect() {
         try {
@@ -26,8 +34,13 @@ export const ConnectWalletComponent = () => {
     }
 
     return (
-        <div className="vd-connect-wallet">
-            <Button variant="contained" color="success" onClick={clickConnect}>
+        <div className="ConnectWalletStyle">
+            <Button
+                variant="contained"
+                color="success"
+                onClick={clickConnect}
+                className="b-style"
+            >
                 {buttonText}
             </Button>
             <p className="p-style">{message}</p>

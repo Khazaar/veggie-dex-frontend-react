@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "./App.css";
 import { SmartContractService } from "./services/smart-contract.service";
 import { ConnectService } from "./services/connect.service";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { green, red } from "@mui/material/colors";
 import { HeaderComponent } from "./layouts/header/header.component";
 import { UserComponent } from "./layouts/user/user.component";
 import { DexComponent } from "./layouts/dex/dex.component";
@@ -12,6 +11,7 @@ export const SmartContractServiceContext =
     React.createContext<SmartContractService>(
         new SmartContractService(new ConnectService())
     );
+//export const UpdateContext = React.createContext<boolean>(flag);
 
 const colorGreenLight = "#1aba00";
 const theme = createTheme({
@@ -114,6 +114,14 @@ const theme = createTheme({
     },
 });
 function App() {
+    const smartContractService = useContext(SmartContractServiceContext);
+    //const update = useContext(UpdateContext);
+    // useEffect(() => {
+    //     smartContractService.TokenMinted$().subscribe(() => {
+    //         console.log("TokenMinted$");
+    //         smartContractService.upd = !smartContractService.upd;
+    //     });
+    // });
     return (
         <ThemeProvider theme={theme}>
             <div className="global-wrapper">

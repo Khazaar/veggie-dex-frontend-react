@@ -63,7 +63,6 @@ export const MintTokensComponent = () => {
                                     setTokenToMint(
                                         event.target.value as ISmartContract
                                     );
-                                    console.log(tokenToMint.nameLong);
                                 }}
                             >
                                 {tokenContracts.map((tkn) => (

@@ -18,6 +18,7 @@ export class SmartContractService {
     public LiquidityAdded$(): Observable<void> {
         return this.liquidityAdded.asObservable();
     }
+    public upd: boolean = false;
 
     private swapped = new Subject<void>();
     public Swapped$(): Observable<void> {
@@ -53,6 +54,7 @@ export class SmartContractService {
             await this.subscribeTransferTokensEvents();
             await this.subscribeAdminEvents();
             this.updateSmatrContractServiceNetwork();
+            await this.connectService.initConnectService();
         } catch (error) {
             console.log(
                 `Error in initSmartContractService: ${(error as Error).message}`

@@ -1,10 +1,13 @@
-.ConnectWalletComponent {
-    width: 100%;
-    height: 100%;
-    margin-top: 0;
-    padding-top: 0;
+.ConnectWalletStyle {
+    width: align-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .p-style {
     margin: 0;
+}
+
+.b-style {
 }
