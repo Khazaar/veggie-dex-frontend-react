@@ -1,9 +1,14 @@
 .content-wrapper {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    padding-top: 1rem;
+    flex-direction: row;
     width: 100%;
+}
+
+.content-menu-wrapper {
+    display: flex;
+    flex-direction: row;
+    padding-top: 1rem;
+
     background-size: cover;
     background-image: url("/src/assets/images/apple-bg.svg");
     min-height: 100vh;
@@ -11,5 +16,8 @@
     padding: 0;
 }
 
-.global-wrapper {
+@media screen and (max-width: 1050px) {
+    .content-wrapper {
+        flex-direction: column-reverse;
+    }
 }

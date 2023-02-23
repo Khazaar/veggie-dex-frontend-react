@@ -1,0 +1,24 @@
+.MenuComponent {
+    padding-top: 6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    right: 0;
+}
+
+.containerContactInner {
+    display: flex;
+    flex-direction: column;
+    padding: 0.3rem;
+}
+
+.containerContactOuter {
+    display: flex;
+    flex-direction: row;
+    padding: 0.3rem;
+}
+
+p {
+    margin: 0;
+}
