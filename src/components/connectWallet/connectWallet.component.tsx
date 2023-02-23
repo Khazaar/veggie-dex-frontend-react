@@ -6,7 +6,6 @@ import "./style.css";
 
 export const ConnectWalletComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
-    const [signerAddress, setSignerAddress] = useState("");
     const [message, setMessage] = useState("Please, connect your wallet");
     const [buttonText, setButtonText] = useState("Connect wallet");
     useEffect(() => {
@@ -22,11 +21,9 @@ export const ConnectWalletComponent = () => {
         try {
             await smartContractService.connectService.initConnectService();
             await smartContractService.initSmartContractService();
-
-            setSignerAddress(
+            setMessage(
                 await smartContractService.connectService.signer.getAddress()
             );
-            setMessage(signerAddress);
             setButtonText("Wallet connected");
         } catch (error) {
             console.log(`Can't connect wallet: ${(error as Error).message}`);

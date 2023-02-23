@@ -11,8 +11,9 @@ import {
     Router_mod,
     Tomato,
 } from "../smart-contracts/smart-contract-data";
+import { IConnectService } from "./IConnectService";
 
-export class ConnectService {
+export class ConnectService implements IConnectService {
     public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
     public contractPotato: ethers.Contract;
     public contractApple: ethers.Contract;
@@ -32,10 +33,8 @@ export class ConnectService {
     public signer: ethers.providers.JsonRpcSigner;
     public isConnected: boolean = false;
 
-    constructor() {
-        this.network = Hardhat;
-    }
-    private walletConnected = new Subject<void>();
+    constructor() {}
+    public walletConnected = new Subject<void>();
     public walletConnected$(): Observable<void> {
         return this.walletConnected.asObservable();
     }
@@ -49,6 +48,7 @@ export class ConnectService {
                 (window as any).ethereum
             );
             this.signer = this.provider.getSigner();
+            this.network = this.defaultNetwork;
             await this.fetchSmartContracts();
             console.log(`Is connected? ${this.isConnected}`);
             console.log("Account:", await this.signer.getAddress());
@@ -72,6 +72,7 @@ export class ConnectService {
             } else {
                 this.hasOwnerRole = false;
             }
+
             this.walletConnected.next();
         } catch (error) {
             console.log(

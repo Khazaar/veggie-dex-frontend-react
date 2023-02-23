@@ -8,8 +8,9 @@ import {
 } from "../smart-contracts/smart-contract-data";
 //import ERC20Potato from "../smart-contracts/ERC20Potato.json";
 import { ConnectService } from "./connect.service";
+import { ISmartContractService } from "./ISmartContractService";
 
-export class SmartContractService {
+export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
     public network: keyof typeof Potato.address;
     public gasLimit = 50000;
@@ -18,8 +19,6 @@ export class SmartContractService {
     public LiquidityAdded$(): Observable<void> {
         return this.liquidityAdded.asObservable();
     }
-    public upd: boolean = false;
-
     private swapped = new Subject<void>();
     public Swapped$(): Observable<void> {
         return this.swapped.asObservable();
@@ -135,7 +134,6 @@ export class SmartContractService {
                 216604939048
             );
         await tx.wait(1);
-        await this.subscribeRouterContractsEvents();
     }
     public async swap(
         contractA: ISmartContract,
@@ -190,7 +188,7 @@ export class SmartContractService {
     }
     public async getPairs(): Promise<IPair[]> {
         this.updateSmatrContractServiceNetwork();
-        //this.connectService.fetchSmartContracts();
+        this.connectService.fetchSmartContracts();
         const nPairs =
             await this.connectService.contractFactory.allPairsLength();
         const tokenPairs: IPair[] = [];

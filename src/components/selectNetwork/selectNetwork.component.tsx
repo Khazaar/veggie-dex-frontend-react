@@ -8,13 +8,13 @@ import { useTheme } from "@mui/material/styles";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import "./style.css";
-import React, { useContext } from "react";
+import { useContext, useState } from "react";
 import { BSC, Goerli, Hardhat, INetwork } from "../../smart-contracts/networks";
 import { SmartContractServiceContext } from "../../App";
 
 export const SelectNetworkComponent = () => {
     const networks: INetwork[] = [Hardhat, BSC, Goerli];
-    const [network, setNetwork] = React.useState<INetwork>(Hardhat);
+    const [network, setNetwork] = useState<INetwork>(Hardhat);
     const smartContractService = useContext(SmartContractServiceContext);
 
     const handleChange = (event: SelectChangeEvent<INetwork>) => {
@@ -29,15 +29,16 @@ export const SelectNetworkComponent = () => {
     return (
         <div className="">
             <FormControl variant="filled" sx={{ minWidth: 150 }}>
-                <InputLabel id="select-network-label1">Network</InputLabel>
+                <InputLabel id="elect-network-label1">Network</InputLabel>
                 <Select
-                    labelId="select-network-label1"
+                    value={network}
+                    labelId="elect-network-label1"
                     id="select-network"
                     onChange={handleChange}
-                    value={network}
                 >
                     {networks.map((name) => (
-                        <MenuItem value={name.nameShort} key={name.nameShort}>
+                        //@ts-ignore - necessary to load object into value
+                        <MenuItem value={name} key={name.nameShort}>
                             {name.nameShort}
                         </MenuItem>
                     ))}

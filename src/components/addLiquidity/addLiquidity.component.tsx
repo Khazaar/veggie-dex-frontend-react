@@ -31,7 +31,18 @@ export const AddLiquidityComponent = () => {
     const [amountA, setAmountA] = useState<number>(5000);
     const [amountB, setAmountB] = useState<number>(5000);
 
-    const clickAddLiquidity = async () => {};
+    const clickAddLiquidity = async () => {
+        try {
+            await smartContractService.addLiquidity(
+                tokenA,
+                tokenB,
+                BigInt(amountA),
+                BigInt(amountB)
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <Card className="AddLiquidityComponent">

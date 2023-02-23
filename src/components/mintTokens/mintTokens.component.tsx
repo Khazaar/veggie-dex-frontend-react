@@ -21,7 +21,6 @@ import {
     LSR,
     ISmartContract,
 } from "../../smart-contracts/smart-contract-data";
-import React from "react";
 
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);

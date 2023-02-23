@@ -15,18 +15,18 @@ import {
 } from "@mui/material";
 
 import "./style.css";
-import { tokenAsset } from "../../interfaces/tokenAssets.interface";
+import { ITokenAsset } from "../../interfaces/tokenAssets.interface";
 import { useRefresh } from "../../hooks/useRefresh";
 
 export const UserAssetsComponent = () => {
-    let initAssets: tokenAsset[] = [
+    let initAssets: ITokenAsset[] = [
         { position: 2, name: "Apple", amount: BigInt(0) },
         { position: 3, name: "Potato", amount: BigInt(0) },
         { position: 3, name: "Tomato", amount: BigInt(0) },
         { position: 4, name: "LSR", amount: BigInt(0) },
     ];
     const [ETHBalance, setETHBalance] = useState("");
-    const [assetsData, setAssetsData] = useState<tokenAsset[]>(initAssets);
+    const [assetsData, setAssetsData] = useState<ITokenAsset[]>(initAssets);
 
     const smartContractService = useContext(SmartContractServiceContext);
 

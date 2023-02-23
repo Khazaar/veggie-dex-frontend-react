@@ -75,16 +75,11 @@ const theme = createTheme({
                 root: {
                     textTransform: "uppercase",
                     backgroundColor: "white",
-                    m: 0,
                     width: "100%",
-                    p: 1,
-                    borderRadius: 10,
-
-                    "& .MuiSelect-notchedOutline": {
-                        borderColor: "blue",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "red",
+                    borderRadius: "10px",
+                    "& .MuiFilledInput-underline:after": {
+                        borderBottomColor: colorGreenLight,
+                        margin: "0 8px 0 8px",
                     },
                 },
             },
@@ -96,16 +91,32 @@ const theme = createTheme({
                 },
             },
         },
-
         MuiTextField: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 10,
+                    "& .MuiFilledInput-underline:after": {
+                        borderBottomColor: colorGreenLight,
+                        margin: "0 8px 0 8px",
+                    },
+                },
+            },
+        },
+        MuiTableContainer: {
             styleOverrides: {
                 root: {
                     borderRadius: 10,
                 },
             },
         },
+        MuiInputLabel: {
+            styleOverrides: {
+                root: {
+                    "&.Mui-focused": { color: "green" },
+                },
+            },
+        },
     },
-
     typography: {
         h4: {
             color: colorGreenLight,

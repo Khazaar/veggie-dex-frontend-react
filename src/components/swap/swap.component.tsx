@@ -31,8 +31,14 @@ export const SwapComponent = () => {
     const [tokenA, setTokenA] = useState<ISmartContract>(Apple);
     const [tokenB, setTokenB] = useState<ISmartContract>(Potato);
     const [amountA, setAmountA] = useState<number>(5000);
-
-    const clickSwap = async () => {};
+    const clickSwap = async () => {
+        await smartContractService.swap(
+            tokenA,
+            tokenB,
+            BigInt(amountA),
+            BigInt(amountA)
+        );
+    };
 
     return (
         <Card className="SwapComponent">
