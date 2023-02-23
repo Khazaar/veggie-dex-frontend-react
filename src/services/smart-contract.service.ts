@@ -288,7 +288,7 @@ export class SmartContractService implements ISmartContractService {
         const pairs = await this.getPairs();
         pairs.forEach((iPair) => {
             iPair.instance.removeAllListeners();
-            iPair.instance.on("Swap", (amountA, amountB) => {
+            iPair.instance.once("Swap", (amountA, amountB) => {
                 console.log(
                     `Added liquidity to ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
                 );
@@ -298,10 +298,10 @@ export class SmartContractService implements ISmartContractService {
     }
 
     public async subscribeRouterContractsEvents() {
-        this.connectService.contractRouter_mod.removeAllListeners();
+        //this.connectService.contractRouter_mod.un;
         this.connectService.contractRouter_mod
             .connect(this.connectService.signer)
-            .on(
+            .once(
                 "AddLiquidity",
                 (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
                     console.log(
@@ -316,7 +316,7 @@ export class SmartContractService implements ISmartContractService {
             iContract.instance.removeAllListeners();
             iContract.instance
                 .connect(this.connectService.signer)
-                .on("Transfer", (from, to, amount) => {
+                .once("Transfer", (from, to, amount) => {
                     console.log(
                         `Transfeed ${amount} tokens from ${from} to ${to}`
                     );
@@ -327,7 +327,7 @@ export class SmartContractService implements ISmartContractService {
 
     //!!! FIX only for apple
     public async subscribeMintRevertedPeriodEvent() {
-        this.connectService.contractApple.on(
+        this.connectService.contractApple.once(
             "MintRevertedPeriod",
             (timePassedSeconds, mintLimitPeriodSeconds) => {
                 const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
@@ -340,14 +340,14 @@ export class SmartContractService implements ISmartContractService {
     public async subscribeAdminEvents() {
         this.connectService.contractRouter_mod
             .connect(this.connectService.signer)
-            .on("RoleGranted", (role, account) => {
+            .once("RoleGranted", (role, account) => {
                 console.log(`Role ${role} granted to ${account}`);
                 this.adminGranted.next(account);
             });
 
         this.connectService.contractRouter_mod
             .connect(this.connectService.signer)
-            .on("RoleRevoked", (role, account) => {
+            .once("RoleRevoked", (role, account) => {
                 console.log(`Role ${role} revoked from ${account}`);
                 this.adminRevoked.next(account);
             });
