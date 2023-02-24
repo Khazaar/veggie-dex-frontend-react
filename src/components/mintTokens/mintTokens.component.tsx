@@ -21,6 +21,9 @@ import {
     LSR,
     ISmartContract,
 } from "../../smart-contracts/smart-contract-data";
+import DiamondIcon from "@mui/icons-material/Diamond";
+import { styleIconsProps } from "../../assets/styles/stypeProps";
+import { SelectNetworkComponent } from "../selectNetwork/selectNetwork.component";
 
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -46,7 +49,10 @@ export const MintTokensComponent = () => {
 
     return (
         <Card className="MintTokensComponent">
-            <CardHeader title="Mint Tokens"></CardHeader>
+            <CardHeader
+                title="Mint Tokens"
+                titleTypographyProps={{ variant: "h1" }}
+            ></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
                     <div className="item-wrapper-left">
@@ -88,6 +94,7 @@ export const MintTokensComponent = () => {
 
                 <Button variant="contained" color="success" onClick={clickMint}>
                     Mint
+                    <DiamondIcon style={styleIconsProps} />
                 </Button>
             </CardContent>
         </Card>

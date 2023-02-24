@@ -8,12 +8,11 @@
     display: flex;
     flex-direction: row;
     padding-top: 1rem;
-
     background-size: cover;
     background-image: url("/src/assets/images/apple-bg.svg");
     min-height: 100vh;
-
     padding: 0;
+    color: "";
 }
 
 @media screen and (max-width: 1050px) {

@@ -23,7 +23,8 @@ import {
     LSR,
     ISmartContract,
 } from "../../smart-contracts/smart-contract-data";
-import React from "react";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import { styleIconsProps } from "../../assets/styles/stypeProps";
 
 export const SwapComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -42,7 +43,10 @@ export const SwapComponent = () => {
 
     return (
         <Card className="SwapComponent">
-            <CardHeader title="Swap"></CardHeader>
+            <CardHeader
+                title="Swap"
+                titleTypographyProps={{ variant: "h1" }}
+            ></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
                     <div className="item-wrapper-left">
@@ -118,6 +122,7 @@ export const SwapComponent = () => {
 
                 <Button variant="contained" color="success" onClick={clickSwap}>
                     Swap
+                    <CurrencyExchangeIcon style={styleIconsProps} />
                 </Button>
             </CardContent>
         </Card>

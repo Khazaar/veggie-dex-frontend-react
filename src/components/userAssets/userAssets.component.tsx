@@ -55,7 +55,9 @@ export const UserAssetsComponent = () => {
         updatedAssets[2].amount = tomatoBalance;
         updatedAssets[3].amount = lsrBalance;
         setAssetsData(updatedAssets);
-        setETHBalance(await smartContractService.getSignerBalance());
+        setETHBalance(
+            (await smartContractService.getSignerBalance()).substring(0, 8)
+        );
     };
 
     useRefresh(smartContractService, fetchData);
@@ -63,7 +65,10 @@ export const UserAssetsComponent = () => {
     return (
         <div className="user-assets">
             <Card>
-                <CardHeader title="User Assets"></CardHeader>
+                <CardHeader
+                    title="User Assets"
+                    titleTypographyProps={{ variant: "h1" }}
+                ></CardHeader>
                 <CardContent>
                     <TableContainer
                         component={Paper}

@@ -1,10 +1,10 @@
 import {
     FormControl,
+    FormHelperText,
     InputLabel,
     MenuItem,
-    OutlinedInput,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import "./style.css";
@@ -27,14 +27,15 @@ export const SelectNetworkComponent = () => {
     };
 
     return (
-        <div className="">
-            <FormControl variant="filled" sx={{ minWidth: 150 }}>
+        <div className="SelectNetworkComponentStyle">
+            <FormControl sx={{ width: 150 }}>
                 <InputLabel id="elect-network-label1">Network</InputLabel>
                 <Select
                     value={network}
                     labelId="elect-network-label1"
-                    id="select-network"
+                    id="select-network333"
                     onChange={handleChange}
+                    label="Network"
                 >
                     {networks.map((name) => (
                         //@ts-ignore - necessary to load object into value

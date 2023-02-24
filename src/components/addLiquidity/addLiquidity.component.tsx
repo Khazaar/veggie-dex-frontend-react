@@ -21,7 +21,8 @@ import {
     LSR,
     ISmartContract,
 } from "../../smart-contracts/smart-contract-data";
-import React from "react";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import { styleIconsProps } from "../../assets/styles/stypeProps";
 
 export const AddLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -47,7 +48,10 @@ export const AddLiquidityComponent = () => {
 
     return (
         <Card className="AddLiquidityComponent">
-            <CardHeader title="Add Liquidity"></CardHeader>
+            <CardHeader
+                title="Add Liquidity"
+                titleTypographyProps={{ variant: "h1" }}
+            ></CardHeader>
             <CardContent>
                 <div className="select-text-wrapper">
                     <div className="item-wrapper-left">
@@ -135,6 +139,7 @@ export const AddLiquidityComponent = () => {
                     onClick={clickAddLiquidity}
                 >
                     Add Liquidity
+                    <ControlPointIcon style={styleIconsProps} />
                 </Button>
             </CardContent>
         </Card>

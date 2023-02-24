@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
-import { INetwork } from "../smart-contracts/networks";
-import { ISmartContract } from "../smart-contracts/smart-contract-data";
+import { INetwork } from "../../smart-contracts/networks";
+import { ISmartContract } from "../../smart-contracts/smart-contract-data";
 
 export interface IConnectService {
     ADMIN_ROLE: string;
@@ -15,8 +15,7 @@ export interface IConnectService {
     tokenContracts: ISmartContract[];
     network: INetwork;
     defaultNetwork: INetwork;
-    hasAdminRole: boolean;
-    hasOwnerRole: boolean;
+
     tokenMinted: Observable<ISmartContract>;
     provider: ethers.providers.Web3Provider;
     signer: ethers.providers.JsonRpcSigner;
@@ -28,5 +27,4 @@ export interface IConnectService {
     getTokenContracts(): ISmartContract[];
     fetchSmartContracts(): Promise<void>;
     getSignerBalance(): Promise<string>;
-    getRouterAdmins(): Promise<string[]>;
 }

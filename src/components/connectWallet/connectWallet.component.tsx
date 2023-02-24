@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import { Button } from "@mui/material";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import "./style.css";
+import { styleIconsProps } from "../../assets/styles/stypeProps";
 
 export const ConnectWalletComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -19,7 +21,7 @@ export const ConnectWalletComponent = () => {
 
     async function clickConnect() {
         try {
-            await smartContractService.connectService.initConnectService();
+            //await smartContractService.connectService.initConnectService();
             await smartContractService.initSmartContractService();
             setMessage(
                 await smartContractService.connectService.signer.getAddress()
@@ -40,6 +42,7 @@ export const ConnectWalletComponent = () => {
                     className="b-style"
                 >
                     {buttonText}
+                    <AccountBalanceWalletIcon style={styleIconsProps} />
                 </Button>
             </div>
             <p className="p-style">{message}</p>

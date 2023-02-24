@@ -1,7 +1,5 @@
 import { ethers } from "ethers";
-import { min, Observable, Subject } from "rxjs";
 import {
-    Factory,
     IPair,
     ISmartContract,
     Pair,
@@ -11,13 +9,15 @@ import PancakePairAbi from "../smart-contracts/abi/PancakePair.json";
 import { BlockchainSubscriptions } from "./blockchainSubscriptions";
 //import ERC20Potato from "../smart-contracts/ERC20Potato.json";
 import { ConnectService } from "./connect.service";
-import { ISmartContractService } from "./ISmartContractService";
+import { ISmartContractService } from "./interfaces/ISmartContractService";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
     public network: keyof typeof Potato.address;
     public gasLimit = 50000;
     public blockchainSubscriptions: BlockchainSubscriptions;
+    public hasAdminRole = false;
+    public hasOwnerRole = false;
 
     constructor(public connectService: ConnectService) {
         this.blockchainSubscriptions = new BlockchainSubscriptions(this);
@@ -32,6 +32,26 @@ export class SmartContractService implements ISmartContractService {
             console.log(
                 `Error in initSmartContractService: ${(error as Error).message}`
             );
+        }
+        if (
+            (await this.getRouterAdmins()).includes(
+                await this.connectService.signer.getAddress()
+            )
+        ) {
+            this.hasAdminRole = true;
+            console.log("Admin detected...");
+        } else {
+            this.hasAdminRole = false;
+        }
+
+        if (
+            (await this.connectService.signer.getAddress()) ==
+            (await this.connectService.contractRouter_mod.getOwnerAddress())
+        ) {
+            this.hasOwnerRole = true;
+            console.log("Owner detected...");
+        } else {
+            this.hasOwnerRole = false;
         }
     }
 
@@ -251,7 +271,29 @@ export class SmartContractService implements ISmartContractService {
         return tokenPairs;
     }
 
-    public async addAdminAddress(adminRoleAddress: string) {
+    public async getRouterAdmins() {
+        const admins: string[] = [];
+        try {
+            let adminCount = (
+                await this.connectService.contractRouter_mod.getRoleMemberCount(
+                    this.connectService.ADMIN_ROLE
+                )
+            ).toNumber();
+            for (let i = 0; i < adminCount; ++i) {
+                admins.push(
+                    await this.connectService.contractRouter_mod.getRoleMember(
+                        this.connectService.ADMIN_ROLE,
+                        i
+                    )
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        return admins;
+    }
+
+    public async grantAdminRole(adminRoleAddress: string) {
         try {
             if (ethers.utils.isAddress(adminRoleAddress)) {
                 let tx =
@@ -266,7 +308,7 @@ export class SmartContractService implements ISmartContractService {
             console.log(error);
         }
     }
-    public async revokeAdminAddress(adminRoleAddress: string) {
+    public async revokeAdminRole(adminRoleAddress: string) {
         try {
             if (ethers.utils.isAddress(adminRoleAddress)) {
                 let tx =
@@ -282,19 +324,18 @@ export class SmartContractService implements ISmartContractService {
         }
     }
 
-    public async withdrawFees() {
+    public async withdrawFees(contract: ISmartContract, amount: number) {
         try {
-            this.connectService.tokenContracts.forEach(async (iContract) => {
-                if (
-                    (await iContract.instance.balanceOf(
-                        this.connectService.contractRouter_mod.address
-                    )) > 0
-                ) {
-                    await this.connectService.contractRouter_mod.withdrawFees(
-                        iContract.instance.address
-                    );
-                }
-            });
+            if (
+                (await contract.instance.balanceOf(
+                    this.connectService.contractRouter_mod.address
+                )) > amount
+            ) {
+                await this.connectService.contractRouter_mod.withdrawFees(
+                    contract.instance.address,
+                    amount
+                );
+            }
         } catch (error) {
             console.log(error);
         }

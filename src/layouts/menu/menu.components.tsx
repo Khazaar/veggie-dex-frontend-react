@@ -9,15 +9,15 @@ import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { styleModalWindowBox } from "../../assets/styles/stypeProps";
 
-import { CodeContent, ContactContent, InfoContent } from "./info.components";
+import { CodeContent, ContactContent, InfoContent } from "./content.components";
 
 export const MenuComponent = () => {
     const [openInfoModal, setOpenInfoModal] = useState(false);
     const [openContactModal, setOpenContactModal] = useState(false);
     const [openCodeModal, setOpenCodeModal] = useState(false);
 
-    const iconStyle = { color: colorGreenLight };
-    const swgStyle = { width: "3rem", height: "3rem" };
+    const iconStyle = { color: "green" };
+    const swgStyle = { width: "2.5rem", height: "2.5rem" };
 
     return (
         <div>

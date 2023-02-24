@@ -1,18 +1,22 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 export const colorGreenLight = "#1aba00";
+export const colorGreenLight2 = "#1ee200";
+export const fontSizeMain = "1.1rem";
+
 export const theme = createTheme({
     components: {
         MuiButton: {
             styleOverrides: {
                 root: {
                     borderRadius: 16,
+                    fontSize: fontSizeMain,
                 },
             },
         },
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 20,
+                    borderRadius: 25,
                     backgroundColor: "transparent",
                     border: `3px solid ${colorGreenLight}`,
                     width: "400px",
@@ -21,6 +25,7 @@ export const theme = createTheme({
                     flexDirection: "column",
 
                     marginTop: "12px",
+                    marginBottom: "6px",
                     padding: "0",
                 },
             },
@@ -28,13 +33,13 @@ export const theme = createTheme({
         MuiCardHeader: {
             styleOverrides: {
                 root: {
-                    color: colorGreenLight,
+                    color: colorGreenLight2,
                     textTransform: "uppercase",
                     display: "flex",
                     alignItems: "center",
-                    margin: "0px",
+                    margin: "0.5rem",
                     padding: "6px 0px 0px 0px",
-                    fontSize: "2.5rem",
+                    variant: "h1",
                 },
             },
         },
@@ -63,9 +68,14 @@ export const theme = createTheme({
                     backgroundColor: "white",
                     width: "100%",
                     borderRadius: "10px",
+
                     "& .MuiFilledInput-underline:after": {
                         borderBottomColor: colorGreenLight,
                         margin: "0 8px 0 8px",
+                        borderColor: colorGreenLight,
+                    },
+                    "& .MuiFilledInput-border:after": {
+                        borderColor: colorGreenLight,
                     },
                 },
             },
@@ -74,6 +84,7 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "uppercase",
+                    fontSize: fontSizeMain,
                 },
             },
         },
@@ -85,13 +96,22 @@ export const theme = createTheme({
                         borderBottomColor: colorGreenLight,
                         margin: "0 8px 0 8px",
                     },
+                    fontSize: fontSizeMain,
                 },
             },
         },
         MuiTableContainer: {
             styleOverrides: {
                 root: {
-                    borderRadius: 10,
+                    borderRadius: 20,
+                    fontSize: "1.5rem",
+                },
+            },
+        },
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    fontSize: fontSizeMain,
                 },
             },
         },
@@ -109,11 +129,30 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiIconButton: {
+            styleOverrides: {
+                root: {
+                    "& :hover": {
+                        color: colorGreenLight,
+                    },
+                },
+            },
+        },
     },
     typography: {
-        h4: {
+        h1: {
+            color: colorGreenLight2,
+            fontSize: "1.7rem",
+            fontWeight: "bold",
+        },
+        h3: {
             color: colorGreenLight,
             fontSize: "1.5rem",
+            margin: "0.5rem",
+        },
+        h4: {
+            color: colorGreenLight,
+            fontSize: "1rem",
         },
         body1: {
             margin: 0,

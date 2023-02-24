@@ -6,6 +6,7 @@ import { SmartContractServiceContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
 import { useRefresh } from "../../hooks/useRefresh";
 import { RemoveLiquidityComponent } from "../../components/removeLiquidity/removeLiquidity.component";
+import { OwnerPanelComponent } from "../../components/ownerPanel/ownerPanel.component";
 
 export const UserComponent = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -13,8 +14,8 @@ export const UserComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
 
     const fetchData = async () => {
-        setIsAdmin(smartContractService.connectService.hasAdminRole);
-        setIsOwner(smartContractService.connectService.hasOwnerRole);
+        setIsAdmin(smartContractService.hasAdminRole);
+        setIsOwner(smartContractService.hasOwnerRole);
     };
 
     useRefresh(smartContractService, fetchData);
@@ -25,6 +26,7 @@ export const UserComponent = () => {
                 <UserAssetsComponent></UserAssetsComponent>
                 <RemoveLiquidityComponent></RemoveLiquidityComponent>
                 {isAdmin && <AdminPanelComponent></AdminPanelComponent>}
+                {isOwner && <OwnerPanelComponent></OwnerPanelComponent>}
             </div>
         </div>
     );

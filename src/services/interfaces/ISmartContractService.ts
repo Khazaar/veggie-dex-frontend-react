@@ -1,11 +1,10 @@
-import { BlockchainSubscriptions } from "./blockchainSubscriptions";
+import { BlockchainSubscriptions } from "../blockchainSubscriptions";
 import { ethers } from "ethers";
-import { Observable } from "rxjs";
 import {
     IPair,
     Potato,
     ISmartContract,
-} from "../smart-contracts/smart-contract-data";
+} from "../../smart-contracts/smart-contract-data";
 import { IConnectService } from "./IConnectService";
 
 export interface ISmartContractService {
@@ -14,13 +13,8 @@ export interface ISmartContractService {
     gasLimit: number;
     connectService: IConnectService;
     blockchainSubscriptions: BlockchainSubscriptions;
-
-    // LiquidityAdded$(): Observable<void>;
-    // Swapped$(): Observable<void>;
-    // TokenMinted$(): Observable<ISmartContract>;
-    // MintRevertedPeriod$(): Observable<string>;
-    // AdminGranted$(): Observable<string>;
-    // AdminRevoked$(): Observable<string>;
+    hasAdminRole: boolean;
+    hasOwnerRole: boolean;
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;

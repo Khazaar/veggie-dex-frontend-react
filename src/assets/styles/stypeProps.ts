@@ -18,3 +18,7 @@ export const styleMenuProps = {
         },
     },
 };
+
+export const styleIconsProps = {
+    margin: "0 0 0 6px",
+};

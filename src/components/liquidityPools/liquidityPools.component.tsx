@@ -44,7 +44,10 @@ export const LiquidityPoolsComponent = () => {
 
     return (
         <Card className="LiquidityPoolsComponent">
-            <CardHeader title="Liquidity Pools"></CardHeader>
+            <CardHeader
+                title="DEX Liquidity Pools"
+                titleTypographyProps={{ variant: "h1" }}
+            ></CardHeader>
             <CardContent>
                 <TableContainer
                     component={Paper}

@@ -16,6 +16,8 @@ import "./style.css";
 import "../../assets/styles/styles.css";
 import { IPair } from "../../smart-contracts/smart-contract-data";
 import { useRefresh } from "../../hooks/useRefresh";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { styleIconsProps } from "../../assets/styles/stypeProps";
 
 export const RemoveLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -61,7 +63,10 @@ export const RemoveLiquidityComponent = () => {
         <div>
             {pairs.length > 0 && (
                 <Card className="RemoveLiquidityComponent">
-                    <CardHeader title="Rmove Liquidity"></CardHeader>
+                    <CardHeader
+                        title="Rmove Liquidity"
+                        titleTypographyProps={{ variant: "h1" }}
+                    ></CardHeader>
                     <CardContent>
                         <div className="select-text-wrapper">
                             <div className="item-wrapper-left">
@@ -105,6 +110,7 @@ export const RemoveLiquidityComponent = () => {
                             onClick={clickRemoveLiquidity}
                         >
                             Remove Liquidity
+                            <RemoveCircleOutlineIcon style={styleIconsProps} />
                         </Button>
                     </CardContent>
                 </Card>

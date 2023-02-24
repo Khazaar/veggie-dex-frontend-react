@@ -11,7 +11,7 @@ import {
     Router_mod,
     Tomato,
 } from "../smart-contracts/smart-contract-data";
-import { IConnectService } from "./IConnectService";
+import { IConnectService } from "./interfaces/IConnectService";
 
 export class ConnectService implements IConnectService {
     public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
@@ -25,8 +25,6 @@ export class ConnectService implements IConnectService {
     public tokenContracts: ISmartContract[] = [];
     public network: INetwork;
     public defaultNetwork = Hardhat;
-    public hasAdminRole = false;
-    public hasOwnerRole = false;
     public tokenMinted = new Subject<ISmartContract>();
 
     public provider: ethers.providers.Web3Provider;
@@ -51,26 +49,6 @@ export class ConnectService implements IConnectService {
             await this.fetchSmartContracts();
             console.log(`Is connected? ${this.isConnected}`);
             console.log("Account:", await this.signer.getAddress());
-            if (
-                (await this.getRouterAdmins()).includes(
-                    await this.signer.getAddress()
-                )
-            ) {
-                this.hasAdminRole = true;
-                console.log("Admin detected...");
-            } else {
-                this.hasAdminRole = false;
-            }
-
-            if (
-                (await this.signer.getAddress()) ==
-                (await Router_mod.instance.getOwnerAddress())
-            ) {
-                this.hasOwnerRole = true;
-                console.log("Owner detected...");
-            } else {
-                this.hasOwnerRole = false;
-            }
 
             this.walletConnected.next();
         } catch (error) {
@@ -146,27 +124,5 @@ export class ConnectService implements IConnectService {
     }
     public async getSignerBalance() {
         return ethers.utils.formatEther(await this.signer.getBalance());
-    }
-
-    public async getRouterAdmins() {
-        const admins: string[] = [];
-        try {
-            let adminCount = (
-                await this.contractRouter_mod.getRoleMemberCount(
-                    this.ADMIN_ROLE
-                )
-            ).toNumber();
-            for (let i = 0; i < adminCount; ++i) {
-                admins.push(
-                    await this.contractRouter_mod.getRoleMember(
-                        this.ADMIN_ROLE,
-                        i
-                    )
-                );
-            }
-        } catch (error) {
-            console.log(error);
-        }
-        return admins;
     }
 }

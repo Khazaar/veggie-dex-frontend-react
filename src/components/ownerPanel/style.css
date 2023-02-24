@@ -1,0 +1,10 @@
+.OwnerPanelComponentStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.newAdminWrapper {
+    margin: 0 12px 12px 12px;
+    min-width: 90%;
+}

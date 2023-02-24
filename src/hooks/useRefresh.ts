@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Subscription } from "rxjs";
-import { ISmartContractService } from "../services/ISmartContractService";
+import { ISmartContractService } from "../services/interfaces/ISmartContractService";
 
 export const useRefresh = (
     smartContractService: ISmartContractService,
