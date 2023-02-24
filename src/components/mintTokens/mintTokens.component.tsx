@@ -80,7 +80,7 @@ export const MintTokensComponent = () => {
                             variant="filled"
                             value={amountToMint}
                             onChange={(event) => {
-                                setAmountToMint(parseInt(event.target.value));
+                                setAmountToMint(Number(event.target.value));
                             }}
                         />
                     </div>

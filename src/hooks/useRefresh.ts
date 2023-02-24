@@ -9,34 +9,40 @@ export const useRefresh = (
     const subscriptions: Subscription[] = [];
     useEffect(() => {
         subscriptions.push(
-            smartContractService.TokenMinted$().subscribe(() => {
-                fetchData()
-                    .then(() => {})
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .TokenTransfered$()
+                .subscribe(() => {
+                    fetchData()
+                        .then(() => {})
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
         subscriptions.push(
-            smartContractService.LiquidityAdded$().subscribe(() => {
-                fetchData()
-                    .then(() => {
-                        console.log("LiquidityAdded$");
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .LiquidityAdded$()
+                .subscribe(() => {
+                    fetchData()
+                        .then(() => {
+                            console.log("LiquidityAdded$");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
 
         subscriptions.push(
-            smartContractService.Swapped$().subscribe(() => {
-                fetchData()
-                    .then(() => {})
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .Swapped$()
+                .subscribe(() => {
+                    fetchData()
+                        .then(() => {})
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
 
         subscriptions.push(
@@ -52,33 +58,39 @@ export const useRefresh = (
         );
 
         subscriptions.push(
-            smartContractService.MintRevertedPeriod$().subscribe(() => {
-                fetchData()
-                    .then(() => {})
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .MintRevertedPeriod$()
+                .subscribe(() => {
+                    fetchData()
+                        .then(() => {})
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
 
         subscriptions.push(
-            smartContractService.AdminGranted$().subscribe(async () => {
-                fetchData()
-                    .then(() => {})
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .AdminGranted$()
+                .subscribe(async () => {
+                    fetchData()
+                        .then(() => {})
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
 
         subscriptions.push(
-            smartContractService.AdminRevoked$().subscribe(async () => {
-                fetchData()
-                    .then(() => {})
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            })
+            smartContractService.blockchainSubscriptions
+                .AdminRevoked$()
+                .subscribe(async () => {
+                    fetchData()
+                        .then(() => {})
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
         );
         return () => {
             subscriptions.forEach((subscription) => {

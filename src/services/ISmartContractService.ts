@@ -1,3 +1,4 @@
+import { BlockchainSubscriptions } from "./blockchainSubscriptions";
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
 import {
@@ -12,13 +13,14 @@ export interface ISmartContractService {
     network: keyof typeof Potato.address;
     gasLimit: number;
     connectService: IConnectService;
+    blockchainSubscriptions: BlockchainSubscriptions;
 
-    LiquidityAdded$(): Observable<void>;
-    Swapped$(): Observable<void>;
-    TokenMinted$(): Observable<ISmartContract>;
-    MintRevertedPeriod$(): Observable<string>;
-    AdminGranted$(): Observable<string>;
-    AdminRevoked$(): Observable<string>;
+    // LiquidityAdded$(): Observable<void>;
+    // Swapped$(): Observable<void>;
+    // TokenMinted$(): Observable<ISmartContract>;
+    // MintRevertedPeriod$(): Observable<string>;
+    // AdminGranted$(): Observable<string>;
+    // AdminRevoked$(): Observable<string>;
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;

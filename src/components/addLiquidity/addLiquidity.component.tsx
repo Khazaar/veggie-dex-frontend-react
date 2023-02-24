@@ -28,11 +28,12 @@ export const AddLiquidityComponent = () => {
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [tokenA, setTokenA] = useState<ISmartContract>(Apple);
     const [tokenB, setTokenB] = useState<ISmartContract>(Potato);
-    const [amountA, setAmountA] = useState<number>(5000);
-    const [amountB, setAmountB] = useState<number>(5000);
+    const [amountA, setAmountA] = useState<number>(2000);
+    const [amountB, setAmountB] = useState<number>(2000);
 
     const clickAddLiquidity = async () => {
         try {
+            await smartContractService.blockchainSubscriptions.subscribePairEvents();
             await smartContractService.addLiquidity(
                 tokenA,
                 tokenB,
@@ -82,7 +83,7 @@ export const AddLiquidityComponent = () => {
                             variant="filled"
                             value={amountA}
                             onChange={(event) => {
-                                setAmountA(parseInt(event.target.value));
+                                setAmountA(Number(event.target.value));
                             }}
                         />
                     </div>
@@ -122,7 +123,7 @@ export const AddLiquidityComponent = () => {
                             variant="filled"
                             value={amountB}
                             onChange={(event) => {
-                                setAmountB(parseInt(event.target.value));
+                                setAmountB(Number(event.target.value));
                             }}
                         />
                     </div>

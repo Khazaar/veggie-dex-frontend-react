@@ -78,7 +78,7 @@ export const SwapComponent = () => {
                             variant="filled"
                             value={amountA}
                             onChange={(event) => {
-                                setAmountA(parseInt(event.target.value));
+                                setAmountA(Number(event.target.value));
                             }}
                         />
                     </div>

@@ -33,7 +33,6 @@ export class ConnectService implements IConnectService {
     public signer: ethers.providers.JsonRpcSigner;
     public isConnected: boolean = false;
 
-    constructor() {}
     public walletConnected = new Subject<void>();
     public walletConnected$(): Observable<void> {
         return this.walletConnected.asObservable();

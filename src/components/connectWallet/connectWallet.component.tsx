@@ -32,14 +32,16 @@ export const ConnectWalletComponent = () => {
 
     return (
         <div className="ConnectWalletStyle">
-            <Button
-                variant="contained"
-                color="success"
-                onClick={clickConnect}
-                className="b-style"
-            >
-                {buttonText}
-            </Button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                    variant="contained"
+                    color="success"
+                    onClick={clickConnect}
+                    className="b-style"
+                >
+                    {buttonText}
+                </Button>
+            </div>
             <p className="p-style">{message}</p>
         </div>
     );

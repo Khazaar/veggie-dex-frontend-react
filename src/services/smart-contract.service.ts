@@ -1,11 +1,14 @@
 import { ethers } from "ethers";
 import { min, Observable, Subject } from "rxjs";
 import {
+    Factory,
     IPair,
     ISmartContract,
     Pair,
     Potato,
 } from "../smart-contracts/smart-contract-data";
+import PancakePairAbi from "../smart-contracts/abi/PancakePair.json";
+import { BlockchainSubscriptions } from "./blockchainSubscriptions";
 //import ERC20Potato from "../smart-contracts/ERC20Potato.json";
 import { ConnectService } from "./connect.service";
 import { ISmartContractService } from "./ISmartContractService";
@@ -14,46 +17,17 @@ export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
     public network: keyof typeof Potato.address;
     public gasLimit = 50000;
+    public blockchainSubscriptions: BlockchainSubscriptions;
 
-    private liquidityAdded = new Subject<void>();
-    public LiquidityAdded$(): Observable<void> {
-        return this.liquidityAdded.asObservable();
+    constructor(public connectService: ConnectService) {
+        this.blockchainSubscriptions = new BlockchainSubscriptions(this);
     }
-    private swapped = new Subject<void>();
-    public Swapped$(): Observable<void> {
-        return this.swapped.asObservable();
-    }
-    private tokenMinted = new Subject<ISmartContract>();
-    public TokenMinted$(): Observable<ISmartContract> {
-        return this.tokenMinted.asObservable();
-    }
-
-    private mintRevertedPeriod = new Subject<string>();
-    public MintRevertedPeriod$(): Observable<string> {
-        return this.mintRevertedPeriod.asObservable();
-    }
-
-    private adminGranted = new Subject<string>();
-    public AdminGranted$(): Observable<string> {
-        return this.adminGranted.asObservable();
-    }
-
-    private adminRevoked = new Subject<string>();
-    public AdminRevoked$(): Observable<string> {
-        return this.adminRevoked.asObservable();
-    }
-
-    constructor(public connectService: ConnectService) {}
 
     public async initSmartContractService() {
         try {
-            await this.subscribeRouterContractsEvents();
-            await this.subscribeMintRevertedPeriodEvent();
-            await this.subscribeTransferTokensEvents();
-            await this.subscribeTransferTokensEvents();
-            await this.subscribeAdminEvents();
             this.updateSmatrContractServiceNetwork();
             await this.connectService.initConnectService();
+            await this.blockchainSubscriptions.subscribeAll();
         } catch (error) {
             console.log(
                 `Error in initSmartContractService: ${(error as Error).message}`
@@ -135,6 +109,48 @@ export class SmartContractService implements ISmartContractService {
             );
         await tx.wait(1);
     }
+
+    public async removeLiquidity(
+        contractA: ISmartContract,
+        contractB: ISmartContract,
+        liquidity: BigInt
+    ) {
+        this.updateSmatrContractServiceNetwork();
+        const pairAddress = await this.connectService.contractFactory.getPair(
+            contractA.address[this.network],
+            contractB.address[this.network]
+        );
+
+        const contractPair = new ethers.Contract(
+            pairAddress,
+            PancakePairAbi.abi,
+            this.connectService.provider
+        );
+
+        // Approve to remove liquidity
+        await contractPair
+            .connect(this.connectService.signer)
+            .approve(this.connectService.contractRouter_mod.address, liquidity);
+        // Chack allowance
+        const allowance = await contractPair.allowance(
+            this.connectService.contractRouter_mod.address,
+            this.connectService.contractRouter_mod.address
+        );
+        let tx = await this.connectService.contractRouter_mod
+            .connect(this.connectService.signer)
+            .removeLiquidity(
+                contractA.address[this.network],
+                contractB.address[this.network],
+                liquidity,
+                0,
+                0,
+                this.connectService.signer.getAddress(),
+                2166049390489
+            );
+
+        await tx.wait(1);
+    }
+
     public async swap(
         contractA: ISmartContract,
         contractB: ISmartContract,
@@ -169,7 +185,7 @@ export class SmartContractService implements ISmartContractService {
                 99999999999999
             );
         await tx.wait(1);
-        await this.subscribePairEvents();
+        //await this.subscribePairEvents();
     }
     public getIContractByAddress(address: string): Promise<ISmartContract> {
         return new Promise((resolve, reject) => {
@@ -282,74 +298,5 @@ export class SmartContractService implements ISmartContractService {
         } catch (error) {
             console.log(error);
         }
-    }
-
-    public async subscribePairEvents() {
-        const pairs = await this.getPairs();
-        pairs.forEach((iPair) => {
-            iPair.instance.removeAllListeners();
-            iPair.instance.once("Swap", (amountA, amountB) => {
-                console.log(
-                    `Added liquidity to ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
-                );
-                this.swapped.next();
-            });
-        });
-    }
-
-    public async subscribeRouterContractsEvents() {
-        //this.connectService.contractRouter_mod.un;
-        this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .once(
-                "AddLiquidity",
-                (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                    console.log(
-                        `Added liquidity: sender ${sender}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
-                    );
-                    this.liquidityAdded.next();
-                }
-            );
-    }
-    public async subscribeTransferTokensEvents() {
-        this.connectService.tokenContracts.forEach((iContract) => {
-            iContract.instance.removeAllListeners();
-            iContract.instance
-                .connect(this.connectService.signer)
-                .once("Transfer", (from, to, amount) => {
-                    console.log(
-                        `Transfeed ${amount} tokens from ${from} to ${to}`
-                    );
-                    this.tokenMinted.next(iContract);
-                });
-        });
-    }
-
-    //!!! FIX only for apple
-    public async subscribeMintRevertedPeriodEvent() {
-        this.connectService.contractApple.once(
-            "MintRevertedPeriod",
-            (timePassedSeconds, mintLimitPeriodSeconds) => {
-                const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
-                console.log(err);
-                this.mintRevertedPeriod.next(err);
-            }
-        );
-    }
-
-    public async subscribeAdminEvents() {
-        this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .once("RoleGranted", (role, account) => {
-                console.log(`Role ${role} granted to ${account}`);
-                this.adminGranted.next(account);
-            });
-
-        this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .once("RoleRevoked", (role, account) => {
-                console.log(`Role ${role} revoked from ${account}`);
-                this.adminRevoked.next(account);
-            });
     }
 }

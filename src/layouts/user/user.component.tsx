@@ -3,18 +3,19 @@ import { UserAssetsComponent } from "../../components/userAssets/userAssets.comp
 import { MintTokensComponent } from "../../components/mintTokens/mintTokens.component";
 import { AdminPanelComponent } from "../../components/adminPanel/adminPanel.component";
 import { SmartContractServiceContext } from "../../App";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRefresh } from "../../hooks/useRefresh";
+import { RemoveLiquidityComponent } from "../../components/removeLiquidity/removeLiquidity.component";
 
 export const UserComponent = () => {
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [isOwner, setIsOwner] = useState<boolean>(false);
     const smartContractService = useContext(SmartContractServiceContext);
 
     const fetchData = async () => {
-        //await smartContractService.initSmartContractService();
+        setIsAdmin(smartContractService.connectService.hasAdminRole);
+        setIsOwner(smartContractService.connectService.hasOwnerRole);
     };
-    // useEffect(() => {
-    //     fetchData().catch((e) => console.log(e));
-    // });
 
     useRefresh(smartContractService, fetchData);
     return (
@@ -22,9 +23,8 @@ export const UserComponent = () => {
             <div>
                 <MintTokensComponent></MintTokensComponent>
                 <UserAssetsComponent></UserAssetsComponent>
-                {smartContractService.connectService.hasAdminRole && (
-                    <AdminPanelComponent></AdminPanelComponent>
-                )}
+                <RemoveLiquidityComponent></RemoveLiquidityComponent>
+                {isAdmin && <AdminPanelComponent></AdminPanelComponent>}
             </div>
         </div>
     );
