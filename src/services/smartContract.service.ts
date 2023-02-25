@@ -1,14 +1,16 @@
+import { PancakePair__factory } from "../smart-contracts/types/factories";
 import { ethers } from "ethers";
 import {
     IPair,
-    ISmartContract,
-    Pair,
+    ITokenContract,
     Potato,
 } from "../smart-contracts/smart-contract-data";
 import PancakePairAbi from "../smart-contracts/abi/PancakePair.json";
 import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
 import { ISmartContractService } from "./interfaces/ISmartContract.service";
+import { ERC20Basic, PancakePair } from "../smart-contracts/types";
+import { AddressLike } from "ethers/types/address";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
@@ -59,85 +61,76 @@ export class SmartContractService implements ISmartContractService {
             .nameShort as keyof typeof Potato.address;
     }
 
-    public async mintTokens(contract: ethers.Contract, amount: BigInt) {
+    public async mintTokens(contract: ERC20Basic, amount: BigInt) {
         //this.fetchSmartContract();
 
-        await contract
-            .connect(this.connectService.signer)
-            .getTokens(amount.toString());
+        //await contract.getTokens(amount.toString());
+        await contract.getTokens(ethers.parseEther("0.00000000000000001"));
     }
 
-    public async getTokensBalance(contract: ethers.Contract): Promise<BigInt> {
+    public async getTokensBalance(contract: ERC20Basic): Promise<BigInt> {
         //this.fetchSmartContract();
 
-        return await contract
-            .connect(this.connectService.signer)
-            .balanceOf(await this.connectService.signer.getAddress());
-    }
-    public async getSignerBalance() {
-        return ethers.utils.formatEther(
-            await this.connectService.signer.getBalance()
+        return await contract.balanceOf(
+            await this.connectService.signer.getAddress()
         );
     }
+    public async getSignerBalance() {
+        return ethers.formatEther(await this.connectService.getSignerBalance());
+    }
     public async addLiquidity(
-        contractA: ISmartContract,
-        contractB: ISmartContract,
+        contractA: ERC20Basic,
+        contractB: ERC20Basic,
         amountA: BigInt,
         amountB: BigInt
     ) {
         this.updateSmatrContractServiceNetwork();
-        let tx = await contractA.instance
-            .connect(this.connectService.signer)
-            .approve(
-                this.connectService.contractRouter_mod.address,
-                amountA.toString(),
-                { gasLimit: this.gasLimit }
-            );
+        let tx = await contractA.approve(
+            this.connectService.contractRouter_mod.getAddress(),
+            amountA.toString(),
+            { gasLimit: this.gasLimit }
+        );
         await tx.wait(1);
-        tx = await contractB.instance
-            .connect(this.connectService.signer)
-            .approve(
-                this.connectService.contractRouter_mod.address,
-                amountB.toString(),
-                { gasLimit: this.gasLimit }
-            );
+        tx = await contractB.approve(
+            this.connectService.contractRouter_mod.getAddress(),
+            amountB.toString(),
+            { gasLimit: this.gasLimit }
+        );
         await tx.wait(1);
         console.log(
-            `Allowance A set to: ${await contractA.instance.allowance(
+            `Allowance A set to: ${await contractA.allowance(
                 this.connectService.signer.getAddress(),
-                this.connectService.contractRouter_mod.address
+                this.connectService.contractRouter_mod.getAddress()
             )}`
         );
         console.log(
-            `Allowance B set to: ${await contractB.instance.allowance(
+            `Allowance B set to: ${await contractB.allowance(
                 this.connectService.signer.getAddress(),
-                this.connectService.contractRouter_mod.address
+                this.connectService.contractRouter_mod.getAddress()
             )}`
         );
-        tx = await this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .addLiquidity(
-                contractA.address[this.network],
-                contractB.address[this.network],
-                amountA.toString(),
-                amountB.toString(),
-                1,
-                1,
-                this.connectService.signer.getAddress(),
-                216604939048
-            );
+        tx = await this.connectService.contractRouter_mod.addLiquidity(
+            await contractA.getAddress(),
+            await contractB.getAddress(),
+            amountA.toString(),
+            amountB.toString(),
+            1,
+            1,
+            await this.connectService.signer.getAddress(),
+            216604939048
+        );
         await tx.wait(1);
     }
 
     public async removeLiquidity(
-        contractA: ISmartContract,
-        contractB: ISmartContract,
+        contractA: ERC20Basic,
+        contractB: ERC20Basic,
         liquidity: BigInt
     ) {
         this.updateSmatrContractServiceNetwork();
         const pairAddress = await this.connectService.contractFactory.getPair(
-            contractA.address[this.network],
-            contractB.address[this.network]
+            await contractA.getAddress(),
+            await contractB.getAddress()
         );
 
         const contractPair = new ethers.Contract(
@@ -147,72 +140,59 @@ export class SmartContractService implements ISmartContractService {
         );
 
         // Approve to remove liquidity
-        await contractPair
-            .connect(this.connectService.signer)
-            .approve(this.connectService.contractRouter_mod.address, liquidity);
-        // Chack allowance
-        const allowance = await contractPair.allowance(
-            this.connectService.contractRouter_mod.address,
-            this.connectService.contractRouter_mod.address
+        await contractPair.approve(
+            await this.connectService.contractRouter_mod.getAddress(),
+            liquidity
         );
-        let tx = await this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .removeLiquidity(
-                contractA.address[this.network],
-                contractB.address[this.network],
-                liquidity,
-                0,
-                0,
-                this.connectService.signer.getAddress(),
-                2166049390489
-            );
+        let tx = await this.connectService.contractRouter_mod.removeLiquidity(
+            await contractA.getAddress(),
+            await contractB.getAddress(),
+            liquidity.toString(),
+            1,
+            1,
+            await this.connectService.signer.getAddress(),
+            2166049390489
+        );
 
         await tx.wait(1);
     }
 
     public async swap(
-        contractA: ISmartContract,
-        contractB: ISmartContract,
-        amountA: BigInt,
-        amountB: BigInt
+        contractA: ERC20Basic,
+        contractB: ERC20Basic,
+        amountA: BigInt
     ) {
         this.updateSmatrContractServiceNetwork();
-        let tx = await contractA.instance
-            .connect(this.connectService.signer)
-            .approve(
-                this.connectService.contractRouter_mod.address,
-                amountA.toString()
-            );
+        let tx = await contractA.approve(
+            await this.connectService.contractRouter_mod.getAddress(),
+            amountA.toString()
+        );
         await tx.wait(1);
         console.log(
-            `Allowance A set to: ${await contractA.instance.allowance(
+            `Allowance A set to: ${await contractA.allowance(
                 this.connectService.signer.getAddress(),
-                this.connectService.contractRouter_mod.address
+                await this.connectService.contractRouter_mod.getAddress()
             )}`
         );
 
-        tx = await this.connectService.contractRouter_mod
-            .connect(this.connectService.signer)
-            .swapExactTokensForTokens(
+        tx =
+            await this.connectService.contractRouter_mod.swapExactTokensForTokens(
                 amountA.toString(),
                 1,
-                [
-                    contractA.address[this.network],
-                    contractB.address[this.network],
-                ],
+                [await contractA.getAddress(), await contractB.getAddress()],
                 this.connectService.signer.getAddress(),
                 99999999999999
             );
         await tx.wait(1);
         //await this.subscribePairEvents();
     }
-    public getIContractByAddress(address: string): Promise<ISmartContract> {
+    public getIContractByAddress(address: string): Promise<ITokenContract> {
         return new Promise((resolve, reject) => {
             this.connectService
                 .getTokenContracts()
-                .forEach((contract: ISmartContract) => {
+                .forEach((contract: ITokenContract) => {
                     if (
-                        contract.address[this.network].toLowerCase() == address
+                        contract.address[this.network].toLowerCase() === address
                     ) {
                         resolve(contract);
                         return;
@@ -232,30 +212,28 @@ export class SmartContractService implements ISmartContractService {
                 const pairAddress =
                     await this.connectService.contractFactory.allPairs(i);
 
-                const contractPair = new ethers.Contract(
+                const pancakePair: PancakePair = PancakePair__factory.connect(
                     pairAddress,
-                    Pair.abi as any,
                     this.connectService.signer
                 );
+
                 const token0Address = (
-                    await contractPair.token0()
+                    await pancakePair.token0()
                 ).toLowerCase();
                 const token1Address = (
-                    await contractPair.token1()
+                    await pancakePair.token1()
                 ).toLowerCase();
-                const token0: ISmartContract = await this.getIContractByAddress(
+                const token0: ITokenContract = await this.getIContractByAddress(
                     token0Address
                 );
-                const token1: ISmartContract = await this.getIContractByAddress(
+                const token1: ITokenContract = await this.getIContractByAddress(
                     token1Address
                 );
-                const [reserve0, reserve1, time] =
-                    await contractPair.getReserves();
+                const [reserve0, reserve1] = await pancakePair.getReserves();
                 const pair: IPair = {
                     name: `${token0.nameShort}/${token1.nameShort}`,
                     address: pairAddress,
-                    abi: Pair.abi,
-                    instance: contractPair,
+                    instance: pancakePair,
                     token0: token0,
                     token1: token1,
                     reserve0: reserve0,
@@ -273,11 +251,11 @@ export class SmartContractService implements ISmartContractService {
     public async getRouterAdmins() {
         const admins: string[] = [];
         try {
-            let adminCount = (
+            let adminCount = Number(
                 await this.connectService.contractRouter_mod.getRoleMemberCount(
                     this.connectService.ADMIN_ROLE
                 )
-            ).toNumber();
+            );
             for (let i = 0; i < adminCount; ++i) {
                 admins.push(
                     await this.connectService.contractRouter_mod.getRoleMember(
@@ -294,7 +272,7 @@ export class SmartContractService implements ISmartContractService {
 
     public async grantAdminRole(adminRoleAddress: string) {
         try {
-            if (ethers.utils.isAddress(adminRoleAddress)) {
+            if (ethers.isAddress(adminRoleAddress)) {
                 let tx =
                     await this.connectService.contractRouter_mod.addAdminAddress(
                         adminRoleAddress
@@ -309,7 +287,7 @@ export class SmartContractService implements ISmartContractService {
     }
     public async revokeAdminRole(adminRoleAddress: string) {
         try {
-            if (ethers.utils.isAddress(adminRoleAddress)) {
+            if (ethers.isAddress(adminRoleAddress)) {
                 let tx =
                     await this.connectService.contractRouter_mod.revokeAdminAddress(
                         adminRoleAddress
@@ -323,15 +301,15 @@ export class SmartContractService implements ISmartContractService {
         }
     }
 
-    public async withdrawFees(contract: ISmartContract, amount: number) {
+    public async withdrawFees(contract: ERC20Basic, amount: number) {
         try {
             if (
-                (await contract.instance.balanceOf(
-                    this.connectService.contractRouter_mod.address
+                (await contract.balanceOf(
+                    await this.connectService.contractRouter_mod.getAddress()
                 )) > amount
             ) {
                 await this.connectService.contractRouter_mod.withdrawFees(
-                    contract.instance.address,
+                    contract.getAddress(),
                     amount
                 );
             }

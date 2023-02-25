@@ -20,7 +20,7 @@ import {
     Potato,
     Tomato,
     LSR,
-    ISmartContract,
+    ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
@@ -29,7 +29,7 @@ import { useRefresh } from "../../hooks/useRefresh";
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
-    const [tokenToMint, setTokenToMint] = useState<ISmartContract>(Apple);
+    const [tokenToMint, setTokenToMint] = useState<ITokenContract>(Apple);
     const [amountToMint, setAmountToMint] = useState<number>(10000);
     const [mintedSnackOpen, setMintedSnackOpen] = useState<boolean>(false);
 
@@ -85,7 +85,7 @@ export const MintTokensComponent = () => {
                                     id="select-token-to-mint"
                                     onChange={(event) => {
                                         setTokenToMint(
-                                            event.target.value as ISmartContract
+                                            event.target.value as ITokenContract
                                         );
                                     }}
                                 >

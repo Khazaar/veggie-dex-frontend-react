@@ -1,19 +1,11 @@
-import ERC20Potato from "./abi/ERC20Potato.json";
-import ERC20Tomato from "./abi/ERC20Tomato.json";
-import ERC20Apple from "./abi/ERC20Apple.json";
-import ERC20LSR from "./abi/ERC20LSR.json";
-import PancakeFactory from "./abi/PancakeFactory.json";
-import PancakeRouter_mod from "./abi/PancakeRouter_mod.json";
-import PancakePair from "./abi/PancakePair.json";
-import { AbiItem } from "web3-utils";
 import ethers from "ethers";
+import { ERC20Basic, PancakePair } from "./types";
 
-export interface ISmartContract {
+export interface ITokenContract {
     nameLong: string;
     nameShort: string;
     address?: IAddress;
-    abi: AbiItem[];
-    instance?: ethers.Contract;
+    instance?: ERC20Basic;
 }
 export interface IAddress {
     hardhat: string;
@@ -25,14 +17,14 @@ export interface IAddress {
 export interface IPair {
     name: string;
     address: string;
-    abi: AbiItem[];
-    instance: ethers.Contract;
-    token0: ISmartContract;
-    token1: ISmartContract;
+
+    instance: PancakePair;
+    token0: ITokenContract;
+    token1: ITokenContract;
     reserve0: BigInt;
     reserve1: BigInt;
 }
-export const Apple: ISmartContract = {
+export const Apple: ITokenContract = {
     nameLong: "ERC20 Apple",
     nameShort: "APL",
     address: {
@@ -41,11 +33,9 @@ export const Apple: ISmartContract = {
         testnet: "",
         goerli: "0x2757E1767543dCeC9C76ed128d3f8e86d2f3901B",
     },
-
-    abi: ERC20Apple.abi as AbiItem[],
 };
 
-export const Potato: ISmartContract = {
+export const Potato: ITokenContract = {
     nameLong: "ERC20 Potato",
     nameShort: "PTT",
     address: {
@@ -54,9 +44,8 @@ export const Potato: ISmartContract = {
         testnet: "",
         goerli: "0x54C569b56fbf38C8AC9942b7011a3653e5073FD4",
     },
-    abi: ERC20Potato.abi as AbiItem[],
 };
-export const Tomato: ISmartContract = {
+export const Tomato: ITokenContract = {
     nameLong: "ERC20 Tomato",
     nameShort: "TMT",
     address: {
@@ -65,10 +54,9 @@ export const Tomato: ISmartContract = {
         testnet: "",
         goerli: "0x0A41D46f01A8A9EeBdEc130c9a926aFc4a97B6dE",
     },
-    abi: ERC20Tomato.abi as AbiItem[],
 };
 
-export const LSR: ISmartContract = {
+export const LSR: ITokenContract = {
     nameLong: "ERC20 LSR",
     nameShort: "LSR",
     address: {
@@ -77,9 +65,8 @@ export const LSR: ISmartContract = {
         testnet: "",
         goerli: "0xe0B81076Fa915a280f03bFb746A4F5873578E287",
     },
-    abi: ERC20LSR.abi as AbiItem[],
 };
-export const Factory: ISmartContract = {
+export const Factory: ITokenContract = {
     nameLong: "Pancake Factory",
     nameShort: "Pancake Factory",
     address: {
@@ -88,27 +75,13 @@ export const Factory: ISmartContract = {
         testnet: "",
         goerli: "0xB48475F43de9BF5Fcd2fce228F74F9B5F80E73F6",
     },
-    abi: PancakeFactory.abi as AbiItem[],
 };
-export const Pair: ISmartContract = {
-    nameLong: "Pancake Pair",
-    nameShort: "Pancake Pair",
-    // address: {
-    //     hardhat: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-    //     bsc: "0xC397F13E62e731FaD634EF472De2371124191793",
-    //     testnet: "",
-    //     goerli: "0xEaa96e643d817D7DE691D8992d7535aaD458c6DD",
-    // },
-    abi: PancakePair.abi as AbiItem[],
-};
-export const Router_mod: ISmartContract = {
-    nameLong: "Router_mod",
-    nameShort: "Router_mod",
+
+export const Router_mod = {
     address: {
         hardhat: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
         bsc: "0x912561d45a2ef38395683Cc8bf4fb6cDeb2dDd2E",
         testnet: "",
         goerli: "0x7d29E9366C3022F30a8fd72ef59CaC95BC9e8B72",
     },
-    abi: PancakeRouter_mod.abi as AbiItem[],
 };

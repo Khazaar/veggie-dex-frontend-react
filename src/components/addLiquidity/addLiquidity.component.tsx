@@ -19,7 +19,7 @@ import {
     Potato,
     Tomato,
     LSR,
-    ISmartContract,
+    ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
@@ -27,8 +27,8 @@ import { styleIconsProps } from "../../assets/styles/stypeProps";
 export const AddLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
-    const [tokenA, setTokenA] = useState<ISmartContract>(Apple);
-    const [tokenB, setTokenB] = useState<ISmartContract>(Potato);
+    const [tokenA, setTokenA] = useState<ITokenContract>(Apple);
+    const [tokenB, setTokenB] = useState<ITokenContract>(Potato);
     const [amountA, setAmountA] = useState<number>(2000);
     const [amountB, setAmountB] = useState<number>(2000);
 
@@ -36,8 +36,8 @@ export const AddLiquidityComponent = () => {
         try {
             await smartContractService.blockchainSubscriptions.subscribePairEvents();
             await smartContractService.addLiquidity(
-                tokenA,
-                tokenB,
+                tokenA.instance,
+                tokenB.instance,
                 BigInt(amountA),
                 BigInt(amountB)
             );
@@ -65,7 +65,7 @@ export const AddLiquidityComponent = () => {
                                 id="select-token-to-mint"
                                 onChange={(event) => {
                                     setTokenA(
-                                        event.target.value as ISmartContract
+                                        event.target.value as ITokenContract
                                     );
                                     console.log(tokenA.nameLong);
                                 }}
@@ -105,7 +105,7 @@ export const AddLiquidityComponent = () => {
                                 id="select-token-to-mint"
                                 onChange={(event) => {
                                     setTokenB(
-                                        event.target.value as ISmartContract
+                                        event.target.value as ITokenContract
                                     );
                                     console.log(tokenA.nameLong);
                                 }}

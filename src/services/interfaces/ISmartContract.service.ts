@@ -3,9 +3,10 @@ import { ethers } from "ethers";
 import {
     IPair,
     Potato,
-    ISmartContract,
+    ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import { IConnectService } from "./IConnect.service";
+import { ERC20Basic } from "../../smart-contracts/types";
 
 export interface ISmartContractService {
     tokenPairs: IPair[];
@@ -18,21 +19,20 @@ export interface ISmartContractService {
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;
-    mintTokens(contract: ethers.Contract, amount: BigInt): Promise<void>;
-    getTokensBalance(contract: ethers.Contract): Promise<BigInt>;
+    mintTokens(contract: ERC20Basic, amount: BigInt): Promise<void>;
+    getTokensBalance(contract: ERC20Basic): Promise<BigInt>;
     getSignerBalance(): Promise<string>;
     addLiquidity(
-        contractA: ISmartContract,
-        contractB: ISmartContract,
+        contractA: ERC20Basic,
+        contractB: ERC20Basic,
         amountA: BigInt,
         amountB: BigInt
     ): Promise<void>;
     swap(
-        contractA: ISmartContract,
-        contractB: ISmartContract,
-        amountA: BigInt,
-        amountB: BigInt
+        contractA: ERC20Basic,
+        contractB: ERC20Basic,
+        amountA: BigInt
     ): Promise<void>;
-    getIContractByAddress(address: string): Promise<ISmartContract>;
+    getIContractByAddress(address: string): Promise<ITokenContract>;
     getPairs(): Promise<IPair[]>;
 }

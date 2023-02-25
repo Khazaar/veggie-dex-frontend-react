@@ -1,6 +1,7 @@
+import { TransferEvent } from "./../smart-contracts/types/ERC20Basic";
 import { ethers } from "ethers";
 import { Subject, Observable } from "rxjs";
-import { ISmartContract } from "../smart-contracts/smart-contract-data";
+import { ITokenContract } from "../smart-contracts/smart-contract-data";
 import { IBlockchainSubscriptions } from "./interfaces/IBlockchainSubscriptions.service";
 import { SmartContractService } from "./smartContract.service";
 
@@ -8,12 +9,12 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     constructor(private smartContractService: SmartContractService) {}
 
     // Token observables
-    private tokenMinted = new Subject<ISmartContract>();
-    public TokenMinted$(): Observable<ISmartContract> {
+    private tokenMinted = new Subject<ITokenContract>();
+    public TokenMinted$(): Observable<ITokenContract> {
         return this.tokenMinted.asObservable();
     }
-    private tokenTransfered = new Subject<ISmartContract>();
-    public TokenTransfered$(): Observable<ISmartContract> {
+    private tokenTransfered = new Subject<ITokenContract>();
+    public TokenTransfered$(): Observable<ITokenContract> {
         return this.tokenTransfered.asObservable();
     }
     private mintRevertedPeriod = new Subject<string>();
@@ -47,6 +48,8 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         await this.subscribeRouterEvents();
     }
 
+    e: TransferEvent.Event;
+
     public async subscribeTokensEvents() {
         this.smartContractService.connectService.tokenContracts.forEach(
             (tokenContract) => {
@@ -57,7 +60,7 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                         `1Transfeed ${amount} tokens ${tokenContract.nameShort} from ${from} to ${to}`
                     );
                     this.tokenTransfered.next(tokenContract);
-                    from === ethers.constants.AddressZero &&
+                    from === ethers.ZeroAddress &&
                         this.tokenMinted.next(tokenContract);
                     console.log(
                         `Minted ${amount} tokens ${tokenContract.nameShort}  to ${to}`
@@ -67,15 +70,20 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                             "Transfer"
                         )}`
                     );
-                    tokenContract.instance.removeAllListeners("Transfer");
+
+                    tokenContract.instance.removeAllListeners(
+                        tokenContract.instance.getEvent("Transfer")
+                    );
                 };
                 console.log(
                     `-1 Listner count ${tokenContract.instance.listenerCount(
                         "Transfer"
                     )}`
                 );
-                tokenContract.instance.off("Transfer", ltnr);
-                tokenContract.instance.removeAllListeners("Transfer");
+
+                tokenContract.instance.removeAllListeners(
+                    tokenContract.instance.getEvent("Transfer")
+                );
                 console.log(
                     `0 Listner count ${tokenContract.instance.listenerCount(
                         "Transfer"
@@ -89,7 +97,10 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                         "Transfer"
                     )}`
                 );
-                tokenContract.instance.once("Transfer", ltnr);
+                tokenContract.instance.once(
+                    tokenContract.instance.getEvent("Transfer"),
+                    ltnr
+                );
 
                 console.log(
                     `2 Listner count ${tokenContract.instance.listenerCount(
@@ -98,7 +109,7 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                 );
 
                 tokenContract.instance.once(
-                    "MintRevertedPeriod",
+                    tokenContract.instance.getEvent("MintRevertedPeriod"),
                     (timePassedSeconds, mintLimitPeriodSeconds) => {
                         const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
                         console.log(err);
@@ -113,12 +124,15 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         const pairs = await this.smartContractService.getPairs();
         pairs.forEach((iPair) => {
             iPair.instance.removeAllListeners();
-            iPair.instance.once("Swap", (amountA, amountB) => {
-                console.log(
-                    `Swap in Pair ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
-                );
-                this.swapped.next();
-            });
+            iPair.instance.once(
+                iPair.instance.getEvent("Swap"),
+                (amountA, amountB) => {
+                    console.log(
+                        `Swap in Pair ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
+                    );
+                    this.swapped.next();
+                }
+            );
         });
     }
 

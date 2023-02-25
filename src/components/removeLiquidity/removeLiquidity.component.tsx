@@ -29,8 +29,8 @@ export const RemoveLiquidityComponent = () => {
         try {
             await smartContractService.blockchainSubscriptions.subscribePairEvents();
             await smartContractService.removeLiquidity(
-                selectedPair.token0,
-                selectedPair.token1,
+                selectedPair.token0.instance,
+                selectedPair.token1.instance,
                 BigInt(liquidityToRmove)
             );
         } catch (error) {
@@ -43,8 +43,10 @@ export const RemoveLiquidityComponent = () => {
         if (pairs.length > 0) {
             setSelectedPair(pairs[0]);
             setLiquidityToRmove(
-                await selectedPair.instance.balanceOf(
-                    smartContractService.connectService.signer.getAddress()
+                Number(
+                    await selectedPair.instance.balanceOf(
+                        await smartContractService.connectService.signer.getAddress()
+                    )
                 )
             );
         }
@@ -53,8 +55,10 @@ export const RemoveLiquidityComponent = () => {
     const onSelectedPairChange = async (event: any) => {
         setSelectedPair(event.target.value as IPair);
         setLiquidityToRmove(
-            await (event.target.value as IPair).instance.balanceOf(
-                smartContractService.connectService.signer.getAddress()
+            Number(
+                await (event.target.value as IPair).instance.balanceOf(
+                    smartContractService.connectService.signer.getAddress()
+                )
             )
         );
     };

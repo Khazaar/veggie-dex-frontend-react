@@ -21,7 +21,7 @@ import {
     Potato,
     Tomato,
     LSR,
-    ISmartContract,
+    ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import CheckIcon from "@mui/icons-material/Check";
 import { useRefresh } from "../../hooks/useRefresh";
@@ -33,25 +33,27 @@ export const AdminPanelComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [swapFee, setSwapFee] = useState<number>(10);
-    const [selectedToken, setSelectedToken] = useState<ISmartContract>(Apple);
+    const [selectedToken, setSelectedToken] = useState<ITokenContract>(Apple);
     const [minLSRBalance, setMinLSRBalance] = useState<number>(10);
     const [feesToWithdraw, setFeesToWithdraw] = useState<number>(0);
 
     const clickWithdraw = async () => {
         console.log(`Going to withdraw fees`);
-        await smartContractService.withdrawFees(selectedToken, feesToWithdraw);
+        await smartContractService.withdrawFees(
+            selectedToken.instance,
+            feesToWithdraw
+        );
     };
 
     const clickSet = async () => {};
 
     const fetchData = async () => {
-        setSwapFee(
-            await smartContractService.connectService.contractRouter_mod.getSwapFee()
-        );
-
-        setMinLSRBalance(
-            await smartContractService.connectService.contractRouter_mod.getLsrMinBalance()
-        );
+        // setSwapFee(
+        //     await smartContractService.connectService.contractRouter_mod.getSwapFee().to
+        // );
+        // setMinLSRBalance(
+        //     await smartContractService.connectService.contractRouter_mod.getLsrMinBalance()
+        // );
     };
     useRefresh(smartContractService, fetchData);
 
@@ -115,7 +117,7 @@ export const AdminPanelComponent = () => {
                                 id="select-token-to-mint"
                                 onChange={(event) => {
                                     setSelectedToken(
-                                        event.target.value as ISmartContract
+                                        event.target.value as ITokenContract
                                     );
                                 }}
                             >
