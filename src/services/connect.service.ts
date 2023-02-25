@@ -11,7 +11,7 @@ import {
     Router_mod,
     Tomato,
 } from "../smart-contracts/smart-contract-data";
-import { IConnectService } from "./interfaces/IConnectService";
+import { IConnectService } from "./interfaces/IConnect.service";
 
 export class ConnectService implements IConnectService {
     public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
@@ -25,12 +25,9 @@ export class ConnectService implements IConnectService {
     public tokenContracts: ISmartContract[] = [];
     public network: INetwork;
     public defaultNetwork = Hardhat;
-    public tokenMinted = new Subject<ISmartContract>();
-
     public provider: ethers.providers.Web3Provider;
     public signer: ethers.providers.JsonRpcSigner;
     public isConnected: boolean = false;
-
     public walletConnected = new Subject<void>();
     public walletConnected$(): Observable<void> {
         return this.walletConnected.asObservable();

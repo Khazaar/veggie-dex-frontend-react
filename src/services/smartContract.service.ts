@@ -6,10 +6,9 @@ import {
     Potato,
 } from "../smart-contracts/smart-contract-data";
 import PancakePairAbi from "../smart-contracts/abi/PancakePair.json";
-import { BlockchainSubscriptions } from "./blockchainSubscriptions";
-//import ERC20Potato from "../smart-contracts/ERC20Potato.json";
+import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
-import { ISmartContractService } from "./interfaces/ISmartContractService";
+import { ISmartContractService } from "./interfaces/ISmartContract.service";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];

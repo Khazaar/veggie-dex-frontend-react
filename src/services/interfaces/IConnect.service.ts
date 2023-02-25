@@ -15,8 +15,6 @@ export interface IConnectService {
     tokenContracts: ISmartContract[];
     network: INetwork;
     defaultNetwork: INetwork;
-
-    tokenMinted: Observable<ISmartContract>;
     provider: ethers.providers.Web3Provider;
     signer: ethers.providers.JsonRpcSigner;
     isConnected: boolean;

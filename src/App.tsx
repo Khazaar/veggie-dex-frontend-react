@@ -1,5 +1,5 @@
 import "./App.css";
-import { SmartContractService } from "./services/smart-contract.service";
+import { SmartContractService } from "./services/smartContract.service";
 import { ConnectService } from "./services/connect.service";
 import { ThemeProvider } from "@mui/material/styles";
 import { HeaderComponent } from "./layouts/header/header.component";

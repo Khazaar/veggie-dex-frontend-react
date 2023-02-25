@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Button,
@@ -9,6 +9,7 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    Snackbar,
     TextField,
 } from "@mui/material";
 
@@ -23,80 +24,114 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
-import { SelectNetworkComponent } from "../selectNetwork/selectNetwork.component";
+import { useRefresh } from "../../hooks/useRefresh";
 
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [tokenToMint, setTokenToMint] = useState<ISmartContract>(Apple);
     const [amountToMint, setAmountToMint] = useState<number>(10000);
+    const [mintedSnackOpen, setMintedSnackOpen] = useState<boolean>(false);
 
     const clickMint = async () => {
-        if (amountToMint > 0) {
-            console.log(
-                `Going to mint token ${tokenToMint.nameLong} in amount: ${amountToMint}`
-            );
-            if (amountToMint > 1000000) {
-                console.log(`Please, mint less then 1000000 tokens`);
-            } else {
-                await smartContractService.mintTokens(
-                    tokenToMint.instance,
-                    BigInt(amountToMint)
+        try {
+            if (amountToMint > 0) {
+                console.log(
+                    `Going to mint token ${tokenToMint.nameLong} in amount: ${amountToMint}`
                 );
+                if (amountToMint > 1000000) {
+                    console.log(`Please, mint less then 1000000 tokens`);
+                } else {
+                    await smartContractService.mintTokens(
+                        tokenToMint.instance,
+                        BigInt(amountToMint)
+                    );
+                }
             }
+        } catch (e) {
+            console.log(`Error occured while minting tokens: ${e}`);
         }
     };
 
-    return (
-        <Card className="MintTokensComponent">
-            <CardHeader
-                title="Mint Tokens"
-                titleTypographyProps={{ variant: "h1" }}
-            ></CardHeader>
-            <CardContent>
-                <div className="select-text-wrapper">
-                    <div className="item-wrapper-left">
-                        <FormControl variant="filled">
-                            <InputLabel id="select-token-to-mint-label">
-                                Token
-                            </InputLabel>
-                            <Select
-                                value={tokenToMint}
-                                labelId="select-token-to-mint-label"
-                                id="select-token-to-mint"
-                                onChange={(event) => {
-                                    setTokenToMint(
-                                        event.target.value as ISmartContract
-                                    );
-                                }}
-                            >
-                                {tokenContracts.map((tkn) => (
-                                    //@ts-ignore - necessary to load object into value
-                                    <MenuItem value={tkn} key={tkn.nameShort}>
-                                        {tkn.nameShort}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="item-wrapper-right">
-                        <TextField
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="filled"
-                            value={amountToMint}
-                            onChange={(event) => {
-                                setAmountToMint(Number(event.target.value));
-                            }}
-                        />
-                    </div>
-                </div>
+    useEffect(() => {
+        const sub = smartContractService.blockchainSubscriptions
+            .TokenMinted$()
+            .subscribe(() => {
+                setMintedSnackOpen(true);
+                console.log(`Mint done triggered`);
+            });
+        return () => sub.unsubscribe();
+    });
 
-                <Button variant="contained" color="success" onClick={clickMint}>
-                    Mint
-                    <DiamondIcon style={styleIconsProps} />
-                </Button>
-            </CardContent>
-        </Card>
+    //useRefresh(smartContractService, mintDone);
+
+    return (
+        <div>
+            <Card className="MintTokensComponent">
+                <CardHeader
+                    title="Mint Tokens"
+                    titleTypographyProps={{ variant: "h1" }}
+                ></CardHeader>
+                <CardContent>
+                    <div className="select-text-wrapper">
+                        <div className="item-wrapper-left">
+                            <FormControl variant="filled">
+                                <InputLabel id="select-token-to-mint-label">
+                                    Token
+                                </InputLabel>
+                                <Select
+                                    value={tokenToMint}
+                                    labelId="select-token-to-mint-label"
+                                    id="select-token-to-mint"
+                                    onChange={(event) => {
+                                        setTokenToMint(
+                                            event.target.value as ISmartContract
+                                        );
+                                    }}
+                                >
+                                    {tokenContracts.map((tkn) => (
+                                        //@ts-ignore - necessary to load object into value
+                                        <MenuItem
+                                            value={tkn}
+                                            key={tkn.nameShort}
+                                        >
+                                            {tkn.nameShort}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className="item-wrapper-right">
+                            <TextField
+                                id="outlined-basic"
+                                label="Amount"
+                                variant="filled"
+                                value={amountToMint}
+                                onChange={(event) => {
+                                    setAmountToMint(Number(event.target.value));
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={clickMint}
+                    >
+                        Mint
+                        <DiamondIcon style={styleIconsProps} />
+                    </Button>
+                </CardContent>
+            </Card>
+            <Snackbar
+                open={mintedSnackOpen}
+                autoHideDuration={2000}
+                message="Tokes minted!"
+                onClose={() => {
+                    setMintedSnackOpen(false);
+                }}
+            />
+        </div>
     );
 };

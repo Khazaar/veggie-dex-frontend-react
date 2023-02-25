@@ -1,11 +1,11 @@
-import { BlockchainSubscriptions } from "../blockchainSubscriptions";
+import { BlockchainSubscriptions } from "../blockchainSubscriptions.service";
 import { ethers } from "ethers";
 import {
     IPair,
     Potato,
     ISmartContract,
 } from "../../smart-contracts/smart-contract-data";
-import { IConnectService } from "./IConnectService";
+import { IConnectService } from "./IConnect.service";
 
 export interface ISmartContractService {
     tokenPairs: IPair[];
