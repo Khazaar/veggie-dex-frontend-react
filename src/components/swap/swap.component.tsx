@@ -32,19 +32,34 @@ export const SwapComponent = () => {
     const tokenContracts = [Apple, Potato, Tomato, LSR];
     const [tokenA, setTokenA] = useState<ITokenContract>(Apple);
     const [tokenB, setTokenB] = useState<ITokenContract>(Potato);
-    const [amountA, setAmountA] = useState<number>(5000);
+    const [amountA, setAmountA] = useState<number>(1000);
     const clickSwap = async () => {
-        await smartContractService.swap(
-            tokenA.instance,
-            tokenB.instance,
-            BigNumber.from(amountA)
-        );
+        if (tokenA === tokenB) {
+            console.log("Please select different tokens");
+        } else {
+            if (
+                amountA >
+                Number(
+                    await tokenA.instance.balanceOf(
+                        await smartContractService.connectService.signer.getAddress()
+                    )
+                )
+            ) {
+                console.log("Insufficient balance of token ", tokenA.nameShort);
+            } else {
+                await smartContractService.swap(
+                    tokenA.instance,
+                    tokenB.instance,
+                    BigNumber.from(amountA)
+                );
+            }
+        }
     };
 
     return (
         <Card className="SwapComponent">
             <CardHeader
-                title="Swap"
+                title="Swap Tokens"
                 titleTypographyProps={{ variant: "h1" }}
             ></CardHeader>
             <CardContent>
@@ -118,12 +133,17 @@ export const SwapComponent = () => {
                             </Select>
                         </FormControl>
                     </div>
+                    <div className="swapButtonWrapper">
+                        <Button
+                            variant="contained"
+                            color="success"
+                            onClick={clickSwap}
+                        >
+                            Swap
+                            <CurrencyExchangeIcon style={styleIconsProps} />
+                        </Button>
+                    </div>
                 </div>
-
-                <Button variant="contained" color="success" onClick={clickSwap}>
-                    Swap
-                    <CurrencyExchangeIcon style={styleIconsProps} />
-                </Button>
             </CardContent>
         </Card>
     );

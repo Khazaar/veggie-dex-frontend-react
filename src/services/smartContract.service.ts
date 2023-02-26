@@ -10,6 +10,7 @@ import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
 import { ISmartContractService } from "./interfaces/ISmartContract.service";
 import { ERC20Basic, PancakePair } from "../smart-contracts/types";
+import { Hardhat } from "../smart-contracts/networks";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
@@ -27,6 +28,7 @@ export class SmartContractService implements ISmartContractService {
         try {
             this.updateSmatrContractServiceNetwork();
             await this.connectService.initConnectService();
+            //await this.blockchainSubscriptions.unsubscribeAll();
             await this.blockchainSubscriptions.subscribeAll();
         } catch (error) {
             console.log(
@@ -86,13 +88,13 @@ export class SmartContractService implements ISmartContractService {
             amountA.toString(),
             { gasLimit: this.gasLimit }
         );
-        await tx.wait(1);
+        await this.smartWait(tx);
         tx = await contractB.approve(
             this.connectService.contractRouter_mod.address,
             amountB.toString(),
             { gasLimit: this.gasLimit }
         );
-        await tx.wait(1);
+        await this.smartWait(tx);
         console.log(
             `Allowance A set to: ${await contractA.allowance(
                 this.connectService.signer.getAddress(),
@@ -115,7 +117,7 @@ export class SmartContractService implements ISmartContractService {
             await this.connectService.signer.getAddress(),
             216604939048
         );
-        await tx.wait(1);
+        await this.smartWait(tx);
     }
 
     public async removeLiquidity(
@@ -129,10 +131,9 @@ export class SmartContractService implements ISmartContractService {
             await contractB.address
         );
 
-        const contractPair = new ethers.Contract(
+        const contractPair = PancakePair__factory.connect(
             pairAddress,
-            PancakePairAbi.abi,
-            this.connectService.provider
+            this.connectService.signer
         );
 
         // Approve to remove liquidity
@@ -150,7 +151,7 @@ export class SmartContractService implements ISmartContractService {
             2166049390489
         );
 
-        await tx.wait(1);
+        await this.smartWait(tx);
     }
 
     public async swap(
@@ -163,7 +164,7 @@ export class SmartContractService implements ISmartContractService {
             await this.connectService.contractRouter_mod.address,
             amountA.toString()
         );
-        await tx.wait(1);
+        await this.smartWait(tx);
         console.log(
             `Allowance A set to: ${await contractA.allowance(
                 this.connectService.signer.getAddress(),
@@ -179,7 +180,7 @@ export class SmartContractService implements ISmartContractService {
                 this.connectService.signer.getAddress(),
                 99999999999999
             );
-        await tx.wait(1);
+        await this.smartWait(tx);
         //await this.subscribePairEvents();
     }
     public getIContractByAddress(address: string): Promise<ITokenContract> {
@@ -273,7 +274,7 @@ export class SmartContractService implements ISmartContractService {
                     await this.connectService.contractRouter_mod.addAdminAddress(
                         adminRoleAddress
                     );
-                tx.wait(1);
+                this.smartWait(tx);
             } else {
                 throw new Error("Invalid address");
             }
@@ -288,7 +289,7 @@ export class SmartContractService implements ISmartContractService {
                     await this.connectService.contractRouter_mod.revokeAdminAddress(
                         adminRoleAddress
                     );
-                tx.wait(1);
+                this.smartWait(tx);
             } else {
                 throw new Error("Invalid address");
             }
@@ -312,5 +313,10 @@ export class SmartContractService implements ISmartContractService {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    public async smartWait(tx: ethers.ContractTransaction) {
+        //this.network !== Hardhat.nameShort && (await tx.wait(1));
+        await tx.wait(1);
     }
 }

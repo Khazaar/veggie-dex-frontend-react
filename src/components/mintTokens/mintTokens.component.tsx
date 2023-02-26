@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
+    Alert,
     Button,
     Card,
     CardContent,
@@ -53,15 +54,15 @@ export const MintTokensComponent = () => {
         }
     };
 
-    useEffect(() => {
-        const sub = smartContractService.blockchainSubscriptions
-            .TokenMinted$()
-            .subscribe(() => {
-                setMintedSnackOpen(true);
-                console.log(`Mint done triggered`);
-            });
-        return () => sub.unsubscribe();
-    });
+    // useEffect(() => {
+    //     const sub = smartContractService.blockchainSubscriptions
+    //         .TokenMinted$()
+    //         .subscribe(() => {
+    //             setMintedSnackOpen(true);
+    //             console.log(`Mint done triggered`);
+    //         });
+    //     return () => sub.unsubscribe();
+    // });
 
     return (
         <div>
@@ -125,11 +126,20 @@ export const MintTokensComponent = () => {
             <Snackbar
                 open={mintedSnackOpen}
                 autoHideDuration={2000}
-                message="Tokes minted!"
                 onClose={() => {
                     setMintedSnackOpen(false);
                 }}
-            />
+            >
+                <Alert
+                    onClose={() => {
+                        setMintedSnackOpen(false);
+                    }}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    Tokens minted!
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

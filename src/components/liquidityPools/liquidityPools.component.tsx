@@ -17,7 +17,10 @@ import "./style.css";
 
 import { ILiquidityPools } from "../../interfaces/liquidityPools.interface";
 import { IPair } from "../../smart-contracts/smart-contract-data";
-import { useTokenTransferSubscription } from "../../hooks";
+import {
+    useTokenTransferSubscription,
+    useWalletSubscription,
+} from "../../hooks";
 
 export const LiquidityPoolsComponent = () => {
     const [liquidityPoolsData, setLiquidityPoolsData] = useState<
@@ -41,6 +44,7 @@ export const LiquidityPoolsComponent = () => {
         setLiquidityPoolsData(updatedLiquidityPoolsData);
     };
 
+    useWalletSubscription(smartContractService, fetchData);
     useTokenTransferSubscription(smartContractService, fetchData);
 
     return (

@@ -21,6 +21,8 @@ import {
     useTokenTransferSubscription,
     useWalletSubscription,
 } from "../../hooks";
+import { Subscription } from "rxjs";
+import { useRefresh } from "../../hooks/useRefresh";
 
 export const UserAssetsComponent = () => {
     let initAssets: ITokenAsset[] = [
@@ -35,7 +37,7 @@ export const UserAssetsComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
 
     const fetchData = async () => {
-        let updatedAssets = assetsData;
+        let updatedAssets = initAssets;
         const potatoBalance: BigNumber =
             await smartContractService.getTokensBalance(
                 smartContractService.connectService.contractPotato
@@ -66,8 +68,34 @@ export const UserAssetsComponent = () => {
             ).substring(0, 8)
         );
     };
-    useTokenTransferSubscription(smartContractService, fetchData);
-    useWalletSubscription(smartContractService, fetchData);
+    const subscriptions: Subscription[] = [];
+    useEffect(() => {
+        // Wallet subscriptions
+        subscriptions.push(
+            smartContractService.connectService
+                .walletConnected$()
+                .subscribe(() => {
+                    fetchData();
+                })
+        );
+        subscriptions.push(
+            smartContractService.blockchainSubscriptions
+                .TokenTransfered$()
+                .subscribe(() => {
+                    fetchData();
+                })
+        );
+
+        return () => {
+            subscriptions.forEach((subscription) => {
+                //subscription.unsubscribe();
+            });
+        };
+    });
+    //useRefresh(smartContractService, fetchData);
+
+    //useTokenTransferSubscription(smartContractService, fetchData);
+    //useWalletSubscription(smartContractService, fetchData);
 
     return (
         <div className="user-assets">

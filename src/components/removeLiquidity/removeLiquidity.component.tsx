@@ -17,7 +17,10 @@ import "../../assets/styles/styles.css";
 import { IPair } from "../../smart-contracts/smart-contract-data";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
-import { useTokenTransferSubscription } from "../../hooks";
+import {
+    useTokenTransferSubscription,
+    useWalletSubscription,
+} from "../../hooks";
 import { BigNumber } from "ethers";
 
 export const RemoveLiquidityComponent = () => {
@@ -28,7 +31,7 @@ export const RemoveLiquidityComponent = () => {
 
     const clickRemoveLiquidity = async () => {
         try {
-            await smartContractService.blockchainSubscriptions.subscribePairEvents();
+            //await smartContractService.blockchainSubscriptions.subscribePairEvents();
             await smartContractService.removeLiquidity(
                 selectedPair.token0.instance,
                 selectedPair.token1.instance,
@@ -42,7 +45,8 @@ export const RemoveLiquidityComponent = () => {
     const fetchData = async () => {
         setPairs(await smartContractService.getPairs());
         if (pairs.length > 0) {
-            setSelectedPair(pairs[0]);
+            const newPair = pairs[0];
+            setSelectedPair(newPair);
             setLiquidityToRmove(
                 Number(
                     await selectedPair.instance.balanceOf(
@@ -64,6 +68,7 @@ export const RemoveLiquidityComponent = () => {
         );
     };
     useTokenTransferSubscription(smartContractService, fetchData);
+    useWalletSubscription(smartContractService, fetchData);
     return (
         <div>
             {pairs.length > 0 && (
@@ -80,7 +85,7 @@ export const RemoveLiquidityComponent = () => {
                                         Pair
                                     </InputLabel>
                                     <Select
-                                        value={selectedPair || ""}
+                                        value={selectedPair}
                                         labelId="select-tokenA-to-addLiq-label"
                                         id="select-token-to-mint"
                                         onChange={onSelectedPairChange}

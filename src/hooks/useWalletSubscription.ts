@@ -7,16 +7,14 @@ export const useWalletSubscription = (
     fetchData: () => Promise<void>
 ) => {
     useEffect(() => {
-        const subscriptions: Subscription[] = [];
+        const walletSubscription: Subscription[] = [];
         // Wallet subscriptions
-        subscriptions.push(
+        walletSubscription.push(
             smartContractService.connectService
                 .walletConnected$()
                 .subscribe((signerAddress) => {
                     fetchData()
-                        .then(() => {
-                            console.log("Wallet connected: ", signerAddress);
-                        })
+                        .then(() => {})
                         .catch((error) => {
                             console.log(error);
                         });
@@ -24,7 +22,7 @@ export const useWalletSubscription = (
         );
 
         return () => {
-            subscriptions.forEach((subscription) => {
+            walletSubscription.forEach((subscription) => {
                 subscription.unsubscribe();
             });
         };

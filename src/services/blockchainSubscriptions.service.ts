@@ -47,6 +47,13 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         await this.subscribePairEvents();
         await this.subscribeRouterEvents();
     }
+    public async unsubscribeAll() {
+        this.smartContractService.connectService.tokenContracts.forEach(
+            async (tokenContract) => {
+                tokenContract.instance.removeAllListeners();
+            }
+        );
+    }
 
     public async subscribeTokensEvents() {
         this.smartContractService.connectService.tokenContracts.forEach(
@@ -57,24 +64,25 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                     null
                 );
 
-                tokenContract.instance.removeAllListeners();
+                //tokenContract.instance.removeAllListeners();
 
                 tokenContract.instance.on(
                     filterTransfer,
-                    (from: any, to: any, amount: any) => {
+                    (from: any, to: any, value: any) => {
                         console.log(
-                            `1Transfeed ${amount} tokens ${tokenContract.nameShort} from ${from} to ${to}`
+                            `1Transfeed ${value} tokens ${tokenContract.nameShort} from ${from} to ${to}`
                         );
                         this.tokenTransfered.next(tokenContract);
                         from === ethers.constants.AddressZero &&
                             this.tokenMinted.next(tokenContract);
                         console.log(
-                            `Minted ${amount} tokens ${tokenContract.nameShort}  to ${to}`
+                            `Minted ${value} tokens ${tokenContract.nameShort}  to ${to}`
                         );
+                        tokenContract.instance.removeAllListeners();
                     }
                 );
 
-                tokenContract.instance.once(
+                tokenContract.instance.on(
                     "MintRevertedPeriod",
                     (timePassedSeconds, mintLimitPeriodSeconds) => {
                         const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
@@ -89,19 +97,23 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     public async subscribePairEvents() {
         const pairs = await this.smartContractService.getPairs();
         pairs.forEach((iPair) => {
-            iPair.instance.removeAllListeners();
-            iPair.instance.once("Swap", (amountA, amountB) => {
-                console.log(
-                    `Swap in Pair ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
-                );
-                this.swapped.next();
-            });
+            //iPair.instance.removeAllListeners();
+            iPair.instance.on(
+                "Swap",
+                (address, amount0In, amount1In, amount0Out, amount1Out, to) => {
+                    console.log(
+                        `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
+                    );
+                    this.swapped.next();
+                    iPair.instance.removeAllListeners();
+                }
+            );
         });
     }
 
     public async subscribeRouterEvents() {
-        this.smartContractService.connectService.contractRouter_mod.removeAllListeners();
-        this.smartContractService.connectService.contractRouter_mod.once(
+        //this.smartContractService.connectService.contractRouter_mod.removeAllListeners();
+        this.smartContractService.connectService.contractRouter_mod.on(
             "AddLiquidity",
             (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
                 console.log(
@@ -110,7 +122,7 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                 this.liquidityAdded.next();
             }
         );
-        this.smartContractService.connectService.contractRouter_mod.once(
+        this.smartContractService.connectService.contractRouter_mod.on(
             "RoleGranted",
             (role, account) => {
                 console.log(`Role ${role} granted to ${account}`);
@@ -118,7 +130,7 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
             }
         );
 
-        this.smartContractService.connectService.contractRouter_mod.once(
+        this.smartContractService.connectService.contractRouter_mod.on(
             "RoleRevoked",
             (role, account) => {
                 console.log(`Role ${role} revoked from ${account}`);

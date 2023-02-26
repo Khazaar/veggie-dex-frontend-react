@@ -25,7 +25,7 @@ export const useTokenTransferSubscription = (
                 //subscription.unsubscribe();
             });
         };
-    });
+    }, []);
 };
 
 // fetchData().catch((error) => {

@@ -39,10 +39,10 @@ export const useRouterPairSubscription = (
 
         return () => {
             subscriptions.forEach((subscription) => {
-                subscription.unsubscribe();
+                //subscription.unsubscribe();
             });
         };
-    });
+    }, []);
 };
 
 // fetchData().catch((error) => {

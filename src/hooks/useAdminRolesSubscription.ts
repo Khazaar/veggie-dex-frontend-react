@@ -33,10 +33,10 @@ export const useAdminRolesSubscription = (
 
         return () => {
             subscriptions.forEach((subscription) => {
-                subscription.unsubscribe();
+                //subscription.unsubscribe();
             });
         };
-    });
+    }, []);
 };
 
 // fetchData().catch((error) => {

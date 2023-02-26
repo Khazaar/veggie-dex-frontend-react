@@ -35,19 +35,43 @@ export const AddLiquidityComponent = () => {
     const [amountB, setAmountB] = useState<number>(2000);
 
     const clickAddLiquidity = async () => {
-        try {
-            await smartContractService.blockchainSubscriptions.subscribePairEvents();
-            await smartContractService.addLiquidity(
-                tokenA.instance,
-                tokenB.instance,
-                BigNumber.from(amountA),
-                BigNumber.from(amountB)
-            );
-        } catch (error) {
-            console.log(error);
+        if (tokenA === tokenB) {
+            console.log("Please select different tokens");
+        } else {
+            if (
+                amountA >
+                Number(
+                    await tokenA.instance.balanceOf(
+                        await smartContractService.connectService.signer.getAddress()
+                    )
+                )
+            ) {
+                console.log("Insufficient balance of token ", tokenA.nameShort);
+            } else if (
+                amountB >
+                Number(
+                    await tokenB.instance.balanceOf(
+                        await smartContractService.connectService.signer.getAddress()
+                    )
+                )
+            ) {
+                console.log("Insufficient balance of token ", tokenB.nameShort);
+            } else {
+                try {
+                    await smartContractService.blockchainSubscriptions.subscribePairEvents();
+                    await smartContractService.addLiquidity(
+                        tokenA.instance,
+                        tokenB.instance,
+                        BigNumber.from(amountA),
+                        BigNumber.from(amountB)
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
     };
-    useTokenTransferSubscription(smartContractService, async () => {});
+    //useTokenTransferSubscription(smartContractService, async () => {});
 
     return (
         <Card className="AddLiquidityComponent">
@@ -109,7 +133,6 @@ export const AddLiquidityComponent = () => {
                                     setTokenB(
                                         event.target.value as ITokenContract
                                     );
-                                    console.log(tokenA.nameLong);
                                 }}
                             >
                                 {tokenContracts.map((tkn) => (
