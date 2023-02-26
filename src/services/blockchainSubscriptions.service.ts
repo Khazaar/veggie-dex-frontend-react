@@ -48,68 +48,34 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         await this.subscribeRouterEvents();
     }
 
-    e: TransferEvent.Event;
-
     public async subscribeTokensEvents() {
         this.smartContractService.connectService.tokenContracts.forEach(
-            (tokenContract) => {
-                console.log(`Token ${tokenContract.nameShort}`);
-
-                const ltnr = (from: any, to: any, amount: any) => {
-                    console.log(
-                        `1Transfeed ${amount} tokens ${tokenContract.nameShort} from ${from} to ${to}`
-                    );
-                    this.tokenTransfered.next(tokenContract);
-                    from === ethers.ZeroAddress &&
-                        this.tokenMinted.next(tokenContract);
-                    console.log(
-                        `Minted ${amount} tokens ${tokenContract.nameShort}  to ${to}`
-                    );
-                    console.log(
-                        `3 Listner count ${tokenContract.instance.listenerCount(
-                            "Transfer"
-                        )}`
-                    );
-
-                    tokenContract.instance.removeAllListeners(
-                        tokenContract.instance.getEvent("Transfer")
-                    );
-                };
-                console.log(
-                    `-1 Listner count ${tokenContract.instance.listenerCount(
-                        "Transfer"
-                    )}`
+            async (tokenContract) => {
+                const filterTransfer = tokenContract.instance.filters.Transfer(
+                    null,
+                    null,
+                    null
                 );
 
-                tokenContract.instance.removeAllListeners(
-                    tokenContract.instance.getEvent("Transfer")
-                );
-                console.log(
-                    `0 Listner count ${tokenContract.instance.listenerCount(
-                        "Transfer"
-                    )}`
-                );
+                tokenContract.instance.removeAllListeners();
 
-                tokenContract.instance.off("Transfer", ltnr);
-
-                console.log(
-                    `1 Listner count ${tokenContract.instance.listenerCount(
-                        "Transfer"
-                    )}`
-                );
-                tokenContract.instance.once(
-                    tokenContract.instance.getEvent("Transfer"),
-                    ltnr
-                );
-
-                console.log(
-                    `2 Listner count ${tokenContract.instance.listenerCount(
-                        "Transfer"
-                    )}`
+                tokenContract.instance.on(
+                    filterTransfer,
+                    (from: any, to: any, amount: any) => {
+                        console.log(
+                            `1Transfeed ${amount} tokens ${tokenContract.nameShort} from ${from} to ${to}`
+                        );
+                        this.tokenTransfered.next(tokenContract);
+                        from === ethers.constants.AddressZero &&
+                            this.tokenMinted.next(tokenContract);
+                        console.log(
+                            `Minted ${amount} tokens ${tokenContract.nameShort}  to ${to}`
+                        );
+                    }
                 );
 
                 tokenContract.instance.once(
-                    tokenContract.instance.getEvent("MintRevertedPeriod"),
+                    "MintRevertedPeriod",
                     (timePassedSeconds, mintLimitPeriodSeconds) => {
                         const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
                         console.log(err);
@@ -124,45 +90,40 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         const pairs = await this.smartContractService.getPairs();
         pairs.forEach((iPair) => {
             iPair.instance.removeAllListeners();
-            iPair.instance.once(
-                iPair.instance.getEvent("Swap"),
-                (amountA, amountB) => {
-                    console.log(
-                        `Swap in Pair ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
-                    );
-                    this.swapped.next();
-                }
-            );
+            iPair.instance.once("Swap", (amountA, amountB) => {
+                console.log(
+                    `Swap in Pair ${iPair.name}: amoint A ${amountA}, amountB ${amountB}`
+                );
+                this.swapped.next();
+            });
         });
     }
 
     public async subscribeRouterEvents() {
-        this.smartContractService.connectService.contractRouter_mod
-            .connect(this.smartContractService.connectService.signer)
-            .removeAllListeners();
-        this.smartContractService.connectService.contractRouter_mod
-            .connect(this.smartContractService.connectService.signer)
-            .once(
-                "AddLiquidity",
-                (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                    console.log(
-                        `Added liquidity: sender ${sender}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
-                    );
-                    this.liquidityAdded.next();
-                }
-            );
-        this.smartContractService.connectService.contractRouter_mod
-            .connect(this.smartContractService.connectService.signer)
-            .once("RoleGranted", (role, account) => {
+        this.smartContractService.connectService.contractRouter_mod.removeAllListeners();
+        this.smartContractService.connectService.contractRouter_mod.once(
+            "AddLiquidity",
+            (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
+                console.log(
+                    `Added liquidity: sender ${sender}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
+                );
+                this.liquidityAdded.next();
+            }
+        );
+        this.smartContractService.connectService.contractRouter_mod.once(
+            "RoleGranted",
+            (role, account) => {
                 console.log(`Role ${role} granted to ${account}`);
                 this.adminGranted.next(account);
-            });
+            }
+        );
 
-        this.smartContractService.connectService.contractRouter_mod
-            .connect(this.smartContractService.connectService.signer)
-            .once("RoleRevoked", (role, account) => {
+        this.smartContractService.connectService.contractRouter_mod.once(
+            "RoleRevoked",
+            (role, account) => {
                 console.log(`Role ${role} revoked from ${account}`);
                 this.adminRevoked.next(account);
-            });
+            }
+        );
     }
 }

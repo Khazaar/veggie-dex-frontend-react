@@ -23,6 +23,8 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
+import { BigNumber } from "ethers";
+import { useTokenTransferSubscription } from "../../hooks";
 
 export const AddLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -38,13 +40,14 @@ export const AddLiquidityComponent = () => {
             await smartContractService.addLiquidity(
                 tokenA.instance,
                 tokenB.instance,
-                BigInt(amountA),
-                BigInt(amountB)
+                BigNumber.from(amountA),
+                BigNumber.from(amountB)
             );
         } catch (error) {
             console.log(error);
         }
     };
+    useTokenTransferSubscription(smartContractService, async () => {});
 
     return (
         <Card className="AddLiquidityComponent">
@@ -67,7 +70,6 @@ export const AddLiquidityComponent = () => {
                                     setTokenA(
                                         event.target.value as ITokenContract
                                     );
-                                    console.log(tokenA.nameLong);
                                 }}
                             >
                                 {tokenContracts.map((tkn) => (

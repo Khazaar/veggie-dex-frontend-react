@@ -17,11 +17,11 @@ import {
 import "./style.css";
 import "../../assets/styles/styles.css";
 
-import { useRefresh } from "../../hooks/useRefresh";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import { colorGreenLight } from "../../assets/styles/theme";
+import { useAdminRolesSubscription } from "../../hooks";
 
 export const OwnerPanelComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -46,7 +46,7 @@ export const OwnerPanelComponent = () => {
             setSelectedAdmin(admins[0]);
         }
     };
-    useRefresh(smartContractService, fetchData);
+    useAdminRolesSubscription(smartContractService, fetchData);
 
     return (
         <Card className="AdminPanelComponent">

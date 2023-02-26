@@ -4,9 +4,9 @@ import { MintTokensComponent } from "../../components/mintTokens/mintTokens.comp
 import { AdminPanelComponent } from "../../components/adminPanel/adminPanel.component";
 import { SmartContractServiceContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
-import { useRefresh } from "../../hooks/useRefresh";
 import { RemoveLiquidityComponent } from "../../components/removeLiquidity/removeLiquidity.component";
 import { OwnerPanelComponent } from "../../components/ownerPanel/ownerPanel.component";
+import { useAdminRolesSubscription } from "../../hooks";
 
 export const UserComponent = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -18,7 +18,7 @@ export const UserComponent = () => {
         setIsOwner(smartContractService.hasOwnerRole);
     };
 
-    useRefresh(smartContractService, fetchData);
+    useAdminRolesSubscription(smartContractService, fetchData);
     return (
         <div className="UserComponent">
             <div>

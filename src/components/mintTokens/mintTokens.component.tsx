@@ -24,7 +24,7 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
-import { useRefresh } from "../../hooks/useRefresh";
+import { BigNumber } from "ethers";
 
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -44,7 +44,7 @@ export const MintTokensComponent = () => {
                 } else {
                     await smartContractService.mintTokens(
                         tokenToMint.instance,
-                        BigInt(amountToMint)
+                        BigNumber.from(amountToMint)
                     );
                 }
             }
@@ -62,8 +62,6 @@ export const MintTokensComponent = () => {
             });
         return () => sub.unsubscribe();
     });
-
-    //useRefresh(smartContractService, mintDone);
 
     return (
         <div>

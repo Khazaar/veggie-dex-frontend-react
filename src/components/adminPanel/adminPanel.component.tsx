@@ -24,10 +24,11 @@ import {
     ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import CheckIcon from "@mui/icons-material/Check";
-import { useRefresh } from "../../hooks/useRefresh";
+import { useAdminRolesSubscription } from "../../hooks/useAdminRolesSubscription";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { colorGreenLight } from "../../assets/styles/theme";
+import { BigNumber } from "ethers";
 
 export const AdminPanelComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -41,7 +42,7 @@ export const AdminPanelComponent = () => {
         console.log(`Going to withdraw fees`);
         await smartContractService.withdrawFees(
             selectedToken.instance,
-            feesToWithdraw
+            BigNumber.from(feesToWithdraw)
         );
     };
 
@@ -55,7 +56,7 @@ export const AdminPanelComponent = () => {
         //     await smartContractService.connectService.contractRouter_mod.getLsrMinBalance()
         // );
     };
-    useRefresh(smartContractService, fetchData);
+    useAdminRolesSubscription(smartContractService, fetchData);
 
     return (
         <Card className="AdminPanelComponent">

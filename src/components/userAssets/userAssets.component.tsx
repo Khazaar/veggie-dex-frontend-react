@@ -16,14 +16,18 @@ import {
 
 import "./style.css";
 import { ITokenAsset } from "../../interfaces/tokenAssets.interface";
-import { useRefresh } from "../../hooks/useRefresh";
+import { BigNumber } from "ethers";
+import {
+    useTokenTransferSubscription,
+    useWalletSubscription,
+} from "../../hooks";
 
 export const UserAssetsComponent = () => {
     let initAssets: ITokenAsset[] = [
-        { position: 2, name: "Apple", amount: BigInt(0) },
-        { position: 3, name: "Potato", amount: BigInt(0) },
-        { position: 3, name: "Tomato", amount: BigInt(0) },
-        { position: 4, name: "LSR", amount: BigInt(0) },
+        { position: 2, name: "Apple", amount: BigNumber.from(0) },
+        { position: 3, name: "Potato", amount: BigNumber.from(0) },
+        { position: 3, name: "Tomato", amount: BigNumber.from(0) },
+        { position: 4, name: "LSR", amount: BigNumber.from(0) },
     ];
     const [ETHBalance, setETHBalance] = useState("");
     const [assetsData, setAssetsData] = useState<ITokenAsset[]>(initAssets);
@@ -32,23 +36,24 @@ export const UserAssetsComponent = () => {
 
     const fetchData = async () => {
         let updatedAssets = assetsData;
-        const potatoBalance: BigInt =
+        const potatoBalance: BigNumber =
             await smartContractService.getTokensBalance(
                 smartContractService.connectService.contractPotato
             );
-        const tomatoBalance: BigInt =
+        const tomatoBalance: BigNumber =
             await smartContractService.getTokensBalance(
                 smartContractService.connectService.contractTomato
             );
 
-        const appleBalance: BigInt =
+        const appleBalance: BigNumber =
             await smartContractService.getTokensBalance(
                 smartContractService.connectService.contractApple
             );
 
-        const lsrBalance: BigInt = await smartContractService.getTokensBalance(
-            smartContractService.connectService.contractLSR
-        );
+        const lsrBalance: BigNumber =
+            await smartContractService.getTokensBalance(
+                smartContractService.connectService.contractLSR
+            );
 
         updatedAssets[0].amount = appleBalance;
         updatedAssets[1].amount = potatoBalance;
@@ -56,11 +61,13 @@ export const UserAssetsComponent = () => {
         updatedAssets[3].amount = lsrBalance;
         setAssetsData(updatedAssets);
         setETHBalance(
-            (await smartContractService.getSignerBalance()).substring(0, 8)
+            (
+                await smartContractService.connectService.getSignerBalance()
+            ).substring(0, 8)
         );
     };
-
-    useRefresh(smartContractService, fetchData);
+    useTokenTransferSubscription(smartContractService, fetchData);
+    useWalletSubscription(smartContractService, fetchData);
 
     return (
         <div className="user-assets">

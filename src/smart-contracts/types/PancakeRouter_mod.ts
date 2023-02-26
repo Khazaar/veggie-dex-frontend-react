@@ -2,1130 +2,1535 @@
 /* tslint:disable */
 /* eslint-disable */
 import type {
-    BaseContract,
-    BigNumberish,
-    BytesLike,
-    FunctionFragment,
-    Result,
-    Interface,
-    EventFragment,
+  BaseContract,
+  BigNumber,
+  BigNumberish,
+  BytesLike,
+  CallOverrides,
+  ContractTransaction,
+  Overrides,
+  PayableOverrides,
+  PopulatedTransaction,
+  Signer,
+  utils,
 } from "ethers";
-import type { AddressLike } from "ethers/types/address";
-import type { ContractRunner } from "ethers/types/providers";
-import type { ContractMethod } from "ethers/types/contract";
-import type { Listener } from "ethers/types/utils";
 import type {
-    TypedContractEvent,
-    TypedDeferredTopicFilter,
-    TypedEventLog,
-    TypedListener,
-    TypedContractMethod,
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
 } from "./common";
 
-export interface PancakeRouter_modInterface extends Interface {
-    getFunction(
-        nameOrSignature:
-            | "ADMIN_ROLE"
-            | "DEFAULT_ADMIN_ROLE"
-            | "OWNER_ROLE"
-            | "WETH"
-            | "addAdminAddress"
-            | "addLiquidity"
-            | "factory"
-            | "getAmountIn"
-            | "getAmountOut"
-            | "getAmountsIn"
-            | "getAmountsOut"
-            | "getLsrMinBalance"
-            | "getOwnerAddress"
-            | "getRoleAdmin"
-            | "getRoleMember"
-            | "getRoleMemberCount"
-            | "getSwapFee"
-            | "grantRole"
-            | "hasRole"
-            | "isAdmin"
-            | "quote"
-            | "removeLiquidity"
-            | "removeLiquidityWithPermit"
-            | "renounceRole"
-            | "revokeAdminAddress"
-            | "revokeRole"
-            | "setLsrMinBalance"
-            | "setSwapFee"
-            | "swapExactTokensForTokens"
-            | "swapExactTokensForTokensSupportingFeeOnTransferTokens"
-            | "swapTokensForExactTokens"
-            | "withdrawFees"
-    ): FunctionFragment;
+export interface PancakeRouter_modInterface extends utils.Interface {
+  functions: {
+    "ADMIN_ROLE()": FunctionFragment;
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "OWNER_ROLE()": FunctionFragment;
+    "WETH()": FunctionFragment;
+    "addAdminAddress(address)": FunctionFragment;
+    "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)": FunctionFragment;
+    "factory()": FunctionFragment;
+    "getAmountIn(uint256,uint256,uint256)": FunctionFragment;
+    "getAmountOut(uint256,uint256,uint256)": FunctionFragment;
+    "getAmountsIn(uint256,address[])": FunctionFragment;
+    "getAmountsOut(uint256,address[])": FunctionFragment;
+    "getLsrMinBalance()": FunctionFragment;
+    "getOwnerAddress()": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "getRoleMember(bytes32,uint256)": FunctionFragment;
+    "getRoleMemberCount(bytes32)": FunctionFragment;
+    "getSwapFee()": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "isAdmin(address)": FunctionFragment;
+    "quote(uint256,uint256,uint256)": FunctionFragment;
+    "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)": FunctionFragment;
+    "removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeAdminAddress(address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
+    "setLsrMinBalance(uint256)": FunctionFragment;
+    "setSwapFee(uint256)": FunctionFragment;
+    "swapExactTokensForTokens(uint256,uint256,address[],address,uint256)": FunctionFragment;
+    "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)": FunctionFragment;
+    "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)": FunctionFragment;
+    "withdrawFees(address,uint256)": FunctionFragment;
+  };
 
-    getEvent(
-        nameOrSignatureOrTopic:
-            | "AddLiquidity"
-            | "FeeCharged"
-            | "RoleAdminChanged"
-            | "RoleGranted"
-            | "RoleRevoked"
-            | "SetLsrMinBalance"
-            | "SetSwapFee"
-            | "WithdrawFees"
-    ): EventFragment;
+  getFunction(
+    nameOrSignatureOrTopic:
+      | "ADMIN_ROLE"
+      | "DEFAULT_ADMIN_ROLE"
+      | "OWNER_ROLE"
+      | "WETH"
+      | "addAdminAddress"
+      | "addLiquidity"
+      | "factory"
+      | "getAmountIn"
+      | "getAmountOut"
+      | "getAmountsIn"
+      | "getAmountsOut"
+      | "getLsrMinBalance"
+      | "getOwnerAddress"
+      | "getRoleAdmin"
+      | "getRoleMember"
+      | "getRoleMemberCount"
+      | "getSwapFee"
+      | "grantRole"
+      | "hasRole"
+      | "isAdmin"
+      | "quote"
+      | "removeLiquidity"
+      | "removeLiquidityWithPermit"
+      | "renounceRole"
+      | "revokeAdminAddress"
+      | "revokeRole"
+      | "setLsrMinBalance"
+      | "setSwapFee"
+      | "swapExactTokensForTokens"
+      | "swapExactTokensForTokensSupportingFeeOnTransferTokens"
+      | "swapTokensForExactTokens"
+      | "withdrawFees"
+  ): FunctionFragment;
 
-    encodeFunctionData(
-        functionFragment: "ADMIN_ROLE",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "DEFAULT_ADMIN_ROLE",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "OWNER_ROLE",
-        values?: undefined
-    ): string;
-    encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
-    encodeFunctionData(
-        functionFragment: "addAdminAddress",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "addLiquidity",
-        values: [
-            AddressLike,
-            AddressLike,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            AddressLike,
-            BigNumberish
-        ]
-    ): string;
-    encodeFunctionData(functionFragment: "factory", values?: undefined): string;
-    encodeFunctionData(
-        functionFragment: "getAmountIn",
-        values: [BigNumberish, BigNumberish, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getAmountOut",
-        values: [BigNumberish, BigNumberish, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getAmountsIn",
-        values: [BigNumberish, AddressLike[]]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getAmountsOut",
-        values: [BigNumberish, AddressLike[]]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getLsrMinBalance",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getOwnerAddress",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleAdmin",
-        values: [BytesLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleMember",
-        values: [BytesLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleMemberCount",
-        values: [BytesLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getSwapFee",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "grantRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "hasRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "isAdmin",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "quote",
-        values: [BigNumberish, BigNumberish, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "removeLiquidity",
-        values: [
-            AddressLike,
-            AddressLike,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            AddressLike,
-            BigNumberish
-        ]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "removeLiquidityWithPermit",
-        values: [
-            AddressLike,
-            AddressLike,
-            BigNumberish,
-            BigNumberish,
-            BigNumberish,
-            AddressLike,
-            BigNumberish,
-            boolean,
-            BigNumberish,
-            BytesLike,
-            BytesLike
-        ]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "renounceRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "revokeAdminAddress",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "revokeRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setLsrMinBalance",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setSwapFee",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "swapExactTokensForTokens",
-        values: [
-            BigNumberish,
-            BigNumberish,
-            AddressLike[],
-            AddressLike,
-            BigNumberish
-        ]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "swapExactTokensForTokensSupportingFeeOnTransferTokens",
-        values: [
-            BigNumberish,
-            BigNumberish,
-            AddressLike[],
-            AddressLike,
-            BigNumberish
-        ]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "swapTokensForExactTokens",
-        values: [
-            BigNumberish,
-            BigNumberish,
-            AddressLike[],
-            AddressLike,
-            BigNumberish
-        ]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "withdrawFees",
-        values: [AddressLike, BigNumberish]
-    ): string;
+  encodeFunctionData(
+    functionFragment: "ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OWNER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "addAdminAddress",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addLiquidity",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getAmountIn",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountOut",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountsIn",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAmountsOut",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLsrMinBalance",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOwnerAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMember",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMemberCount",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSwapFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAdmin",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "quote",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeLiquidity",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeLiquidityWithPermit",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeAdminAddress",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setLsrMinBalance",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSwapFee",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapExactTokensForTokens",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapExactTokensForTokensSupportingFeeOnTransferTokens",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapTokensForExactTokens",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFees",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
 
-    decodeFunctionResult(
-        functionFragment: "ADMIN_ROLE",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "DEFAULT_ADMIN_ROLE",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "OWNER_ROLE",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "addAdminAddress",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "addLiquidity",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "getAmountIn",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getAmountOut",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getAmountsIn",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getAmountsOut",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getLsrMinBalance",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getOwnerAddress",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleAdmin",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleMember",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleMemberCount",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getSwapFee",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "grantRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "quote", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "removeLiquidity",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "removeLiquidityWithPermit",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "renounceRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "revokeAdminAddress",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "revokeRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "setLsrMinBalance",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "setSwapFee",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "swapExactTokensForTokens",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "swapExactTokensForTokensSupportingFeeOnTransferTokens",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "swapTokensForExactTokens",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "withdrawFees",
-        data: BytesLike
-    ): Result;
+  decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "OWNER_ROLE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addAdminAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountIn",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountOut",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountsIn",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAmountsOut",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLsrMinBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getOwnerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMember",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMemberCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getSwapFee", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isAdmin", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "quote", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeLiquidity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeLiquidityWithPermit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "revokeAdminAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setLsrMinBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setSwapFee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "swapExactTokensForTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "swapExactTokensForTokensSupportingFeeOnTransferTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "swapTokensForExactTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFees",
+    data: BytesLike
+  ): Result;
+
+  events: {
+    "AddLiquidity(uint256,uint256)": EventFragment;
+    "FeeCharged(address,uint256)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "SetLsrMinBalance(uint256)": EventFragment;
+    "SetSwapFee(uint256)": EventFragment;
+    "WithdrawFees(address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FeeCharged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetLsrMinBalance"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSwapFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawFees"): EventFragment;
 }
 
-export namespace AddLiquidityEvent {
-    export type InputTuple = [amountA: BigNumberish, amountB: BigNumberish];
-    export type OutputTuple = [amountA: bigint, amountB: bigint];
-    export interface OutputObject {
-        amountA: bigint;
-        amountB: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface AddLiquidityEventObject {
+  amountA: BigNumber;
+  amountB: BigNumber;
 }
+export type AddLiquidityEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  AddLiquidityEventObject
+>;
 
-export namespace FeeChargedEvent {
-    export type InputTuple = [_token: AddressLike, _fee: BigNumberish];
-    export type OutputTuple = [_token: string, _fee: bigint];
-    export interface OutputObject {
-        _token: string;
-        _fee: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type AddLiquidityEventFilter = TypedEventFilter<AddLiquidityEvent>;
 
-export namespace RoleAdminChangedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        previousAdminRole: BytesLike,
-        newAdminRole: BytesLike
-    ];
-    export type OutputTuple = [
-        role: string,
-        previousAdminRole: string,
-        newAdminRole: string
-    ];
-    export interface OutputObject {
-        role: string;
-        previousAdminRole: string;
-        newAdminRole: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface FeeChargedEventObject {
+  _token: string;
+  _fee: BigNumber;
 }
+export type FeeChargedEvent = TypedEvent<
+  [string, BigNumber],
+  FeeChargedEventObject
+>;
 
-export namespace RoleGrantedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        account: AddressLike,
-        sender: AddressLike
-    ];
-    export type OutputTuple = [role: string, account: string, sender: string];
-    export interface OutputObject {
-        role: string;
-        account: string;
-        sender: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type FeeChargedEventFilter = TypedEventFilter<FeeChargedEvent>;
 
-export namespace RoleRevokedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        account: AddressLike,
-        sender: AddressLike
-    ];
-    export type OutputTuple = [role: string, account: string, sender: string];
-    export interface OutputObject {
-        role: string;
-        account: string;
-        sender: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
 }
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
+>;
 
-export namespace SetLsrMinBalanceEvent {
-    export type InputTuple = [_lsrMinBalance: BigNumberish];
-    export type OutputTuple = [_lsrMinBalance: bigint];
-    export interface OutputObject {
-        _lsrMinBalance: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
 
-export namespace SetSwapFeeEvent {
-    export type InputTuple = [_swapFee: BigNumberish];
-    export type OutputTuple = [_swapFee: bigint];
-    export interface OutputObject {
-        _swapFee: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
 }
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
+>;
 
-export namespace WithdrawFeesEvent {
-    export type InputTuple = [_token: AddressLike, amount: BigNumberish];
-    export type OutputTuple = [_token: string, amount: bigint];
-    export interface OutputObject {
-        _token: string;
-        amount: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
 }
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
+
+export interface SetLsrMinBalanceEventObject {
+  _lsrMinBalance: BigNumber;
+}
+export type SetLsrMinBalanceEvent = TypedEvent<
+  [BigNumber],
+  SetLsrMinBalanceEventObject
+>;
+
+export type SetLsrMinBalanceEventFilter =
+  TypedEventFilter<SetLsrMinBalanceEvent>;
+
+export interface SetSwapFeeEventObject {
+  _swapFee: BigNumber;
+}
+export type SetSwapFeeEvent = TypedEvent<[BigNumber], SetSwapFeeEventObject>;
+
+export type SetSwapFeeEventFilter = TypedEventFilter<SetSwapFeeEvent>;
+
+export interface WithdrawFeesEventObject {
+  _token: string;
+  amount: BigNumber;
+}
+export type WithdrawFeesEvent = TypedEvent<
+  [string, BigNumber],
+  WithdrawFeesEventObject
+>;
+
+export type WithdrawFeesEventFilter = TypedEventFilter<WithdrawFeesEvent>;
 
 export interface PancakeRouter_mod extends BaseContract {
-    connect(runner?: ContractRunner | null): BaseContract;
-    attach(addressOrName: AddressLike): this;
-    deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-    interface: PancakeRouter_modInterface;
+  interface: PancakeRouter_modInterface;
 
-    queryFilter<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
-    queryFilter<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TEvent extends TypedEvent>(
+    event: TypedEventFilter<TEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TEvent>>;
 
-    on<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    on<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
-    once<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    once<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  functions: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    listeners<TCEvent extends TypedContractEvent>(
-        event: TCEvent
-    ): Promise<Array<TypedListener<TCEvent>>>;
-    listeners(eventName?: string): Promise<Array<Listener>>;
-    removeAllListeners<TCEvent extends TypedContractEvent>(
-        event?: TCEvent
-    ): Promise<this>;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    ADMIN_ROLE: TypedContractMethod<[], [string], "view">;
+    OWNER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    DEFAULT_ADMIN_ROLE: TypedContractMethod<[], [string], "view">;
+    WETH(overrides?: CallOverrides): Promise<[string]>;
 
-    OWNER_ROLE: TypedContractMethod<[], [string], "view">;
+    addAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    WETH: TypedContractMethod<[], [string], "view">;
+    addLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      amountADesired: PromiseOrValue<BigNumberish>,
+      amountBDesired: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    addAdminAddress: TypedContractMethod<
-        [_adminAddress: AddressLike],
-        [void],
-        "nonpayable"
+    factory(overrides?: CallOverrides): Promise<[string]>;
+
+    getAmountIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { amountIn: BigNumber }>;
+
+    getAmountOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { amountOut: BigNumber }>;
+
+    getAmountsIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
+
+    getAmountsOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]] & { amounts: BigNumber[] }>;
+
+    getLsrMinBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getOwnerAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getSwapFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isAdmin(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    quote(
+      amountA: PromiseOrValue<BigNumberish>,
+      reserveA: PromiseOrValue<BigNumberish>,
+      reserveB: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { amountB: BigNumber }>;
+
+    removeLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    removeLiquidityWithPermit(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      approveMax: PromiseOrValue<boolean>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setLsrMinBalance(
+      _lsrMinBalance: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setSwapFee(
+      _swapFee: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    swapExactTokensForTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    swapExactTokensForTokensSupportingFeeOnTransferTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    swapTokensForExactTokens(
+      amountOut: PromiseOrValue<BigNumberish>,
+      amountInMax: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawFees(
+      _token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
+
+  ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  WETH(overrides?: CallOverrides): Promise<string>;
+
+  addAdminAddress(
+    _adminAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  addLiquidity(
+    tokenA: PromiseOrValue<string>,
+    tokenB: PromiseOrValue<string>,
+    amountADesired: PromiseOrValue<BigNumberish>,
+    amountBDesired: PromiseOrValue<BigNumberish>,
+    amountAMin: PromiseOrValue<BigNumberish>,
+    amountBMin: PromiseOrValue<BigNumberish>,
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  factory(overrides?: CallOverrides): Promise<string>;
+
+  getAmountIn(
+    amountOut: PromiseOrValue<BigNumberish>,
+    reserveIn: PromiseOrValue<BigNumberish>,
+    reserveOut: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getAmountOut(
+    amountIn: PromiseOrValue<BigNumberish>,
+    reserveIn: PromiseOrValue<BigNumberish>,
+    reserveOut: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getAmountsIn(
+    amountOut: PromiseOrValue<BigNumberish>,
+    path: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  getAmountsOut(
+    amountIn: PromiseOrValue<BigNumberish>,
+    path: PromiseOrValue<string>[],
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
+  getLsrMinBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getOwnerAddress(overrides?: CallOverrides): Promise<string>;
+
+  getRoleAdmin(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMember(
+    role: PromiseOrValue<BytesLike>,
+    index: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMemberCount(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  grantRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isAdmin(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  quote(
+    amountA: PromiseOrValue<BigNumberish>,
+    reserveA: PromiseOrValue<BigNumberish>,
+    reserveB: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  removeLiquidity(
+    tokenA: PromiseOrValue<string>,
+    tokenB: PromiseOrValue<string>,
+    liquidity: PromiseOrValue<BigNumberish>,
+    amountAMin: PromiseOrValue<BigNumberish>,
+    amountBMin: PromiseOrValue<BigNumberish>,
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  removeLiquidityWithPermit(
+    tokenA: PromiseOrValue<string>,
+    tokenB: PromiseOrValue<string>,
+    liquidity: PromiseOrValue<BigNumberish>,
+    amountAMin: PromiseOrValue<BigNumberish>,
+    amountBMin: PromiseOrValue<BigNumberish>,
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    approveMax: PromiseOrValue<boolean>,
+    v: PromiseOrValue<BigNumberish>,
+    r: PromiseOrValue<BytesLike>,
+    s: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeAdminAddress(
+    _adminAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setLsrMinBalance(
+    _lsrMinBalance: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setSwapFee(
+    _swapFee: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  swapExactTokensForTokens(
+    amountIn: PromiseOrValue<BigNumberish>,
+    amountOutMin: PromiseOrValue<BigNumberish>,
+    path: PromiseOrValue<string>[],
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  swapExactTokensForTokensSupportingFeeOnTransferTokens(
+    amountIn: PromiseOrValue<BigNumberish>,
+    amountOutMin: PromiseOrValue<BigNumberish>,
+    path: PromiseOrValue<string>[],
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  swapTokensForExactTokens(
+    amountOut: PromiseOrValue<BigNumberish>,
+    amountInMax: PromiseOrValue<BigNumberish>,
+    path: PromiseOrValue<string>[],
+    to: PromiseOrValue<string>,
+    deadline: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawFees(
+    _token: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  callStatic: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    WETH(overrides?: CallOverrides): Promise<string>;
+
+    addAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      amountADesired: PromiseOrValue<BigNumberish>,
+      amountBDesired: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber] & {
+        amountA: BigNumber;
+        amountB: BigNumber;
+        liquidity: BigNumber;
+      }
     >;
 
-    addLiquidity: TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            amountADesired: BigNumberish,
-            amountBDesired: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [
-            [bigint, bigint, bigint] & {
-                amountA: bigint;
-                amountB: bigint;
-                liquidity: bigint;
-            }
-        ],
-        "nonpayable"
+    factory(overrides?: CallOverrides): Promise<string>;
+
+    getAmountIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAmountOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAmountsIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    getAmountsOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
+    getLsrMinBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getOwnerAddress(overrides?: CallOverrides): Promise<string>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isAdmin(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    quote(
+      amountA: PromiseOrValue<BigNumberish>,
+      reserveA: PromiseOrValue<BigNumberish>,
+      reserveB: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    removeLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { amountA: BigNumber; amountB: BigNumber }
     >;
 
-    factory: TypedContractMethod<[], [string], "view">;
-
-    getAmountIn: TypedContractMethod<
-        [
-            amountOut: BigNumberish,
-            reserveIn: BigNumberish,
-            reserveOut: BigNumberish
-        ],
-        [bigint],
-        "view"
+    removeLiquidityWithPermit(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      approveMax: PromiseOrValue<boolean>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & { amountA: BigNumber; amountB: BigNumber }
     >;
 
-    getAmountOut: TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            reserveIn: BigNumberish,
-            reserveOut: BigNumberish
-        ],
-        [bigint],
-        "view"
-    >;
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getAmountsIn: TypedContractMethod<
-        [amountOut: BigNumberish, path: AddressLike[]],
-        [bigint[]],
-        "view"
-    >;
+    revokeAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getAmountsOut: TypedContractMethod<
-        [amountIn: BigNumberish, path: AddressLike[]],
-        [bigint[]],
-        "view"
-    >;
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getLsrMinBalance: TypedContractMethod<[], [bigint], "view">;
+    setLsrMinBalance(
+      _lsrMinBalance: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getOwnerAddress: TypedContractMethod<[], [string], "view">;
+    setSwapFee(
+      _swapFee: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getRoleAdmin: TypedContractMethod<[role: BytesLike], [string], "view">;
+    swapExactTokensForTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
-    getRoleMember: TypedContractMethod<
-        [role: BytesLike, index: BigNumberish],
-        [string],
-        "view"
-    >;
+    swapExactTokensForTokensSupportingFeeOnTransferTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    getRoleMemberCount: TypedContractMethod<
-        [role: BytesLike],
-        [bigint],
-        "view"
-    >;
+    swapTokensForExactTokens(
+      amountOut: PromiseOrValue<BigNumberish>,
+      amountInMax: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
-    getSwapFee: TypedContractMethod<[], [bigint], "view">;
+    withdrawFees(
+      _token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+  };
 
-    grantRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+  filters: {
+    "AddLiquidity(uint256,uint256)"(
+      amountA?: PromiseOrValue<BigNumberish> | null,
+      amountB?: PromiseOrValue<BigNumberish> | null
+    ): AddLiquidityEventFilter;
+    AddLiquidity(
+      amountA?: PromiseOrValue<BigNumberish> | null,
+      amountB?: PromiseOrValue<BigNumberish> | null
+    ): AddLiquidityEventFilter;
 
-    hasRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [boolean],
-        "view"
-    >;
+    "FeeCharged(address,uint256)"(
+      _token?: PromiseOrValue<string> | null,
+      _fee?: PromiseOrValue<BigNumberish> | null
+    ): FeeChargedEventFilter;
+    FeeCharged(
+      _token?: PromiseOrValue<string> | null,
+      _fee?: PromiseOrValue<BigNumberish> | null
+    ): FeeChargedEventFilter;
 
-    isAdmin: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
 
-    quote: TypedContractMethod<
-        [amountA: BigNumberish, reserveA: BigNumberish, reserveB: BigNumberish],
-        [bigint],
-        "view"
-    >;
+    "RoleGranted(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
 
-    removeLiquidity: TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            liquidity: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [[bigint, bigint] & { amountA: bigint; amountB: bigint }],
-        "nonpayable"
-    >;
+    "RoleRevoked(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
 
-    removeLiquidityWithPermit: TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            liquidity: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish,
-            approveMax: boolean,
-            v: BigNumberish,
-            r: BytesLike,
-            s: BytesLike
-        ],
-        [[bigint, bigint] & { amountA: bigint; amountB: bigint }],
-        "nonpayable"
-    >;
+    "SetLsrMinBalance(uint256)"(
+      _lsrMinBalance?: PromiseOrValue<BigNumberish> | null
+    ): SetLsrMinBalanceEventFilter;
+    SetLsrMinBalance(
+      _lsrMinBalance?: PromiseOrValue<BigNumberish> | null
+    ): SetLsrMinBalanceEventFilter;
 
-    renounceRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+    "SetSwapFee(uint256)"(
+      _swapFee?: PromiseOrValue<BigNumberish> | null
+    ): SetSwapFeeEventFilter;
+    SetSwapFee(
+      _swapFee?: PromiseOrValue<BigNumberish> | null
+    ): SetSwapFeeEventFilter;
 
-    revokeAdminAddress: TypedContractMethod<
-        [_adminAddress: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+    "WithdrawFees(address,uint256)"(
+      _token?: PromiseOrValue<string> | null,
+      amount?: null
+    ): WithdrawFeesEventFilter;
+    WithdrawFees(
+      _token?: PromiseOrValue<string> | null,
+      amount?: null
+    ): WithdrawFeesEventFilter;
+  };
 
-    revokeRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+  estimateGas: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setLsrMinBalance: TypedContractMethod<
-        [_lsrMinBalance: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setSwapFee: TypedContractMethod<
-        [_swapFee: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    OWNER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    swapExactTokensForTokens: TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            amountOutMin: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [bigint[]],
-        "payable"
-    >;
+    WETH(overrides?: CallOverrides): Promise<BigNumber>;
 
-    swapExactTokensForTokensSupportingFeeOnTransferTokens: TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            amountOutMin: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [void],
-        "payable"
-    >;
+    addAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
-    swapTokensForExactTokens: TypedContractMethod<
-        [
-            amountOut: BigNumberish,
-            amountInMax: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [bigint[]],
-        "nonpayable"
-    >;
+    addLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      amountADesired: PromiseOrValue<BigNumberish>,
+      amountBDesired: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
-    withdrawFees: TypedContractMethod<
-        [_token: AddressLike, amount: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    factory(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getFunction<T extends ContractMethod = ContractMethod>(
-        key: string | FunctionFragment
-    ): T;
+    getAmountIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getFunction(
-        nameOrSignature: "ADMIN_ROLE"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "DEFAULT_ADMIN_ROLE"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "OWNER_ROLE"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "WETH"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "addAdminAddress"
-    ): TypedContractMethod<[_adminAddress: AddressLike], [void], "nonpayable">;
-    getFunction(nameOrSignature: "addLiquidity"): TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            amountADesired: BigNumberish,
-            amountBDesired: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [
-            [bigint, bigint, bigint] & {
-                amountA: bigint;
-                amountB: bigint;
-                liquidity: bigint;
-            }
-        ],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "factory"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "getAmountIn"
-    ): TypedContractMethod<
-        [
-            amountOut: BigNumberish,
-            reserveIn: BigNumberish,
-            reserveOut: BigNumberish
-        ],
-        [bigint],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getAmountOut"
-    ): TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            reserveIn: BigNumberish,
-            reserveOut: BigNumberish
-        ],
-        [bigint],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getAmountsIn"
-    ): TypedContractMethod<
-        [amountOut: BigNumberish, path: AddressLike[]],
-        [bigint[]],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getAmountsOut"
-    ): TypedContractMethod<
-        [amountIn: BigNumberish, path: AddressLike[]],
-        [bigint[]],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getLsrMinBalance"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "getOwnerAddress"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "getRoleAdmin"
-    ): TypedContractMethod<[role: BytesLike], [string], "view">;
-    getFunction(
-        nameOrSignature: "getRoleMember"
-    ): TypedContractMethod<
-        [role: BytesLike, index: BigNumberish],
-        [string],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getRoleMemberCount"
-    ): TypedContractMethod<[role: BytesLike], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "getSwapFee"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "grantRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "hasRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [boolean],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "isAdmin"
-    ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-    getFunction(
-        nameOrSignature: "quote"
-    ): TypedContractMethod<
-        [amountA: BigNumberish, reserveA: BigNumberish, reserveB: BigNumberish],
-        [bigint],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "removeLiquidity"
-    ): TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            liquidity: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [[bigint, bigint] & { amountA: bigint; amountB: bigint }],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "removeLiquidityWithPermit"
-    ): TypedContractMethod<
-        [
-            tokenA: AddressLike,
-            tokenB: AddressLike,
-            liquidity: BigNumberish,
-            amountAMin: BigNumberish,
-            amountBMin: BigNumberish,
-            to: AddressLike,
-            deadline: BigNumberish,
-            approveMax: boolean,
-            v: BigNumberish,
-            r: BytesLike,
-            s: BytesLike
-        ],
-        [[bigint, bigint] & { amountA: bigint; amountB: bigint }],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "renounceRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "revokeAdminAddress"
-    ): TypedContractMethod<[_adminAddress: AddressLike], [void], "nonpayable">;
-    getFunction(
-        nameOrSignature: "revokeRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "setLsrMinBalance"
-    ): TypedContractMethod<
-        [_lsrMinBalance: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "setSwapFee"
-    ): TypedContractMethod<[_swapFee: BigNumberish], [void], "nonpayable">;
-    getFunction(
-        nameOrSignature: "swapExactTokensForTokens"
-    ): TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            amountOutMin: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [bigint[]],
-        "payable"
-    >;
-    getFunction(
-        nameOrSignature: "swapExactTokensForTokensSupportingFeeOnTransferTokens"
-    ): TypedContractMethod<
-        [
-            amountIn: BigNumberish,
-            amountOutMin: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [void],
-        "payable"
-    >;
-    getFunction(
-        nameOrSignature: "swapTokensForExactTokens"
-    ): TypedContractMethod<
-        [
-            amountOut: BigNumberish,
-            amountInMax: BigNumberish,
-            path: AddressLike[],
-            to: AddressLike,
-            deadline: BigNumberish
-        ],
-        [bigint[]],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "withdrawFees"
-    ): TypedContractMethod<
-        [_token: AddressLike, amount: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    getAmountOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getEvent(
-        key: "AddLiquidity"
-    ): TypedContractEvent<
-        AddLiquidityEvent.InputTuple,
-        AddLiquidityEvent.OutputTuple,
-        AddLiquidityEvent.OutputObject
-    >;
-    getEvent(
-        key: "FeeCharged"
-    ): TypedContractEvent<
-        FeeChargedEvent.InputTuple,
-        FeeChargedEvent.OutputTuple,
-        FeeChargedEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleAdminChanged"
-    ): TypedContractEvent<
-        RoleAdminChangedEvent.InputTuple,
-        RoleAdminChangedEvent.OutputTuple,
-        RoleAdminChangedEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleGranted"
-    ): TypedContractEvent<
-        RoleGrantedEvent.InputTuple,
-        RoleGrantedEvent.OutputTuple,
-        RoleGrantedEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleRevoked"
-    ): TypedContractEvent<
-        RoleRevokedEvent.InputTuple,
-        RoleRevokedEvent.OutputTuple,
-        RoleRevokedEvent.OutputObject
-    >;
-    getEvent(
-        key: "SetLsrMinBalance"
-    ): TypedContractEvent<
-        SetLsrMinBalanceEvent.InputTuple,
-        SetLsrMinBalanceEvent.OutputTuple,
-        SetLsrMinBalanceEvent.OutputObject
-    >;
-    getEvent(
-        key: "SetSwapFee"
-    ): TypedContractEvent<
-        SetSwapFeeEvent.InputTuple,
-        SetSwapFeeEvent.OutputTuple,
-        SetSwapFeeEvent.OutputObject
-    >;
-    getEvent(
-        key: "WithdrawFees"
-    ): TypedContractEvent<
-        WithdrawFeesEvent.InputTuple,
-        WithdrawFeesEvent.OutputTuple,
-        WithdrawFeesEvent.OutputObject
-    >;
+    getAmountsIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    filters: {
-        "AddLiquidity(uint256,uint256)": TypedContractEvent<
-            AddLiquidityEvent.InputTuple,
-            AddLiquidityEvent.OutputTuple,
-            AddLiquidityEvent.OutputObject
-        >;
-        AddLiquidity: TypedContractEvent<
-            AddLiquidityEvent.InputTuple,
-            AddLiquidityEvent.OutputTuple,
-            AddLiquidityEvent.OutputObject
-        >;
+    getAmountsOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-        "FeeCharged(address,uint256)": TypedContractEvent<
-            FeeChargedEvent.InputTuple,
-            FeeChargedEvent.OutputTuple,
-            FeeChargedEvent.OutputObject
-        >;
-        FeeCharged: TypedContractEvent<
-            FeeChargedEvent.InputTuple,
-            FeeChargedEvent.OutputTuple,
-            FeeChargedEvent.OutputObject
-        >;
+    getLsrMinBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-        "RoleAdminChanged(bytes32,bytes32,bytes32)": TypedContractEvent<
-            RoleAdminChangedEvent.InputTuple,
-            RoleAdminChangedEvent.OutputTuple,
-            RoleAdminChangedEvent.OutputObject
-        >;
-        RoleAdminChanged: TypedContractEvent<
-            RoleAdminChangedEvent.InputTuple,
-            RoleAdminChangedEvent.OutputTuple,
-            RoleAdminChangedEvent.OutputObject
-        >;
+    getOwnerAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-        "RoleGranted(bytes32,address,address)": TypedContractEvent<
-            RoleGrantedEvent.InputTuple,
-            RoleGrantedEvent.OutputTuple,
-            RoleGrantedEvent.OutputObject
-        >;
-        RoleGranted: TypedContractEvent<
-            RoleGrantedEvent.InputTuple,
-            RoleGrantedEvent.OutputTuple,
-            RoleGrantedEvent.OutputObject
-        >;
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-        "RoleRevoked(bytes32,address,address)": TypedContractEvent<
-            RoleRevokedEvent.InputTuple,
-            RoleRevokedEvent.OutputTuple,
-            RoleRevokedEvent.OutputObject
-        >;
-        RoleRevoked: TypedContractEvent<
-            RoleRevokedEvent.InputTuple,
-            RoleRevokedEvent.OutputTuple,
-            RoleRevokedEvent.OutputObject
-        >;
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-        "SetLsrMinBalance(uint256)": TypedContractEvent<
-            SetLsrMinBalanceEvent.InputTuple,
-            SetLsrMinBalanceEvent.OutputTuple,
-            SetLsrMinBalanceEvent.OutputObject
-        >;
-        SetLsrMinBalance: TypedContractEvent<
-            SetLsrMinBalanceEvent.InputTuple,
-            SetLsrMinBalanceEvent.OutputTuple,
-            SetLsrMinBalanceEvent.OutputObject
-        >;
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-        "SetSwapFee(uint256)": TypedContractEvent<
-            SetSwapFeeEvent.InputTuple,
-            SetSwapFeeEvent.OutputTuple,
-            SetSwapFeeEvent.OutputObject
-        >;
-        SetSwapFee: TypedContractEvent<
-            SetSwapFeeEvent.InputTuple,
-            SetSwapFeeEvent.OutputTuple,
-            SetSwapFeeEvent.OutputObject
-        >;
+    getSwapFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-        "WithdrawFees(address,uint256)": TypedContractEvent<
-            WithdrawFeesEvent.InputTuple,
-            WithdrawFeesEvent.OutputTuple,
-            WithdrawFeesEvent.OutputObject
-        >;
-        WithdrawFees: TypedContractEvent<
-            WithdrawFeesEvent.InputTuple,
-            WithdrawFeesEvent.OutputTuple,
-            WithdrawFeesEvent.OutputObject
-        >;
-    };
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isAdmin(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    quote(
+      amountA: PromiseOrValue<BigNumberish>,
+      reserveA: PromiseOrValue<BigNumberish>,
+      reserveB: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    removeLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    removeLiquidityWithPermit(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      approveMax: PromiseOrValue<boolean>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokeAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setLsrMinBalance(
+      _lsrMinBalance: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setSwapFee(
+      _swapFee: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    swapExactTokensForTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    swapExactTokensForTokensSupportingFeeOnTransferTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    swapTokensForExactTokens(
+      amountOut: PromiseOrValue<BigNumberish>,
+      amountInMax: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    withdrawFees(
+      _token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+  };
+
+  populateTransaction: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    addAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      amountADesired: PromiseOrValue<BigNumberish>,
+      amountBDesired: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getAmountIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAmountOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      reserveIn: PromiseOrValue<BigNumberish>,
+      reserveOut: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAmountsIn(
+      amountOut: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAmountsOut(
+      amountIn: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getLsrMinBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getOwnerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSwapFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isAdmin(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    quote(
+      amountA: PromiseOrValue<BigNumberish>,
+      reserveA: PromiseOrValue<BigNumberish>,
+      reserveB: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    removeLiquidity(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    removeLiquidityWithPermit(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      amountAMin: PromiseOrValue<BigNumberish>,
+      amountBMin: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      approveMax: PromiseOrValue<boolean>,
+      v: PromiseOrValue<BigNumberish>,
+      r: PromiseOrValue<BytesLike>,
+      s: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeAdminAddress(
+      _adminAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setLsrMinBalance(
+      _lsrMinBalance: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSwapFee(
+      _swapFee: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapExactTokensForTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapExactTokensForTokensSupportingFeeOnTransferTokens(
+      amountIn: PromiseOrValue<BigNumberish>,
+      amountOutMin: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapTokensForExactTokens(
+      amountOut: PromiseOrValue<BigNumberish>,
+      amountInMax: PromiseOrValue<BigNumberish>,
+      path: PromiseOrValue<string>[],
+      to: PromiseOrValue<string>,
+      deadline: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawFees(
+      _token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+  };
 }

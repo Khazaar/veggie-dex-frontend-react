@@ -24,11 +24,10 @@ export interface IConnectService {
     tokenContracts: ITokenContract[];
     network: INetwork;
     defaultNetwork: INetwork;
-    provider: ethers.BrowserProvider;
-    signer: ethers.JsonRpcSigner;
-    isConnected: boolean;
-    walletConnected: Observable<void>;
-    walletConnected$(): Observable<void>;
+    provider: any;
+    signer: any;
+    walletConnected: Observable<string>;
+    walletConnected$(): Observable<string>;
     initConnectService(): Promise<void>;
     setNetwork(network: INetwork): void;
     getTokenContracts(): ITokenContract[];

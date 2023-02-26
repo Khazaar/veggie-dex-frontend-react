@@ -1,3 +1,4 @@
+import { ERC20Basic } from "./../smart-contracts/types/ERC20Basic";
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
 import { Subject } from "rxjs/internal/Subject";
@@ -27,12 +28,9 @@ import {
     PancakeRouter_mod__factory,
 } from "../smart-contracts/types";
 import { IConnectService } from "./interfaces/IConnect.service";
-import { initializeProvider } from "@metamask/providers";
-import LocalMessageDuplexStream from "post-message-stream";
-import detectEthereumProvider from "@metamask/detect-provider";
 
 export class ConnectService implements IConnectService {
-    public ADMIN_ROLE = ethers.solidityPackedKeccak256(["string"], ["ADMIN"]);
+    public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
     public contractPotato: ERC20Potato;
     public contractApple: ERC20Apple;
     public contractTomato: ERC20Tomato;
@@ -43,46 +41,26 @@ export class ConnectService implements IConnectService {
     public tokenContracts: ITokenContract[] = [];
     public network: INetwork;
     public defaultNetwork = Hardhat;
-    public provider: any;
-    public signer: any;
-    public isConnected: boolean = false;
-    public walletConnected = new Subject<void>();
-    public walletConnected$(): Observable<void> {
+    public provider: ethers.providers.Web3Provider;
+    public signer: ethers.providers.JsonRpcSigner;
+    public walletConnected = new Subject<string>();
+    public walletConnected$(): Observable<string> {
         return this.walletConnected.asObservable();
     }
 
     public async initConnectService() {
         try {
-            // await (window as any).ethereum.request({
-            //     method: "eth_requestAccounts",
-            // });
-
-            // if ((window as any) == null) {
-            //     console.log("MetaMask not installed; using read-only defaults");
-            //     //pthis.rovider = ethers.getDefaultProvider()
-            // } else {
-            this.provider = new ethers.BrowserProvider(
-                (window as any).etherium
+            await (window as any).ethereum.request({
+                method: "eth_requestAccounts",
+            });
+            this.provider = new ethers.providers.Web3Provider(
+                (window as any).ethereum
             );
-            // }
-
-            // this.provider = new ethers.BrowserProvider(
-            //     await detectEthereumProvider()
-            // );
-
-            //this.provider = new ethers.JsonRpcProvider("http://localhost:8545");
-
-            //await this.provider.ready;
-
-            // this.provider = new ethers.BrowserProvider(
-            //     (window as any).etherium
-            // );
-
             this.signer = await this.provider.getSigner();
             this.network = this.defaultNetwork;
+
             await this.fetchSmartContracts();
-            console.log(`Is connected? ${this.isConnected}`);
-            console.log("Account:", await this.signer.getAddress());
+            this.walletConnected.next(await this.signer.getAddress());
 
             //this.walletConnected.next();
         } catch (error) {
@@ -150,6 +128,6 @@ export class ConnectService implements IConnectService {
         }
     }
     public async getSignerBalance() {
-        return ethers.formatEther(await this.provider.getBalance("ethers.eth"));
+        return ethers.utils.formatEther(await this.signer.getBalance());
     }
 }

@@ -2,261 +2,356 @@
 /* tslint:disable */
 /* eslint-disable */
 import type {
-    BaseContract,
-    BigNumberish,
-    BytesLike,
-    FunctionFragment,
-    Result,
-    Interface,
-    EventFragment,
+  BaseContract,
+  BigNumber,
+  BigNumberish,
+  BytesLike,
+  CallOverrides,
+  ContractTransaction,
+  Overrides,
+  PopulatedTransaction,
+  Signer,
+  utils,
 } from "ethers";
-import type { AddressLike } from "ethers/types/address";
-import type { ContractRunner } from "ethers/types/providers";
-import type { ContractMethod } from "ethers/types/contract";
-import type { Listener } from "ethers/types/utils";
 import type {
-    TypedContractEvent,
-    TypedDeferredTopicFilter,
-    TypedEventLog,
-    TypedListener,
-    TypedContractMethod,
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
 } from "./common";
 
-export interface PancakeFactoryInterface extends Interface {
-    getFunction(
-        nameOrSignature:
-            | "INIT_CODE_PAIR_HASH"
-            | "allPairs"
-            | "allPairsLength"
-            | "createPair"
-            | "feeTo"
-            | "feeToSetter"
-            | "getPair"
-            | "setFeeTo"
-            | "setFeeToSetter"
-    ): FunctionFragment;
+export interface PancakeFactoryInterface extends utils.Interface {
+  functions: {
+    "INIT_CODE_PAIR_HASH()": FunctionFragment;
+    "allPairs(uint256)": FunctionFragment;
+    "allPairsLength()": FunctionFragment;
+    "createPair(address,address)": FunctionFragment;
+    "feeTo()": FunctionFragment;
+    "feeToSetter()": FunctionFragment;
+    "getPair(address,address)": FunctionFragment;
+    "setFeeTo(address)": FunctionFragment;
+    "setFeeToSetter(address)": FunctionFragment;
+  };
 
-    getEvent(nameOrSignatureOrTopic: "PairCreated"): EventFragment;
+  getFunction(
+    nameOrSignatureOrTopic:
+      | "INIT_CODE_PAIR_HASH"
+      | "allPairs"
+      | "allPairsLength"
+      | "createPair"
+      | "feeTo"
+      | "feeToSetter"
+      | "getPair"
+      | "setFeeTo"
+      | "setFeeToSetter"
+  ): FunctionFragment;
 
-    encodeFunctionData(
-        functionFragment: "INIT_CODE_PAIR_HASH",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "allPairs",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "allPairsLength",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "createPair",
-        values: [AddressLike, AddressLike]
-    ): string;
-    encodeFunctionData(functionFragment: "feeTo", values?: undefined): string;
-    encodeFunctionData(
-        functionFragment: "feeToSetter",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getPair",
-        values: [AddressLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setFeeTo",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setFeeToSetter",
-        values: [AddressLike]
-    ): string;
+  encodeFunctionData(
+    functionFragment: "INIT_CODE_PAIR_HASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allPairs",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allPairsLength",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createPair",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "feeTo", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "feeToSetter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPair",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setFeeTo",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setFeeToSetter",
+    values: [PromiseOrValue<string>]
+  ): string;
 
-    decodeFunctionResult(
-        functionFragment: "INIT_CODE_PAIR_HASH",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "allPairs", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "allPairsLength",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "createPair",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "feeTo", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "feeToSetter",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "getPair", data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: "setFeeTo", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "setFeeToSetter",
-        data: BytesLike
-    ): Result;
+  decodeFunctionResult(
+    functionFragment: "INIT_CODE_PAIR_HASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "allPairs", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "allPairsLength",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "createPair", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "feeTo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "feeToSetter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getPair", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setFeeTo", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setFeeToSetter",
+    data: BytesLike
+  ): Result;
+
+  events: {
+    "PairCreated(address,address,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "PairCreated"): EventFragment;
 }
 
-export namespace PairCreatedEvent {
-    export type InputTuple = [
-        token0: AddressLike,
-        token1: AddressLike,
-        pair: AddressLike,
-        arg3: BigNumberish
-    ];
-    export type OutputTuple = [
-        token0: string,
-        token1: string,
-        pair: string,
-        arg3: bigint
-    ];
-    export interface OutputObject {
-        token0: string;
-        token1: string;
-        pair: string;
-        arg3: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface PairCreatedEventObject {
+  token0: string;
+  token1: string;
+  pair: string;
+  arg3: BigNumber;
 }
+export type PairCreatedEvent = TypedEvent<
+  [string, string, string, BigNumber],
+  PairCreatedEventObject
+>;
+
+export type PairCreatedEventFilter = TypedEventFilter<PairCreatedEvent>;
 
 export interface PancakeFactory extends BaseContract {
-    connect(runner?: ContractRunner | null): BaseContract;
-    attach(addressOrName: AddressLike): this;
-    deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-    interface: PancakeFactoryInterface;
+  interface: PancakeFactoryInterface;
 
-    queryFilter<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
-    queryFilter<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TEvent extends TypedEvent>(
+    event: TypedEventFilter<TEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TEvent>>;
 
-    on<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    on<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
-    once<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    once<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  functions: {
+    INIT_CODE_PAIR_HASH(overrides?: CallOverrides): Promise<[string]>;
 
-    listeners<TCEvent extends TypedContractEvent>(
-        event: TCEvent
-    ): Promise<Array<TypedListener<TCEvent>>>;
-    listeners(eventName?: string): Promise<Array<Listener>>;
-    removeAllListeners<TCEvent extends TypedContractEvent>(
-        event?: TCEvent
-    ): Promise<this>;
+    allPairs(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
-    INIT_CODE_PAIR_HASH: TypedContractMethod<[], [string], "view">;
+    allPairsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    allPairs: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
+    createPair(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    allPairsLength: TypedContractMethod<[], [bigint], "view">;
+    feeTo(overrides?: CallOverrides): Promise<[string]>;
 
-    createPair: TypedContractMethod<
-        [tokenA: AddressLike, tokenB: AddressLike],
-        [string],
-        "nonpayable"
-    >;
+    feeToSetter(overrides?: CallOverrides): Promise<[string]>;
 
-    feeTo: TypedContractMethod<[], [string], "view">;
+    getPair(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
-    feeToSetter: TypedContractMethod<[], [string], "view">;
+    setFeeTo(
+      _feeTo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    getPair: TypedContractMethod<
-        [arg0: AddressLike, arg1: AddressLike],
-        [string],
-        "view"
-    >;
+    setFeeToSetter(
+      _feeToSetter: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
-    setFeeTo: TypedContractMethod<[_feeTo: AddressLike], [void], "nonpayable">;
+  INIT_CODE_PAIR_HASH(overrides?: CallOverrides): Promise<string>;
 
-    setFeeToSetter: TypedContractMethod<
-        [_feeToSetter: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+  allPairs(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-    getFunction<T extends ContractMethod = ContractMethod>(
-        key: string | FunctionFragment
-    ): T;
+  allPairsLength(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getFunction(
-        nameOrSignature: "INIT_CODE_PAIR_HASH"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "allPairs"
-    ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
-    getFunction(
-        nameOrSignature: "allPairsLength"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "createPair"
-    ): TypedContractMethod<
-        [tokenA: AddressLike, tokenB: AddressLike],
-        [string],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "feeTo"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "feeToSetter"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "getPair"
-    ): TypedContractMethod<
-        [arg0: AddressLike, arg1: AddressLike],
-        [string],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "setFeeTo"
-    ): TypedContractMethod<[_feeTo: AddressLike], [void], "nonpayable">;
-    getFunction(
-        nameOrSignature: "setFeeToSetter"
-    ): TypedContractMethod<[_feeToSetter: AddressLike], [void], "nonpayable">;
+  createPair(
+    tokenA: PromiseOrValue<string>,
+    tokenB: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-    getEvent(
-        key: "PairCreated"
-    ): TypedContractEvent<
-        PairCreatedEvent.InputTuple,
-        PairCreatedEvent.OutputTuple,
-        PairCreatedEvent.OutputObject
-    >;
+  feeTo(overrides?: CallOverrides): Promise<string>;
 
-    filters: {
-        "PairCreated(address,address,address,uint256)": TypedContractEvent<
-            PairCreatedEvent.InputTuple,
-            PairCreatedEvent.OutputTuple,
-            PairCreatedEvent.OutputObject
-        >;
-        PairCreated: TypedContractEvent<
-            PairCreatedEvent.InputTuple,
-            PairCreatedEvent.OutputTuple,
-            PairCreatedEvent.OutputObject
-        >;
-    };
+  feeToSetter(overrides?: CallOverrides): Promise<string>;
+
+  getPair(
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  setFeeTo(
+    _feeTo: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setFeeToSetter(
+    _feeToSetter: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  callStatic: {
+    INIT_CODE_PAIR_HASH(overrides?: CallOverrides): Promise<string>;
+
+    allPairs(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    allPairsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    createPair(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    feeTo(overrides?: CallOverrides): Promise<string>;
+
+    feeToSetter(overrides?: CallOverrides): Promise<string>;
+
+    getPair(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    setFeeTo(
+      _feeTo: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setFeeToSetter(
+      _feeToSetter: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+  };
+
+  filters: {
+    "PairCreated(address,address,address,uint256)"(
+      token0?: PromiseOrValue<string> | null,
+      token1?: PromiseOrValue<string> | null,
+      pair?: null,
+      arg3?: null
+    ): PairCreatedEventFilter;
+    PairCreated(
+      token0?: PromiseOrValue<string> | null,
+      token1?: PromiseOrValue<string> | null,
+      pair?: null,
+      arg3?: null
+    ): PairCreatedEventFilter;
+  };
+
+  estimateGas: {
+    INIT_CODE_PAIR_HASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    allPairs(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    allPairsLength(overrides?: CallOverrides): Promise<BigNumber>;
+
+    createPair(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    feeTo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    feeToSetter(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPair(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    setFeeTo(
+      _feeTo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setFeeToSetter(
+      _feeToSetter: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+  };
+
+  populateTransaction: {
+    INIT_CODE_PAIR_HASH(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    allPairs(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    allPairsLength(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    createPair(
+      tokenA: PromiseOrValue<string>,
+      tokenB: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    feeTo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    feeToSetter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getPair(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    setFeeTo(
+      _feeTo: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setFeeToSetter(
+      _feeToSetter: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+  };
 }

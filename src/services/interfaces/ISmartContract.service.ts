@@ -1,5 +1,5 @@
 import { BlockchainSubscriptions } from "../blockchainSubscriptions.service";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
     IPair,
     Potato,
@@ -19,19 +19,18 @@ export interface ISmartContractService {
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;
-    mintTokens(contract: ERC20Basic, amount: BigInt): Promise<void>;
-    getTokensBalance(contract: ERC20Basic): Promise<BigInt>;
-    getSignerBalance(): Promise<string>;
+    mintTokens(contract: ERC20Basic, amount: BigNumber): Promise<void>;
+    getTokensBalance(contract: ERC20Basic): Promise<BigNumber>;
     addLiquidity(
         contractA: ERC20Basic,
         contractB: ERC20Basic,
-        amountA: BigInt,
-        amountB: BigInt
+        amountA: BigNumber,
+        amountB: BigNumber
     ): Promise<void>;
     swap(
         contractA: ERC20Basic,
         contractB: ERC20Basic,
-        amountA: BigInt
+        amountA: BigNumber
     ): Promise<void>;
     getIContractByAddress(address: string): Promise<ITokenContract>;
     getPairs(): Promise<IPair[]>;

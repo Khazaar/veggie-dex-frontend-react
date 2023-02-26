@@ -1,4 +1,8 @@
-import ethers from "ethers";
+import { ERC20LSR } from "./types/ERC20LSR";
+import { ERC20Tomato } from "./types/ERC20Tomato";
+import { ERC20Potato } from "./types/ERC20Potato";
+import { ERC20Apple } from "./types/ERC20Apple";
+import ethers, { BigNumber } from "ethers";
 import { ERC20Basic, PancakePair } from "./types";
 
 export interface ITokenContract {
@@ -21,8 +25,8 @@ export interface IPair {
     instance: PancakePair;
     token0: ITokenContract;
     token1: ITokenContract;
-    reserve0: BigInt;
-    reserve1: BigInt;
+    reserve0: BigNumber;
+    reserve1: BigNumber;
 }
 export const Apple: ITokenContract = {
     nameLong: "ERC20 Apple",

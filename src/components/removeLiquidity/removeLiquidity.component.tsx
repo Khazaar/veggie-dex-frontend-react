@@ -15,9 +15,10 @@ import {
 import "./style.css";
 import "../../assets/styles/styles.css";
 import { IPair } from "../../smart-contracts/smart-contract-data";
-import { useRefresh } from "../../hooks/useRefresh";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
+import { useTokenTransferSubscription } from "../../hooks";
+import { BigNumber } from "ethers";
 
 export const RemoveLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -31,7 +32,7 @@ export const RemoveLiquidityComponent = () => {
             await smartContractService.removeLiquidity(
                 selectedPair.token0.instance,
                 selectedPair.token1.instance,
-                BigInt(liquidityToRmove)
+                BigNumber.from(liquidityToRmove)
             );
         } catch (error) {
             console.log(error);
@@ -62,7 +63,7 @@ export const RemoveLiquidityComponent = () => {
             )
         );
     };
-    useRefresh(smartContractService, fetchData);
+    useTokenTransferSubscription(smartContractService, fetchData);
     return (
         <div>
             {pairs.length > 0 && (

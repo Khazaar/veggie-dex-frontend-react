@@ -14,9 +14,10 @@ import {
 } from "@mui/material";
 
 import "./style.css";
-import { useRefresh } from "../../hooks/useRefresh";
+
 import { ILiquidityPools } from "../../interfaces/liquidityPools.interface";
 import { IPair } from "../../smart-contracts/smart-contract-data";
+import { useTokenTransferSubscription } from "../../hooks";
 
 export const LiquidityPoolsComponent = () => {
     const [liquidityPoolsData, setLiquidityPoolsData] = useState<
@@ -40,7 +41,7 @@ export const LiquidityPoolsComponent = () => {
         setLiquidityPoolsData(updatedLiquidityPoolsData);
     };
 
-    useRefresh(smartContractService, fetchData);
+    useTokenTransferSubscription(smartContractService, fetchData);
 
     return (
         <Card className="LiquidityPoolsComponent">

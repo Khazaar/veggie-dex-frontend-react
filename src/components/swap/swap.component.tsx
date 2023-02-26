@@ -25,6 +25,7 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
+import { BigNumber } from "ethers";
 
 export const SwapComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -36,7 +37,7 @@ export const SwapComponent = () => {
         await smartContractService.swap(
             tokenA.instance,
             tokenB.instance,
-            BigInt(amountA)
+            BigNumber.from(amountA)
         );
     };
 

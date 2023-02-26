@@ -5,19 +5,24 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import "./style.css";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
+import { useWalletSubscription } from "../../hooks";
 
 export const ConnectWalletComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     const [message, setMessage] = useState("Please, connect your wallet");
     const [buttonText, setButtonText] = useState("Connect wallet");
-    useEffect(() => {
-        const fetchData = async () => {
-            await smartContractService.connectService.initConnectService();
-        };
-        fetchData().catch((error) => {
-            console.log(error);
-        });
-    });
+
+    // const fetchData = async () => {
+    //     await smartContractService.connectService.initConnectService();
+    // };
+    // useEffect(() => {
+    //     fetchData().catch((error) => {
+    //         console.log(error);
+    //     });
+    // });
+
+    // useWalletSubscription(smartContractService, fetchData);
+    smartContractService.connectService.initConnectService();
 
     async function clickConnect() {
         try {

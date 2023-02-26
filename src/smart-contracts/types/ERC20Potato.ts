@@ -2,906 +2,1166 @@
 /* tslint:disable */
 /* eslint-disable */
 import type {
-    BaseContract,
-    BigNumberish,
-    BytesLike,
-    FunctionFragment,
-    Result,
-    Interface,
-    EventFragment,
+  BaseContract,
+  BigNumber,
+  BigNumberish,
+  BytesLike,
+  CallOverrides,
+  ContractTransaction,
+  Overrides,
+  PopulatedTransaction,
+  Signer,
+  utils,
 } from "ethers";
-import type { AddressLike } from "ethers/types/address";
-import type { ContractRunner } from "ethers/types/providers";
-import type { ContractMethod } from "ethers/types/contract";
-import type { Listener } from "ethers/types/utils";
 import type {
-    TypedContractEvent,
-    TypedDeferredTopicFilter,
-    TypedEventLog,
-    TypedListener,
-    TypedContractMethod,
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+  PromiseOrValue,
 } from "./common";
 
-export interface ERC20PotatoInterface extends Interface {
-    getFunction(
-        nameOrSignature:
-            | "DEFAULT_ADMIN_ROLE"
-            | "OWNER_ROLE"
-            | "allowance"
-            | "approve"
-            | "balanceOf"
-            | "burnAllTokens"
-            | "decimals"
-            | "decreaseAllowance"
-            | "getMintLimitAmount"
-            | "getMintLimitPeriodSeconds"
-            | "getRoleAdmin"
-            | "getRoleMember"
-            | "getRoleMemberCount"
-            | "getTokens"
-            | "grantRole"
-            | "hasRole"
-            | "increaseAllowance"
-            | "lastMint"
-            | "mintedInPeriod"
-            | "name"
-            | "renounceRole"
-            | "revokeRole"
-            | "setMintLimitAmount"
-            | "setMintLimitPeriodSeconds"
-            | "symbol"
-            | "totalSupply"
-            | "transfer"
-            | "transferFrom"
-    ): FunctionFragment;
+export interface ERC20PotatoInterface extends utils.Interface {
+  functions: {
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "OWNER_ROLE()": FunctionFragment;
+    "allowance(address,address)": FunctionFragment;
+    "approve(address,uint256)": FunctionFragment;
+    "balanceOf(address)": FunctionFragment;
+    "burnAllTokens()": FunctionFragment;
+    "decimals()": FunctionFragment;
+    "decreaseAllowance(address,uint256)": FunctionFragment;
+    "getMintLimitAmount()": FunctionFragment;
+    "getMintLimitPeriodSeconds()": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "getRoleMember(bytes32,uint256)": FunctionFragment;
+    "getRoleMemberCount(bytes32)": FunctionFragment;
+    "getTokens(uint256)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "increaseAllowance(address,uint256)": FunctionFragment;
+    "lastMint(address)": FunctionFragment;
+    "mintedInPeriod(address)": FunctionFragment;
+    "name()": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
+    "setMintLimitAmount(uint256)": FunctionFragment;
+    "setMintLimitPeriodSeconds(uint256)": FunctionFragment;
+    "symbol()": FunctionFragment;
+    "totalSupply()": FunctionFragment;
+    "transfer(address,uint256)": FunctionFragment;
+    "transferFrom(address,address,uint256)": FunctionFragment;
+  };
 
-    getEvent(
-        nameOrSignatureOrTopic:
-            | "Approval"
-            | "MintLimitAmountSet"
-            | "MintLimitPeriodSecondsSet"
-            | "MintRevertedAmount"
-            | "MintRevertedPeriod"
-            | "RoleAdminChanged"
-            | "RoleGranted"
-            | "RoleRevoked"
-            | "Transfer"
-    ): EventFragment;
+  getFunction(
+    nameOrSignatureOrTopic:
+      | "DEFAULT_ADMIN_ROLE"
+      | "OWNER_ROLE"
+      | "allowance"
+      | "approve"
+      | "balanceOf"
+      | "burnAllTokens"
+      | "decimals"
+      | "decreaseAllowance"
+      | "getMintLimitAmount"
+      | "getMintLimitPeriodSeconds"
+      | "getRoleAdmin"
+      | "getRoleMember"
+      | "getRoleMemberCount"
+      | "getTokens"
+      | "grantRole"
+      | "hasRole"
+      | "increaseAllowance"
+      | "lastMint"
+      | "mintedInPeriod"
+      | "name"
+      | "renounceRole"
+      | "revokeRole"
+      | "setMintLimitAmount"
+      | "setMintLimitPeriodSeconds"
+      | "symbol"
+      | "totalSupply"
+      | "transfer"
+      | "transferFrom"
+  ): FunctionFragment;
 
-    encodeFunctionData(
-        functionFragment: "DEFAULT_ADMIN_ROLE",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "OWNER_ROLE",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "allowance",
-        values: [AddressLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "approve",
-        values: [AddressLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "balanceOf",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "burnAllTokens",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "decimals",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "decreaseAllowance",
-        values: [AddressLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getMintLimitAmount",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getMintLimitPeriodSeconds",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleAdmin",
-        values: [BytesLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleMember",
-        values: [BytesLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getRoleMemberCount",
-        values: [BytesLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "getTokens",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "grantRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "hasRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "increaseAllowance",
-        values: [AddressLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "lastMint",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "mintedInPeriod",
-        values: [AddressLike]
-    ): string;
-    encodeFunctionData(functionFragment: "name", values?: undefined): string;
-    encodeFunctionData(
-        functionFragment: "renounceRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "revokeRole",
-        values: [BytesLike, AddressLike]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setMintLimitAmount",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "setMintLimitPeriodSeconds",
-        values: [BigNumberish]
-    ): string;
-    encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-    encodeFunctionData(
-        functionFragment: "totalSupply",
-        values?: undefined
-    ): string;
-    encodeFunctionData(
-        functionFragment: "transfer",
-        values: [AddressLike, BigNumberish]
-    ): string;
-    encodeFunctionData(
-        functionFragment: "transferFrom",
-        values: [AddressLike, AddressLike, BigNumberish]
-    ): string;
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OWNER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "allowance",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "burnAllTokens",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "decreaseAllowance",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMintLimitAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMintLimitPeriodSeconds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMember",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRoleMemberCount",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokens",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "increaseAllowance",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastMint",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintedInPeriod",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMintLimitAmount",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMintLimitPeriodSeconds",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transfer",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferFrom",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
 
-    decodeFunctionResult(
-        functionFragment: "DEFAULT_ADMIN_ROLE",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "OWNER_ROLE",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "allowance",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "balanceOf",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "burnAllTokens",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "decreaseAllowance",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getMintLimitAmount",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getMintLimitPeriodSeconds",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleAdmin",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleMember",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getRoleMemberCount",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "getTokens",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "grantRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "increaseAllowance",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "lastMint", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "mintedInPeriod",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "renounceRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "revokeRole",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "setMintLimitAmount",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(
-        functionFragment: "setMintLimitPeriodSeconds",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "totalSupply",
-        data: BytesLike
-    ): Result;
-    decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
-    decodeFunctionResult(
-        functionFragment: "transferFrom",
-        data: BytesLike
-    ): Result;
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "OWNER_ROLE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "burnAllTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMintLimitAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMintLimitPeriodSeconds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMember",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleMemberCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getTokens", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "lastMint", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "mintedInPeriod",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setMintLimitAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMintLimitPeriodSeconds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "transfer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
+
+  events: {
+    "Approval(address,address,uint256)": EventFragment;
+    "MintLimitAmountSet(uint256)": EventFragment;
+    "MintLimitPeriodSecondsSet(uint256)": EventFragment;
+    "MintRevertedAmount(uint256,uint256)": EventFragment;
+    "MintRevertedPeriod(uint256,uint256)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "Transfer(address,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MintLimitAmountSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MintLimitPeriodSecondsSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MintRevertedAmount"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MintRevertedPeriod"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export namespace ApprovalEvent {
-    export type InputTuple = [
-        owner: AddressLike,
-        spender: AddressLike,
-        value: BigNumberish
-    ];
-    export type OutputTuple = [owner: string, spender: string, value: bigint];
-    export interface OutputObject {
-        owner: string;
-        spender: string;
-        value: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface ApprovalEventObject {
+  owner: string;
+  spender: string;
+  value: BigNumber;
 }
+export type ApprovalEvent = TypedEvent<
+  [string, string, BigNumber],
+  ApprovalEventObject
+>;
 
-export namespace MintLimitAmountSetEvent {
-    export type InputTuple = [mintLimitAmount: BigNumberish];
-    export type OutputTuple = [mintLimitAmount: bigint];
-    export interface OutputObject {
-        mintLimitAmount: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
-export namespace MintLimitPeriodSecondsSetEvent {
-    export type InputTuple = [mintLimitPeriodSeconds: BigNumberish];
-    export type OutputTuple = [mintLimitPeriodSeconds: bigint];
-    export interface OutputObject {
-        mintLimitPeriodSeconds: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface MintLimitAmountSetEventObject {
+  mintLimitAmount: BigNumber;
 }
+export type MintLimitAmountSetEvent = TypedEvent<
+  [BigNumber],
+  MintLimitAmountSetEventObject
+>;
 
-export namespace MintRevertedAmountEvent {
-    export type InputTuple = [
-        askedAmount: BigNumberish,
-        mintLimitAmount: BigNumberish
-    ];
-    export type OutputTuple = [askedAmount: bigint, mintLimitAmount: bigint];
-    export interface OutputObject {
-        askedAmount: bigint;
-        mintLimitAmount: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type MintLimitAmountSetEventFilter =
+  TypedEventFilter<MintLimitAmountSetEvent>;
 
-export namespace MintRevertedPeriodEvent {
-    export type InputTuple = [
-        timePassedSeconds: BigNumberish,
-        mintLimitPeriodSeconds: BigNumberish
-    ];
-    export type OutputTuple = [
-        timePassedSeconds: bigint,
-        mintLimitPeriodSeconds: bigint
-    ];
-    export interface OutputObject {
-        timePassedSeconds: bigint;
-        mintLimitPeriodSeconds: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface MintLimitPeriodSecondsSetEventObject {
+  mintLimitPeriodSeconds: BigNumber;
 }
+export type MintLimitPeriodSecondsSetEvent = TypedEvent<
+  [BigNumber],
+  MintLimitPeriodSecondsSetEventObject
+>;
 
-export namespace RoleAdminChangedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        previousAdminRole: BytesLike,
-        newAdminRole: BytesLike
-    ];
-    export type OutputTuple = [
-        role: string,
-        previousAdminRole: string,
-        newAdminRole: string
-    ];
-    export interface OutputObject {
-        role: string;
-        previousAdminRole: string;
-        newAdminRole: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type MintLimitPeriodSecondsSetEventFilter =
+  TypedEventFilter<MintLimitPeriodSecondsSetEvent>;
 
-export namespace RoleGrantedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        account: AddressLike,
-        sender: AddressLike
-    ];
-    export type OutputTuple = [role: string, account: string, sender: string];
-    export interface OutputObject {
-        role: string;
-        account: string;
-        sender: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface MintRevertedAmountEventObject {
+  askedAmount: BigNumber;
+  mintLimitAmount: BigNumber;
 }
+export type MintRevertedAmountEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  MintRevertedAmountEventObject
+>;
 
-export namespace RoleRevokedEvent {
-    export type InputTuple = [
-        role: BytesLike,
-        account: AddressLike,
-        sender: AddressLike
-    ];
-    export type OutputTuple = [role: string, account: string, sender: string];
-    export interface OutputObject {
-        role: string;
-        account: string;
-        sender: string;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
-}
+export type MintRevertedAmountEventFilter =
+  TypedEventFilter<MintRevertedAmountEvent>;
 
-export namespace TransferEvent {
-    export type InputTuple = [
-        from: AddressLike,
-        to: AddressLike,
-        value: BigNumberish
-    ];
-    export type OutputTuple = [from: string, to: string, value: bigint];
-    export interface OutputObject {
-        from: string;
-        to: string;
-        value: bigint;
-    }
-    export type Event = TypedContractEvent<
-        InputTuple,
-        OutputTuple,
-        OutputObject
-    >;
-    export type Filter = TypedDeferredTopicFilter<Event>;
+export interface MintRevertedPeriodEventObject {
+  timePassedSeconds: BigNumber;
+  mintLimitPeriodSeconds: BigNumber;
 }
+export type MintRevertedPeriodEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  MintRevertedPeriodEventObject
+>;
+
+export type MintRevertedPeriodEventFilter =
+  TypedEventFilter<MintRevertedPeriodEvent>;
+
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+}
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
+>;
+
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
+
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
+>;
+
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
+
+export interface TransferEventObject {
+  from: string;
+  to: string;
+  value: BigNumber;
+}
+export type TransferEvent = TypedEvent<
+  [string, string, BigNumber],
+  TransferEventObject
+>;
+
+export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export interface ERC20Potato extends BaseContract {
-    connect(runner?: ContractRunner | null): BaseContract;
-    attach(addressOrName: AddressLike): this;
-    deployed(): Promise<this>;
+  connect(signerOrProvider: Signer | Provider | string): this;
+  attach(addressOrName: string): this;
+  deployed(): Promise<this>;
 
-    interface: ERC20PotatoInterface;
+  interface: ERC20PotatoInterface;
 
-    queryFilter<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
-    queryFilter<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        fromBlockOrBlockhash?: string | number | undefined,
-        toBlock?: string | number | undefined
-    ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TEvent extends TypedEvent>(
+    event: TypedEventFilter<TEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TEvent>>;
 
-    on<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    on<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
+  listeners(eventName?: string): Array<Listener>;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
+  removeAllListeners(eventName?: string): this;
+  off: OnEvent<this>;
+  on: OnEvent<this>;
+  once: OnEvent<this>;
+  removeListener: OnEvent<this>;
 
-    once<TCEvent extends TypedContractEvent>(
-        event: TCEvent,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
-    once<TCEvent extends TypedContractEvent>(
-        filter: TypedDeferredTopicFilter<TCEvent>,
-        listener: TypedListener<TCEvent>
-    ): Promise<this>;
+  functions: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    listeners<TCEvent extends TypedContractEvent>(
-        event: TCEvent
-    ): Promise<Array<TypedListener<TCEvent>>>;
-    listeners(eventName?: string): Promise<Array<Listener>>;
-    removeAllListeners<TCEvent extends TypedContractEvent>(
-        event?: TCEvent
-    ): Promise<this>;
+    OWNER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
-    DEFAULT_ADMIN_ROLE: TypedContractMethod<[], [string], "view">;
+    allowance(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    OWNER_ROLE: TypedContractMethod<[], [string], "view">;
+    approve(
+      spender: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    allowance: TypedContractMethod<
-        [owner: AddressLike, spender: AddressLike],
-        [bigint],
-        "view"
-    >;
+    balanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    approve: TypedContractMethod<
-        [spender: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+    burnAllTokens(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
+    decimals(overrides?: CallOverrides): Promise<[number]>;
 
-    burnAllTokens: TypedContractMethod<[], [void], "nonpayable">;
+    decreaseAllowance(
+      spender: PromiseOrValue<string>,
+      subtractedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    decimals: TypedContractMethod<[], [bigint], "view">;
+    getMintLimitAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    decreaseAllowance: TypedContractMethod<
-        [spender: AddressLike, subtractedValue: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+    getMintLimitPeriodSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getMintLimitAmount: TypedContractMethod<[], [bigint], "view">;
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
-    getMintLimitPeriodSeconds: TypedContractMethod<[], [bigint], "view">;
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
-    getRoleAdmin: TypedContractMethod<[role: BytesLike], [string], "view">;
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    getRoleMember: TypedContractMethod<
-        [role: BytesLike, index: BigNumberish],
-        [string],
-        "view"
-    >;
+    getTokens(
+      askedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    getRoleMemberCount: TypedContractMethod<
-        [role: BytesLike],
-        [bigint],
-        "view"
-    >;
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    getTokens: TypedContractMethod<
-        [askedAmount: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
-    grantRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+    increaseAllowance(
+      spender: PromiseOrValue<string>,
+      addedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    hasRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [boolean],
-        "view"
-    >;
+    lastMint(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    increaseAllowance: TypedContractMethod<
-        [spender: AddressLike, addedValue: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+    mintedInPeriod(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
-    lastMint: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    name(overrides?: CallOverrides): Promise<[string]>;
 
-    mintedInPeriod: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    name: TypedContractMethod<[], [string], "view">;
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    renounceRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+    setMintLimitAmount(
+      mintLimitAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    revokeRole: TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
+    setMintLimitPeriodSeconds(
+      mintLimitPeriodSeconds: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    setMintLimitAmount: TypedContractMethod<
-        [mintLimitAmount: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    setMintLimitPeriodSeconds: TypedContractMethod<
-        [mintLimitPeriodSeconds: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    symbol: TypedContractMethod<[], [string], "view">;
+    transfer(
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
-    totalSupply: TypedContractMethod<[], [bigint], "view">;
+    transferFrom(
+      from: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
-    transfer: TypedContractMethod<
-        [to: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
-    transferFrom: TypedContractMethod<
-        [from: AddressLike, to: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+  OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
 
-    getFunction<T extends ContractMethod = ContractMethod>(
-        key: string | FunctionFragment
-    ): T;
+  allowance(
+    owner: PromiseOrValue<string>,
+    spender: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-    getFunction(
-        nameOrSignature: "DEFAULT_ADMIN_ROLE"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "OWNER_ROLE"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "allowance"
-    ): TypedContractMethod<
-        [owner: AddressLike, spender: AddressLike],
-        [bigint],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "approve"
-    ): TypedContractMethod<
-        [spender: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "balanceOf"
-    ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "burnAllTokens"
-    ): TypedContractMethod<[], [void], "nonpayable">;
-    getFunction(
-        nameOrSignature: "decimals"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "decreaseAllowance"
-    ): TypedContractMethod<
-        [spender: AddressLike, subtractedValue: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "getMintLimitAmount"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "getMintLimitPeriodSeconds"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "getRoleAdmin"
-    ): TypedContractMethod<[role: BytesLike], [string], "view">;
-    getFunction(
-        nameOrSignature: "getRoleMember"
-    ): TypedContractMethod<
-        [role: BytesLike, index: BigNumberish],
-        [string],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "getRoleMemberCount"
-    ): TypedContractMethod<[role: BytesLike], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "getTokens"
-    ): TypedContractMethod<[askedAmount: BigNumberish], [void], "nonpayable">;
-    getFunction(
-        nameOrSignature: "grantRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "hasRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [boolean],
-        "view"
-    >;
-    getFunction(
-        nameOrSignature: "increaseAllowance"
-    ): TypedContractMethod<
-        [spender: AddressLike, addedValue: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "lastMint"
-    ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "mintedInPeriod"
-    ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "name"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "renounceRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "revokeRole"
-    ): TypedContractMethod<
-        [role: BytesLike, account: AddressLike],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "setMintLimitAmount"
-    ): TypedContractMethod<
-        [mintLimitAmount: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "setMintLimitPeriodSeconds"
-    ): TypedContractMethod<
-        [mintLimitPeriodSeconds: BigNumberish],
-        [void],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "symbol"
-    ): TypedContractMethod<[], [string], "view">;
-    getFunction(
-        nameOrSignature: "totalSupply"
-    ): TypedContractMethod<[], [bigint], "view">;
-    getFunction(
-        nameOrSignature: "transfer"
-    ): TypedContractMethod<
-        [to: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
-    getFunction(
-        nameOrSignature: "transferFrom"
-    ): TypedContractMethod<
-        [from: AddressLike, to: AddressLike, amount: BigNumberish],
-        [boolean],
-        "nonpayable"
-    >;
+  approve(
+    spender: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-    getEvent(
-        key: "Approval"
-    ): TypedContractEvent<
-        ApprovalEvent.InputTuple,
-        ApprovalEvent.OutputTuple,
-        ApprovalEvent.OutputObject
-    >;
-    getEvent(
-        key: "MintLimitAmountSet"
-    ): TypedContractEvent<
-        MintLimitAmountSetEvent.InputTuple,
-        MintLimitAmountSetEvent.OutputTuple,
-        MintLimitAmountSetEvent.OutputObject
-    >;
-    getEvent(
-        key: "MintLimitPeriodSecondsSet"
-    ): TypedContractEvent<
-        MintLimitPeriodSecondsSetEvent.InputTuple,
-        MintLimitPeriodSecondsSetEvent.OutputTuple,
-        MintLimitPeriodSecondsSetEvent.OutputObject
-    >;
-    getEvent(
-        key: "MintRevertedAmount"
-    ): TypedContractEvent<
-        MintRevertedAmountEvent.InputTuple,
-        MintRevertedAmountEvent.OutputTuple,
-        MintRevertedAmountEvent.OutputObject
-    >;
-    getEvent(
-        key: "MintRevertedPeriod"
-    ): TypedContractEvent<
-        MintRevertedPeriodEvent.InputTuple,
-        MintRevertedPeriodEvent.OutputTuple,
-        MintRevertedPeriodEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleAdminChanged"
-    ): TypedContractEvent<
-        RoleAdminChangedEvent.InputTuple,
-        RoleAdminChangedEvent.OutputTuple,
-        RoleAdminChangedEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleGranted"
-    ): TypedContractEvent<
-        RoleGrantedEvent.InputTuple,
-        RoleGrantedEvent.OutputTuple,
-        RoleGrantedEvent.OutputObject
-    >;
-    getEvent(
-        key: "RoleRevoked"
-    ): TypedContractEvent<
-        RoleRevokedEvent.InputTuple,
-        RoleRevokedEvent.OutputTuple,
-        RoleRevokedEvent.OutputObject
-    >;
-    getEvent(
-        key: "Transfer"
-    ): TypedContractEvent<
-        TransferEvent.InputTuple,
-        TransferEvent.OutputTuple,
-        TransferEvent.OutputObject
-    >;
+  balanceOf(
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-    filters: {
-        "Approval(address,address,uint256)": TypedContractEvent<
-            ApprovalEvent.InputTuple,
-            ApprovalEvent.OutputTuple,
-            ApprovalEvent.OutputObject
-        >;
-        Approval: TypedContractEvent<
-            ApprovalEvent.InputTuple,
-            ApprovalEvent.OutputTuple,
-            ApprovalEvent.OutputObject
-        >;
+  burnAllTokens(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-        "MintLimitAmountSet(uint256)": TypedContractEvent<
-            MintLimitAmountSetEvent.InputTuple,
-            MintLimitAmountSetEvent.OutputTuple,
-            MintLimitAmountSetEvent.OutputObject
-        >;
-        MintLimitAmountSet: TypedContractEvent<
-            MintLimitAmountSetEvent.InputTuple,
-            MintLimitAmountSetEvent.OutputTuple,
-            MintLimitAmountSetEvent.OutputObject
-        >;
+  decimals(overrides?: CallOverrides): Promise<number>;
 
-        "MintLimitPeriodSecondsSet(uint256)": TypedContractEvent<
-            MintLimitPeriodSecondsSetEvent.InputTuple,
-            MintLimitPeriodSecondsSetEvent.OutputTuple,
-            MintLimitPeriodSecondsSetEvent.OutputObject
-        >;
-        MintLimitPeriodSecondsSet: TypedContractEvent<
-            MintLimitPeriodSecondsSetEvent.InputTuple,
-            MintLimitPeriodSecondsSetEvent.OutputTuple,
-            MintLimitPeriodSecondsSetEvent.OutputObject
-        >;
+  decreaseAllowance(
+    spender: PromiseOrValue<string>,
+    subtractedValue: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
-        "MintRevertedAmount(uint256,uint256)": TypedContractEvent<
-            MintRevertedAmountEvent.InputTuple,
-            MintRevertedAmountEvent.OutputTuple,
-            MintRevertedAmountEvent.OutputObject
-        >;
-        MintRevertedAmount: TypedContractEvent<
-            MintRevertedAmountEvent.InputTuple,
-            MintRevertedAmountEvent.OutputTuple,
-            MintRevertedAmountEvent.OutputObject
-        >;
+  getMintLimitAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
-        "MintRevertedPeriod(uint256,uint256)": TypedContractEvent<
-            MintRevertedPeriodEvent.InputTuple,
-            MintRevertedPeriodEvent.OutputTuple,
-            MintRevertedPeriodEvent.OutputObject
-        >;
-        MintRevertedPeriod: TypedContractEvent<
-            MintRevertedPeriodEvent.InputTuple,
-            MintRevertedPeriodEvent.OutputTuple,
-            MintRevertedPeriodEvent.OutputObject
-        >;
+  getMintLimitPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
-        "RoleAdminChanged(bytes32,bytes32,bytes32)": TypedContractEvent<
-            RoleAdminChangedEvent.InputTuple,
-            RoleAdminChangedEvent.OutputTuple,
-            RoleAdminChangedEvent.OutputObject
-        >;
-        RoleAdminChanged: TypedContractEvent<
-            RoleAdminChangedEvent.InputTuple,
-            RoleAdminChangedEvent.OutputTuple,
-            RoleAdminChangedEvent.OutputObject
-        >;
+  getRoleAdmin(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-        "RoleGranted(bytes32,address,address)": TypedContractEvent<
-            RoleGrantedEvent.InputTuple,
-            RoleGrantedEvent.OutputTuple,
-            RoleGrantedEvent.OutputObject
-        >;
-        RoleGranted: TypedContractEvent<
-            RoleGrantedEvent.InputTuple,
-            RoleGrantedEvent.OutputTuple,
-            RoleGrantedEvent.OutputObject
-        >;
+  getRoleMember(
+    role: PromiseOrValue<BytesLike>,
+    index: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
-        "RoleRevoked(bytes32,address,address)": TypedContractEvent<
-            RoleRevokedEvent.InputTuple,
-            RoleRevokedEvent.OutputTuple,
-            RoleRevokedEvent.OutputObject
-        >;
-        RoleRevoked: TypedContractEvent<
-            RoleRevokedEvent.InputTuple,
-            RoleRevokedEvent.OutputTuple,
-            RoleRevokedEvent.OutputObject
-        >;
+  getRoleMemberCount(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
-        "Transfer(address,address,uint256)": TypedContractEvent<
-            TransferEvent.InputTuple,
-            TransferEvent.OutputTuple,
-            TransferEvent.OutputObject
-        >;
-        Transfer: TypedContractEvent<
-            TransferEvent.InputTuple,
-            TransferEvent.OutputTuple,
-            TransferEvent.OutputObject
-        >;
-    };
+  getTokens(
+    askedAmount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  grantRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  increaseAllowance(
+    spender: PromiseOrValue<string>,
+    addedValue: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  lastMint(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  mintedInPeriod(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  name(overrides?: CallOverrides): Promise<string>;
+
+  renounceRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setMintLimitAmount(
+    mintLimitAmount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setMintLimitPeriodSeconds(
+    mintLimitPeriodSeconds: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  symbol(overrides?: CallOverrides): Promise<string>;
+
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+  transfer(
+    to: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  transferFrom(
+    from: PromiseOrValue<string>,
+    to: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  callStatic: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    allowance(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    approve(
+      spender: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    balanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    burnAllTokens(overrides?: CallOverrides): Promise<void>;
+
+    decimals(overrides?: CallOverrides): Promise<number>;
+
+    decreaseAllowance(
+      spender: PromiseOrValue<string>,
+      subtractedValue: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    getMintLimitAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMintLimitPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokens(
+      askedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    increaseAllowance(
+      spender: PromiseOrValue<string>,
+      addedValue: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    lastMint(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mintedInPeriod(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    name(overrides?: CallOverrides): Promise<string>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setMintLimitAmount(
+      mintLimitAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setMintLimitPeriodSeconds(
+      mintLimitPeriodSeconds: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    symbol(overrides?: CallOverrides): Promise<string>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transfer(
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    transferFrom(
+      from: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+  };
+
+  filters: {
+    "Approval(address,address,uint256)"(
+      owner?: PromiseOrValue<string> | null,
+      spender?: PromiseOrValue<string> | null,
+      value?: null
+    ): ApprovalEventFilter;
+    Approval(
+      owner?: PromiseOrValue<string> | null,
+      spender?: PromiseOrValue<string> | null,
+      value?: null
+    ): ApprovalEventFilter;
+
+    "MintLimitAmountSet(uint256)"(
+      mintLimitAmount?: PromiseOrValue<BigNumberish> | null
+    ): MintLimitAmountSetEventFilter;
+    MintLimitAmountSet(
+      mintLimitAmount?: PromiseOrValue<BigNumberish> | null
+    ): MintLimitAmountSetEventFilter;
+
+    "MintLimitPeriodSecondsSet(uint256)"(
+      mintLimitPeriodSeconds?: PromiseOrValue<BigNumberish> | null
+    ): MintLimitPeriodSecondsSetEventFilter;
+    MintLimitPeriodSecondsSet(
+      mintLimitPeriodSeconds?: PromiseOrValue<BigNumberish> | null
+    ): MintLimitPeriodSecondsSetEventFilter;
+
+    "MintRevertedAmount(uint256,uint256)"(
+      askedAmount?: PromiseOrValue<BigNumberish> | null,
+      mintLimitAmount?: PromiseOrValue<BigNumberish> | null
+    ): MintRevertedAmountEventFilter;
+    MintRevertedAmount(
+      askedAmount?: PromiseOrValue<BigNumberish> | null,
+      mintLimitAmount?: PromiseOrValue<BigNumberish> | null
+    ): MintRevertedAmountEventFilter;
+
+    "MintRevertedPeriod(uint256,uint256)"(
+      timePassedSeconds?: PromiseOrValue<BigNumberish> | null,
+      mintLimitPeriodSeconds?: PromiseOrValue<BigNumberish> | null
+    ): MintRevertedPeriodEventFilter;
+    MintRevertedPeriod(
+      timePassedSeconds?: PromiseOrValue<BigNumberish> | null,
+      mintLimitPeriodSeconds?: PromiseOrValue<BigNumberish> | null
+    ): MintRevertedPeriodEventFilter;
+
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+
+    "RoleGranted(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+
+    "Transfer(address,address,uint256)"(
+      from?: PromiseOrValue<string> | null,
+      to?: PromiseOrValue<string> | null,
+      value?: null
+    ): TransferEventFilter;
+    Transfer(
+      from?: PromiseOrValue<string> | null,
+      to?: PromiseOrValue<string> | null,
+      value?: null
+    ): TransferEventFilter;
+  };
+
+  estimateGas: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    allowance(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    approve(
+      spender: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    balanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    burnAllTokens(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    decimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decreaseAllowance(
+      spender: PromiseOrValue<string>,
+      subtractedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getMintLimitAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getMintLimitPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokens(
+      askedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    increaseAllowance(
+      spender: PromiseOrValue<string>,
+      addedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    lastMint(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mintedInPeriod(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setMintLimitAmount(
+      mintLimitAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setMintLimitPeriodSeconds(
+      mintLimitPeriodSeconds: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transfer(
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    transferFrom(
+      from: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+  };
+
+  populateTransaction: {
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    OWNER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    allowance(
+      owner: PromiseOrValue<string>,
+      spender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    approve(
+      spender: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    balanceOf(
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    burnAllTokens(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    decreaseAllowance(
+      spender: PromiseOrValue<string>,
+      subtractedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getMintLimitAmount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMintLimitPeriodSeconds(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokens(
+      askedAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    increaseAllowance(
+      spender: PromiseOrValue<string>,
+      addedValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    lastMint(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mintedInPeriod(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMintLimitAmount(
+      mintLimitAmount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMintLimitPeriodSeconds(
+      mintLimitPeriodSeconds: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transfer(
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferFrom(
+      from: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+  };
 }
