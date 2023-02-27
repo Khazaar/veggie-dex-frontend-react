@@ -12,19 +12,7 @@ export const ConnectWalletComponent = () => {
     const [message, setMessage] = useState("Please, connect your wallet");
     const [buttonText, setButtonText] = useState("Connect wallet");
 
-    // const fetchData = async () => {
-    //     await smartContractService.connectService.initConnectService();
-    // };
-    // useEffect(() => {
-    //     fetchData().catch((error) => {
-    //         console.log(error);
-    //     });
-    // });
-
-    // useWalletSubscription(smartContractService, fetchData);
-    smartContractService.connectService.initConnectService();
-
-    async function clickConnect() {
+    const fetchData = async () => {
         try {
             //await smartContractService.connectService.initConnectService();
             await smartContractService.initSmartContractService();
@@ -35,6 +23,15 @@ export const ConnectWalletComponent = () => {
         } catch (error) {
             console.log(`Can't connect wallet: ${(error as Error).message}`);
         }
+    };
+    useEffect(() => {
+        fetchData();
+    });
+
+    // useWalletSubscription(smartContractService, fetchData);
+
+    async function clickConnect() {
+        await fetchData();
     }
 
     return (

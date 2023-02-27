@@ -26,8 +26,8 @@ export class SmartContractService implements ISmartContractService {
 
     public async initSmartContractService() {
         try {
-            this.updateSmatrContractServiceNetwork();
             await this.connectService.initConnectService();
+            this.updateSmatrContractServiceNetwork();
             //await this.blockchainSubscriptions.unsubscribeAll();
             await this.blockchainSubscriptions.subscribeAll();
         } catch (error) {

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
+    Alert,
     Button,
     Card,
     CardContent,
@@ -9,6 +10,7 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    Snackbar,
     TextField,
 } from "@mui/material";
 
@@ -28,17 +30,27 @@ export const RemoveLiquidityComponent = () => {
     const [pairs, setPairs] = useState<IPair[]>([]);
     const [selectedPair, setSelectedPair] = useState<IPair>();
     const [liquidityToRmove, setLiquidityToRmove] = useState<number>(0);
+    const [liquidityAvailable, setLiquidityAvailable] = useState<number>(0);
+    const [warningSnackOpen, setWarningSnackOpen] = useState<boolean>(false);
+    const [warningSnackMessage, setWarningSnackMessage] = useState<string>("");
 
     const clickRemoveLiquidity = async () => {
-        try {
-            //await smartContractService.blockchainSubscriptions.subscribePairEvents();
-            await smartContractService.removeLiquidity(
-                selectedPair.token0.instance,
-                selectedPair.token1.instance,
-                BigNumber.from(liquidityToRmove)
-            );
-        } catch (error) {
-            console.log(error);
+        if (liquidityToRmove > liquidityAvailable) {
+            let msg = "Insufficient liquidity in pair " + selectedPair.name;
+            console.log(msg);
+            setWarningSnackMessage(msg);
+            setWarningSnackOpen(true);
+        } else {
+            try {
+                //await smartContractService.blockchainSubscriptions.subscribePairEvents();
+                await smartContractService.removeLiquidity(
+                    selectedPair.token0.instance,
+                    selectedPair.token1.instance,
+                    BigNumber.from(liquidityToRmove)
+                );
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -47,13 +59,14 @@ export const RemoveLiquidityComponent = () => {
         if (pairs.length > 0) {
             const newPair = pairs[0];
             setSelectedPair(newPair);
-            setLiquidityToRmove(
+            setLiquidityAvailable(
                 Number(
                     await selectedPair.instance.balanceOf(
                         await smartContractService.connectService.signer.getAddress()
                     )
                 )
             );
+            setLiquidityToRmove(liquidityAvailable);
         }
     };
 
@@ -125,6 +138,23 @@ export const RemoveLiquidityComponent = () => {
                     </CardContent>
                 </Card>
             )}
+            <Snackbar
+                open={warningSnackOpen}
+                autoHideDuration={3500}
+                onClose={() => {
+                    setWarningSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setWarningSnackOpen(false);
+                    }}
+                    severity="warning"
+                    sx={{ width: "100%" }}
+                >
+                    {warningSnackMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };
