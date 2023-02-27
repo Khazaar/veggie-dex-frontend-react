@@ -4,7 +4,7 @@ import { ConnectWalletComponent } from "../../components/connectWallet/connectWa
 import logo from "../../assets/images/Logo_2.png";
 import { SelectNetworkComponent } from "../../components/selectNetwork/selectNetwork.component";
 
-export const HeaderComponent = () => {
+export const HeaderLayout = () => {
     return (
         <div className="HeaderComponent">
             <div>

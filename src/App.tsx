@@ -2,28 +2,30 @@ import "./App.css";
 import { SmartContractService } from "./services/smartContract.service";
 import { ConnectService } from "./services/connect.service";
 import { ThemeProvider } from "@mui/material/styles";
-import { HeaderComponent } from "./layouts/header/header.component";
-import { UserComponent } from "./layouts/user/user.component";
-import { DexComponent } from "./layouts/dex/dex.component";
+import { HeaderLayout } from "./layouts/header/header.layout";
+import { UserLayout } from "./layouts/user/user.layout";
+import { DexLayout } from "./layouts/dex/dex.layout";
 import { theme } from "./assets/styles/theme";
-import { MenuComponent } from "./layouts/menu/menu.components";
+import { MenuLayout } from "./layouts/menu/menu.layout";
 import { createContext } from "react";
 
 export const SmartContractServiceContext = createContext<SmartContractService>(
     new SmartContractService(new ConnectService())
 );
 
+export const IsLoading = createContext<boolean>(false);
+
 function App() {
     return (
         <ThemeProvider theme={theme}>
             <div className="global-wrapper">
-                <HeaderComponent></HeaderComponent>
+                <HeaderLayout></HeaderLayout>
                 <div className="content-menu-wrapper">
                     <div className="content-wrapper">
-                        <DexComponent></DexComponent>
-                        <UserComponent></UserComponent>
+                        <DexLayout></DexLayout>
+                        <UserLayout></UserLayout>
                     </div>
-                    <MenuComponent></MenuComponent>
+                    <MenuLayout></MenuLayout>
                 </div>
             </div>
         </ThemeProvider>

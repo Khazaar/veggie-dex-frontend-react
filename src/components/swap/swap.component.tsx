@@ -50,11 +50,15 @@ export const SwapComponent = () => {
             setWarningSnackMessage(msg);
             setWarningSnackOpen(true);
         } else {
-            await smartContractService.swap(
-                tokenA.instance,
-                tokenB.instance,
-                BigNumber.from(amountA)
-            );
+            try {
+                await smartContractService.swap(
+                    tokenA.instance,
+                    tokenB.instance,
+                    BigNumber.from(amountA)
+                );
+            } catch (e) {
+                console.error(e);
+            }
         }
     };
 

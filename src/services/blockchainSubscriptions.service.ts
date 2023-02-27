@@ -1,5 +1,4 @@
-import { TransferEvent } from "./../smart-contracts/types/ERC20Basic";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Subject, Observable } from "rxjs";
 import { ITokenContract } from "../smart-contracts/smart-contract-data";
 import { IBlockchainSubscriptions } from "./interfaces/IBlockchainSubscriptions.service";
@@ -42,10 +41,22 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
         return this.swapped.asObservable();
     }
 
+    // Router eventsAdmin features
+    private setSwapFee = new Subject<BigNumber>();
+    public SetSwapFee$(): Observable<BigNumber> {
+        return this.setSwapFee.asObservable();
+    }
+
+    private setLsrMinBalance = new Subject<BigNumber>();
+    public SetLsrMinBalance$(): Observable<BigNumber> {
+        return this.setLsrMinBalance.asObservable();
+    }
+
     public async subscribeAll() {
         await this.subscribeTokensEvents();
         await this.subscribePairEvents();
         await this.subscribeRouterEvents();
+        await this.subscribeAdminEvents();
     }
     public async unsubscribeAll() {
         this.smartContractService.connectService.tokenContracts.forEach(
@@ -63,25 +74,23 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                     null,
                     null
                 );
-
-                //tokenContract.instance.removeAllListeners();
-
+                //tokenContract.instance.removeAllListeners("Transfer");
                 tokenContract.instance.on(
                     filterTransfer,
                     (from: any, to: any, value: any) => {
-                        console.log(
-                            `1Transfeed ${value} tokens ${tokenContract.nameShort} from ${from} to ${to}`
+                        console.info(
+                            `Transfeed ${value} tokens ${tokenContract.nameShort} from ${from} to ${to}`
                         );
                         this.tokenTransfered.next(tokenContract);
-                        from === ethers.constants.AddressZero &&
+                        if (from === ethers.constants.AddressZero) {
                             this.tokenMinted.next(tokenContract);
-                        console.log(
-                            `Minted ${value} tokens ${tokenContract.nameShort}  to ${to}`
-                        );
+                            console.info(
+                                `Minted ${value} tokens ${tokenContract.nameShort}  to ${to}`
+                            );
+                        }
                         tokenContract.instance.removeAllListeners();
                     }
                 );
-
                 tokenContract.instance.on(
                     "MintRevertedPeriod",
                     (timePassedSeconds, mintLimitPeriodSeconds) => {
@@ -97,28 +106,48 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     public async subscribePairEvents() {
         const pairs = await this.smartContractService.getPairs();
         pairs.forEach((iPair) => {
-            //iPair.instance.removeAllListeners();
+            const filterSwap = iPair.instance.filters.Swap(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
+            iPair.instance.removeAllListeners(filterSwap);
             iPair.instance.on(
-                "Swap",
+                filterSwap,
                 (address, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                    console.log(
+                    console.info(
                         `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
                     );
+                    const date = new Date();
+                    console.info(
+                        date.getSeconds(),
+                        " ",
+                        date.getMilliseconds()
+                    );
                     this.swapped.next();
-                    iPair.instance.removeAllListeners();
+                    //iPair.instance.removeAllListeners();
                 }
             );
         });
     }
 
     public async subscribeRouterEvents() {
+        const filterAddLiquidity =
+            this.smartContractService.connectService.contractRouter_mod.filters.AddLiquidity(
+                null,
+                null
+            );
         //this.smartContractService.connectService.contractRouter_mod.removeAllListeners();
         this.smartContractService.connectService.contractRouter_mod.on(
-            "AddLiquidity",
-            (sender, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                console.log(
-                    `Added liquidity: sender ${sender}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
+            filterAddLiquidity,
+            (amountA, amountB) => {
+                console.info(
+                    `Added liquidity: amountA ${amountA}, amountB ${amountB}`
                 );
+
                 this.liquidityAdded.next();
             }
         );
@@ -135,6 +164,39 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
             (role, account) => {
                 console.log(`Role ${role} revoked from ${account}`);
                 this.adminRevoked.next(account);
+            }
+        );
+    }
+
+    public async subscribeAdminEvents() {
+        const filterSetSwapFee =
+            this.smartContractService.connectService.contractRouter_mod.filters.SetSwapFee(
+                null
+            );
+
+        // this.smartContractService.connectService.contractRouter_mod.removeAllListeners(
+        //     filterSetSwapFee
+        // );
+        this.smartContractService.connectService.contractRouter_mod.on(
+            filterSetSwapFee,
+            (swapFee) => {
+                console.log(`Swap fee set to ${swapFee}`);
+                this.setSwapFee.next(swapFee);
+            }
+        );
+        const filterSetLsrMinBalance =
+            this.smartContractService.connectService.contractRouter_mod.filters.SetLsrMinBalance(
+                null
+            );
+        this.smartContractService.connectService.contractRouter_mod.removeAllListeners(
+            filterSetLsrMinBalance
+        );
+
+        this.smartContractService.connectService.contractRouter_mod.on(
+            filterSetLsrMinBalance,
+            (lsrMinBalance) => {
+                console.log(`Lsr min balance set to ${lsrMinBalance}`);
+                this.setLsrMinBalance.next(lsrMinBalance);
             }
         );
     }

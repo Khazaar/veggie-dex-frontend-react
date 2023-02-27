@@ -5,12 +5,12 @@ import {
     ITokenContract,
     Potato,
 } from "../smart-contracts/smart-contract-data";
-import PancakePairAbi from "../smart-contracts/abi/PancakePair.json";
 import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
 import { ISmartContractService } from "./interfaces/ISmartContract.service";
 import { ERC20Basic, PancakePair } from "../smart-contracts/types";
 import { Hardhat } from "../smart-contracts/networks";
+import { Observable, Subject } from "rxjs";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
@@ -19,6 +19,10 @@ export class SmartContractService implements ISmartContractService {
     public blockchainSubscriptions: BlockchainSubscriptions;
     public hasAdminRole = false;
     public hasOwnerRole = false;
+    public roleUpdated = new Subject<void>();
+    public RoleUpdated$(): Observable<void> {
+        return this.roleUpdated.asObservable();
+    }
 
     constructor(public connectService: ConnectService) {
         this.blockchainSubscriptions = new BlockchainSubscriptions(this);
@@ -30,11 +34,15 @@ export class SmartContractService implements ISmartContractService {
             this.updateSmatrContractServiceNetwork();
             //await this.blockchainSubscriptions.unsubscribeAll();
             await this.blockchainSubscriptions.subscribeAll();
+            await this.updateAdminOwnerRole();
         } catch (error) {
             console.log(
                 `Error in initSmartContractService: ${(error as Error).message}`
             );
         }
+    }
+
+    public async updateAdminOwnerRole() {
         if (
             (await this.getRouterAdmins()).includes(
                 await this.connectService.signer.getAddress()
@@ -55,6 +63,7 @@ export class SmartContractService implements ISmartContractService {
         } else {
             this.hasOwnerRole = false;
         }
+        this.roleUpdated.next();
     }
 
     public updateSmatrContractServiceNetwork() {
@@ -310,6 +319,24 @@ export class SmartContractService implements ISmartContractService {
                     amount
                 );
             }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async setSwapFee(fee: BigNumber) {
+        try {
+            await this.connectService.contractRouter_mod.setSwapFee(fee);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    public async setLsrMinBalance(balance: BigNumber) {
+        try {
+            await this.connectService.contractRouter_mod.setLsrMinBalance(
+                balance
+            );
         } catch (error) {
             console.log(error);
         }

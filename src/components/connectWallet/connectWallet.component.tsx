@@ -26,7 +26,7 @@ export const ConnectWalletComponent = () => {
     };
     useEffect(() => {
         fetchData();
-    });
+    }, []);
 
     // useWalletSubscription(smartContractService, fetchData);
 

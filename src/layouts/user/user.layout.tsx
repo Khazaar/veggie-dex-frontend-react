@@ -6,19 +6,28 @@ import { SmartContractServiceContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
 import { RemoveLiquidityComponent } from "../../components/removeLiquidity/removeLiquidity.component";
 import { OwnerPanelComponent } from "../../components/ownerPanel/ownerPanel.component";
-import { useAdminRolesSubscription } from "../../hooks";
+import { useAdminRolesSubscription, useWalletSubscription } from "../../hooks";
+import { useRoleUpdatedSubscription } from "../../hooks/useRoleUpdatedSubscription";
 
-export const UserComponent = () => {
+export const UserLayout = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isOwner, setIsOwner] = useState<boolean>(false);
     const smartContractService = useContext(SmartContractServiceContext);
 
     const fetchData = async () => {
+        //await smartContractService.updateAdminOwnerRole();
         setIsAdmin(smartContractService.hasAdminRole);
         setIsOwner(smartContractService.hasOwnerRole);
     };
 
-    useAdminRolesSubscription(smartContractService, fetchData);
+    // useEffect(() => {
+    //     fetchData();
+    // }, [smartContractService.hasAdminRole, smartContractService.hasOwnerRole]);
+
+    //useWalletSubscription(smartContractService, fetchData);
+
+    //useAdminRolesSubscription(smartContractService, fetchData);
+    useRoleUpdatedSubscription(smartContractService, fetchData);
     return (
         <div className="UserComponent">
             <div>

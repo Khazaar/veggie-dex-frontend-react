@@ -7,6 +7,7 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import { IConnectService } from "./IConnect.service";
 import { ERC20Basic } from "../../smart-contracts/types";
+import { Subject, Observable } from "rxjs";
 
 export interface ISmartContractService {
     tokenPairs: IPair[];
@@ -16,6 +17,8 @@ export interface ISmartContractService {
     blockchainSubscriptions: BlockchainSubscriptions;
     hasAdminRole: boolean;
     hasOwnerRole: boolean;
+    roleUpdated: Subject<void>;
+    RoleUpdated$(): Observable<void>;
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;
