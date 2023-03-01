@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Alert,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -24,8 +26,13 @@ import {
     ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import { styleIconsProps } from "../../assets/styles/stypeProps";
+import {
+    styleBox,
+    styleCircularProgress,
+    styleIconsProps,
+} from "../../assets/styles/stypeProps";
 import { BigNumber } from "ethers";
+import { Subscription } from "rxjs";
 
 export const SwapComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -35,6 +42,15 @@ export const SwapComponent = () => {
     const [amountA, setAmountA] = useState<number>(1000);
     const [warningSnackOpen, setWarningSnackOpen] = useState<boolean>(false);
     const [warningSnackMessage, setWarningSnackMessage] = useState<string>("");
+    const [successFeeChargedSnackOpen, setSuccessFeeChargedSnackOpen] =
+        useState<boolean>(false);
+    const [successFeeChargedSnackMessage, setSuccessFeeChargedSnackMessage] =
+        useState<string>("");
+    const [successSwapSnackOpen, setSuccessSwapSnackOpen] =
+        useState<boolean>(false);
+    const [successSwapSnackMessage, setSuccessSwapSnackMessage] =
+        useState<string>("");
+    const [isSwapLoading, setIsSwapLoading] = useState<boolean>(false);
 
     const clickSwap = async () => {
         if (
@@ -50,6 +66,7 @@ export const SwapComponent = () => {
             setWarningSnackMessage(msg);
             setWarningSnackOpen(true);
         } else {
+            setIsSwapLoading(true);
             try {
                 await smartContractService.swap(
                     tokenA.instance,
@@ -62,12 +79,41 @@ export const SwapComponent = () => {
         }
     };
 
+    useEffect(() => {
+        const subscriptions: Subscription[] = [];
+        isSwapLoading &&
+            subscriptions.push(
+                smartContractService.blockchainSubscriptions
+                    .Swapped$()
+                    .subscribe((msg: string) => {
+                        setIsSwapLoading(false);
+                        console.log(msg);
+                        setSuccessSwapSnackMessage(msg);
+                        setSuccessSwapSnackOpen(true);
+                    })
+            );
+        isSwapLoading &&
+            subscriptions.push(
+                smartContractService.blockchainSubscriptions
+                    .FeeCharged$()
+                    .subscribe((msg: string) => {
+                        setIsSwapLoading(false);
+                        console.log(msg);
+                        setSuccessFeeChargedSnackMessage(msg);
+                        setSuccessFeeChargedSnackOpen(true);
+                    })
+            );
+        return () => {
+            subscriptions.forEach((s) => s.unsubscribe());
+        };
+    }, [isSwapLoading]);
+
     const handleEqualityCheck = () => {
         if (tokenA === tokenB) {
-            const indexA = tokenContracts.indexOf(tokenA);
-            const newIndexA =
-                indexA === tokenContracts.length - 1 ? 0 : indexA + 1;
-            setTokenA(tokenContracts[newIndexA]);
+            const indexB = tokenContracts.indexOf(tokenB);
+            const newIndexB =
+                indexB === tokenContracts.length - 1 ? 0 : indexB + 1;
+            setTokenB(tokenContracts[newIndexB]);
             let msg = "Please select different tokens";
             console.log(msg);
             setWarningSnackMessage(msg);
@@ -170,7 +216,17 @@ export const SwapComponent = () => {
                                 onClick={clickSwap}
                             >
                                 Swap
-                                <CurrencyExchangeIcon style={styleIconsProps} />
+                                <Box sx={styleBox}>
+                                    <CurrencyExchangeIcon
+                                        style={styleIconsProps}
+                                    />
+                                    {isSwapLoading && (
+                                        <CircularProgress
+                                            size={34}
+                                            sx={styleCircularProgress}
+                                        />
+                                    )}
+                                </Box>
                             </Button>
                         </div>
                     </div>
@@ -178,7 +234,7 @@ export const SwapComponent = () => {
             </Card>
             <Snackbar
                 open={warningSnackOpen}
-                autoHideDuration={3500}
+                autoHideDuration={4000}
                 onClose={() => {
                     setWarningSnackOpen(false);
                 }}
@@ -191,6 +247,40 @@ export const SwapComponent = () => {
                     sx={{ width: "100%" }}
                 >
                     {warningSnackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={successSwapSnackOpen}
+                autoHideDuration={4000}
+                onClose={() => {
+                    setSuccessSwapSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setSuccessSwapSnackOpen(false);
+                    }}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {successSwapSnackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={successFeeChargedSnackOpen}
+                autoHideDuration={4000}
+                onClose={() => {
+                    setSuccessFeeChargedSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setSuccessFeeChargedSnackOpen(false);
+                    }}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {successFeeChargedSnackMessage}
                 </Alert>
             </Snackbar>
         </div>

@@ -4,7 +4,7 @@ import { ILiquidityAdded } from "./ILiquidityAdded";
 
 export interface IBlockchainSubscriptions {
     LiquidityAdded$(): Observable<ILiquidityAdded>;
-    Swapped$(): Observable<void>;
+    Swapped$(): Observable<string>;
     TokenTransfered$(): Observable<ITokenContract>;
     MintRevertedPeriod$(): Observable<string>;
     AdminGranted$(): Observable<string>;

@@ -55,14 +55,35 @@ export const AdminPanelComponent = () => {
     const [successSnackOpen, setSuccessSnackOpen] = useState<boolean>(false);
     const [successSnackMessage, setSuccessSnackMessage] = useState<string>("");
     const [isSetLoading, setIsSetLoading] = useState(false);
+    const [isWithdrawLoading, setIsWithdrawLoading] = useState(false);
     const [isSetClicked, setIsSetClicked] = useState(false);
 
     const clickWithdraw = async () => {
-        console.log(`Going to withdraw fees`);
-        await smartContractService.withdrawFees(
-            selectedToken.instance,
-            BigNumber.from(feesToWithdraw)
-        );
+        try {
+            console.log(`Going to withdraw fees`);
+            if (
+                feesToWithdraw >
+                Number(
+                    await smartContractService.getWithdrawFeeAvailable(
+                        selectedToken.instance
+                    )
+                )
+            ) {
+                const msg = `Not enough fees to withdraw`;
+                console.log(msg);
+                setWarningSnackMessage(msg);
+                setWarningSnackOpen(true);
+            } else {
+                setIsWithdrawLoading(true);
+                await smartContractService.withdrawFees(
+                    selectedToken.instance,
+                    BigNumber.from(feesToWithdraw)
+                );
+            }
+        } catch (e: any) {
+            console.log(`Error occured while minting tokens: ${e.message}`);
+            setIsWithdrawLoading(false);
+        }
     };
 
     const clickSet = async () => {
@@ -148,6 +169,28 @@ export const AdminPanelComponent = () => {
             subccription.unsubscribe();
         };
     }, [isSetClicked]);
+
+    useEffect(() => {
+        smartContractService
+            .getWithdrawFeeAvailable(selectedToken.instance)
+            .then((fee) => {
+                console.log(`Fee available: ${fee}`);
+                setFeesToWithdraw(Number(fee));
+            });
+    }, [selectedToken]);
+
+    useEffect(() => {
+        const subccription = smartContractService.blockchainSubscriptions
+            .FeeWithdrawn$()
+            .subscribe((msg: string) => {
+                setIsWithdrawLoading(false);
+                setSuccessSnackMessage(msg);
+                setSuccessSnackOpen(true);
+            });
+        return () => {
+            subccription.unsubscribe();
+        };
+    }, [isWithdrawLoading]);
 
     return (
         <div>
@@ -261,7 +304,15 @@ export const AdminPanelComponent = () => {
                         onClick={clickWithdraw}
                     >
                         Withdraw
-                        <ArrowDownwardIcon style={styleIconsProps} />
+                        <Box sx={styleBox}>
+                            <ArrowDownwardIcon style={styleIconsProps} />
+                            {isWithdrawLoading && (
+                                <CircularProgress
+                                    size={30}
+                                    sx={styleCircularProgress}
+                                />
+                            )}
+                        </Box>
                     </Button>
                 </CardContent>
             </Card>

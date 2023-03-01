@@ -64,6 +64,7 @@ export const MintTokensComponent = () => {
             }
         } catch (e: any) {
             console.log(`Error occured while minting tokens: ${e.message}`);
+            setIsMintLoading(false);
         }
     };
 

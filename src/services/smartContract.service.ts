@@ -320,18 +320,24 @@ export class SmartContractService implements ISmartContractService {
         }
     }
 
+    public async getWithdrawFeeAvailable(
+        tokenContract: ERC20Basic
+    ): Promise<BigNumber> {
+        return await tokenContract.balanceOf(
+            this.connectService.contractRouter_mod.address
+        );
+    }
+
     public async withdrawFees(contract: ERC20Basic, amount: BigNumber) {
         try {
-            if (
-                (await contract.balanceOf(
-                    await this.connectService.contractRouter_mod.address
-                )) > amount
-            ) {
-                await this.connectService.contractRouter_mod.withdrawFees(
-                    contract.address,
-                    amount
-                );
-            }
+            console.log(
+                "Balance is: ",
+                await this.getWithdrawFeeAvailable(contract)
+            );
+            await this.connectService.contractRouter_mod.withdrawFees(
+                contract.address,
+                amount
+            );
         } catch (error) {
             console.log(error);
         }

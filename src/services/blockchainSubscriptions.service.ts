@@ -41,9 +41,19 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     public AdminRevoked$(): Observable<string> {
         return this.adminRevoked.asObservable();
     }
+    private feeCharged = new Subject<string>();
+    public FeeCharged$(): Observable<string> {
+        return this.feeCharged.asObservable();
+    }
+
+    private feeWithdrawn = new Subject<string>();
+    public FeeWithdrawn$(): Observable<string> {
+        return this.feeWithdrawn.asObservable();
+    }
+
     // Pair observables
-    private swapped = new Subject<void>();
-    public Swapped$(): Observable<void> {
+    private swapped = new Subject<string>();
+    public Swapped$(): Observable<string> {
         return this.swapped.asObservable();
     }
 
@@ -131,16 +141,15 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
             iPair.instance.on(
                 filterSwap,
                 (address, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                    console.info(
-                        `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`
-                    );
+                    const msg = `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`;
+                    console.info(msg);
                     const date = new Date();
                     console.info(
                         date.getSeconds(),
                         " ",
                         date.getMilliseconds()
                     );
-                    this.swapped.next();
+                    this.swapped.next(msg);
                     //iPair.instance.removeAllListeners();
                 }
             );
@@ -177,6 +186,33 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                 );
 
                 this.liquidityRemoved.next({ amount0, amount1 });
+            }
+        );
+
+        const filterFeeCharged =
+            this.smartContractService.connectService.contractRouter_mod.filters.FeeCharged(
+                null,
+                null
+            );
+        this.smartContractService.connectService.contractRouter_mod.on(
+            filterFeeCharged,
+            (token, amount) => {
+                this.feeCharged.next(`Charged fee of ${amount} ${token}`);
+            }
+        );
+
+        const filterFeeWithdrawn =
+            this.smartContractService.connectService.contractRouter_mod.filters.WithdrawFees(
+                null,
+                null
+            );
+
+        this.smartContractService.connectService.contractRouter_mod.on(
+            filterFeeWithdrawn,
+            (token, amount) => {
+                const msg = `Withdrawn fee of ${amount} ${token}`;
+                this.feeWithdrawn.next(msg);
+                console.info(msg);
             }
         );
 
