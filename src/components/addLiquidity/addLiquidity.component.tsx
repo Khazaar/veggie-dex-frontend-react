@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Alert,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -24,9 +26,14 @@ import {
     ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { styleIconsProps } from "../../assets/styles/stypeProps";
+import {
+    styleBox,
+    styleCircularProgress,
+    styleIconsProps,
+} from "../../assets/styles/stypeProps";
 import { BigNumber } from "ethers";
 import { useTokenTransferSubscription } from "../../hooks";
+import { Subscription } from "rxjs";
 
 export const AddLiquidityComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -37,6 +44,9 @@ export const AddLiquidityComponent = () => {
     const [amountB, setAmountB] = useState<number>(2000);
     const [warningSnackOpen, setWarningSnackOpen] = useState<boolean>(false);
     const [warningSnackMessage, setWarningSnackMessage] = useState<string>("");
+    const [successSnackOpen, setSuccessSnackOpen] = useState<boolean>(false);
+    const [successSnackMessage, setSuccessSnackMessage] = useState<string>("");
+    const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
 
     const clickAddLiquidity = async () => {
         if (
@@ -66,14 +76,19 @@ export const AddLiquidityComponent = () => {
         } else {
             try {
                 await smartContractService.blockchainSubscriptions.subscribePairEvents();
+                setIsAddLoading(true);
                 await smartContractService.addLiquidity(
                     tokenA.instance,
                     tokenB.instance,
                     BigNumber.from(amountA),
                     BigNumber.from(amountB)
                 );
-            } catch (error) {
-                console.log(error);
+            } catch (e: any) {
+                const msg = `Error occured while adding liquidity: ${e.message}`;
+                console.error(msg);
+                setWarningSnackMessage(msg);
+                setWarningSnackOpen(true);
+                setIsAddLoading(false);
             }
         }
     };
@@ -94,6 +109,22 @@ export const AddLiquidityComponent = () => {
     useEffect(() => {
         handleEqualityCheck();
     }, [tokenA, tokenB]);
+
+    useEffect(() => {
+        const subscription: Subscription =
+            smartContractService.blockchainSubscriptions
+                .LiquidityAdded$()
+                .subscribe(({ amountA, amountB }) => {
+                    const msg = `Liquidity added successfully. Amount A = ${amountA} and Amount B = ${amountB}`;
+                    console.info(msg);
+                    setSuccessSnackMessage(msg);
+                    setIsAddLoading(false);
+                    setSuccessSnackOpen(true);
+                });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [isAddLoading]);
 
     //useTokenTransferSubscription(smartContractService, async () => {});
 
@@ -198,7 +229,15 @@ export const AddLiquidityComponent = () => {
                         onClick={clickAddLiquidity}
                     >
                         Add Liquidity
-                        <ControlPointIcon style={styleIconsProps} />
+                        <Box sx={styleBox}>
+                            <ControlPointIcon style={styleIconsProps} />
+                            {isAddLoading && (
+                                <CircularProgress
+                                    size={30}
+                                    sx={styleCircularProgress}
+                                />
+                            )}
+                        </Box>
                     </Button>
                 </CardContent>
             </Card>
@@ -217,6 +256,23 @@ export const AddLiquidityComponent = () => {
                     sx={{ width: "100%" }}
                 >
                     {warningSnackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={successSnackOpen}
+                autoHideDuration={4000}
+                onClose={() => {
+                    setSuccessSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setSuccessSnackOpen(false);
+                    }}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {successSnackMessage}
                 </Alert>
             </Snackbar>
         </div>

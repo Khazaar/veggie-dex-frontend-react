@@ -381,6 +381,7 @@ export interface PancakeRouter_modInterface extends utils.Interface {
   events: {
     "AddLiquidity(uint256,uint256)": EventFragment;
     "FeeCharged(address,uint256)": EventFragment;
+    "RemoveLiquidity(uint256,uint256)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
@@ -391,6 +392,7 @@ export interface PancakeRouter_modInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "AddLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "FeeCharged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RemoveLiquidity"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
@@ -420,6 +422,17 @@ export type FeeChargedEvent = TypedEvent<
 >;
 
 export type FeeChargedEventFilter = TypedEventFilter<FeeChargedEvent>;
+
+export interface RemoveLiquidityEventObject {
+  amountA: BigNumber;
+  amountB: BigNumber;
+}
+export type RemoveLiquidityEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  RemoveLiquidityEventObject
+>;
+
+export type RemoveLiquidityEventFilter = TypedEventFilter<RemoveLiquidityEvent>;
 
 export interface RoleAdminChangedEventObject {
   role: string;
@@ -1100,6 +1113,15 @@ export interface PancakeRouter_mod extends BaseContract {
       _token?: PromiseOrValue<string> | null,
       _fee?: PromiseOrValue<BigNumberish> | null
     ): FeeChargedEventFilter;
+
+    "RemoveLiquidity(uint256,uint256)"(
+      amountA?: PromiseOrValue<BigNumberish> | null,
+      amountB?: PromiseOrValue<BigNumberish> | null
+    ): RemoveLiquidityEventFilter;
+    RemoveLiquidity(
+      amountA?: PromiseOrValue<BigNumberish> | null,
+      amountB?: PromiseOrValue<BigNumberish> | null
+    ): RemoveLiquidityEventFilter;
 
     "RoleAdminChanged(bytes32,bytes32,bytes32)"(
       role?: PromiseOrValue<BytesLike> | null,

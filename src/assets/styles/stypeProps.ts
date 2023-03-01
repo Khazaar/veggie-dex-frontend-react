@@ -1,3 +1,5 @@
+import { green } from "@mui/material/colors";
+
 export const styleModalWindowBox = {
     position: "absolute" as "absolute",
     top: "10%",
@@ -20,5 +22,21 @@ export const styleMenuProps = {
 };
 
 export const styleIconsProps = {
+    //margin: "0 0 0 6px",
+};
+
+export const styleCircularProgress = {
+    color: green[500],
+    position: "absolute",
+    // top: "50%",
+    // left: "50%",
+    // marginTop: "-12px",
+    // marginLeft: "-12px",
+};
+
+export const styleBox = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     margin: "0 0 0 6px",
 };

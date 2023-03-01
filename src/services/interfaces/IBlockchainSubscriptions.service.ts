@@ -1,8 +1,9 @@
 import { Observable } from "rxjs";
 import { ITokenContract } from "../../smart-contracts/smart-contract-data";
+import { ILiquidityAdded } from "./ILiquidityAdded";
 
 export interface IBlockchainSubscriptions {
-    LiquidityAdded$(): Observable<void>;
+    LiquidityAdded$(): Observable<ILiquidityAdded>;
     Swapped$(): Observable<void>;
     TokenTransfered$(): Observable<ITokenContract>;
     MintRevertedPeriod$(): Observable<string>;

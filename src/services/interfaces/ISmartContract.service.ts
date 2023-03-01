@@ -19,6 +19,7 @@ export interface ISmartContractService {
     hasOwnerRole: boolean;
     roleUpdated: Subject<void>;
     RoleUpdated$(): Observable<void>;
+    DexInited$(): Observable<void>;
 
     initSmartContractService(): Promise<void>;
     updateSmatrContractServiceNetwork(): void;

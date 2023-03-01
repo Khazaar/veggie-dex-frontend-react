@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Alert,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -18,21 +20,32 @@ import "./style.css";
 import "../../assets/styles/styles.css";
 import { IPair } from "../../smart-contracts/smart-contract-data";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { styleIconsProps } from "../../assets/styles/stypeProps";
+import {
+    styleBox,
+    styleCircularProgress,
+    styleIconsProps,
+} from "../../assets/styles/stypeProps";
 import {
     useTokenTransferSubscription,
     useWalletSubscription,
 } from "../../hooks";
 import { BigNumber } from "ethers";
+import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
+import { Subscription } from "rxjs";
 
 export const RemoveLiquidityComponent = () => {
+    const pairZero: IPair = { name: "Select pair" };
     const smartContractService = useContext(SmartContractServiceContext);
     const [pairs, setPairs] = useState<IPair[]>([]);
-    const [selectedPair, setSelectedPair] = useState<IPair>();
+    const [selectedPair, setSelectedPair] = useState<IPair>(pairZero);
     const [liquidityToRmove, setLiquidityToRmove] = useState<number>(0);
     const [liquidityAvailable, setLiquidityAvailable] = useState<number>(0);
     const [warningSnackOpen, setWarningSnackOpen] = useState<boolean>(false);
     const [warningSnackMessage, setWarningSnackMessage] = useState<string>("");
+    const [successSnackOpen, setSuccessSnackOpen] = useState<boolean>(false);
+    const [successSnackMessage, setSuccessSnackMessage] = useState<string>("");
+    const [isRemoveLoading, setIsRemoveLoading] = useState<boolean>(false);
+    const [isDexInited, setDexInited] = useState<boolean>(false);
 
     const clickRemoveLiquidity = async () => {
         if (liquidityToRmove > liquidityAvailable) {
@@ -48,40 +61,76 @@ export const RemoveLiquidityComponent = () => {
                     selectedPair.token1.instance,
                     BigNumber.from(liquidityToRmove)
                 );
+                setIsRemoveLoading(true);
             } catch (error) {
                 console.log(error);
+                setIsRemoveLoading(false);
             }
         }
     };
 
-    const fetchData = async () => {
-        setPairs(await smartContractService.getPairs());
+    useEffect(() => {
+        smartContractService.getPairs().then((pairs) => {
+            setPairs(pairs);
+        });
+    }, [isDexInited]);
+    useEffect(() => {
+        const subscription: Subscription =
+            smartContractService.blockchainSubscriptions
+                .LiquidityAdded$()
+                .subscribe(({ amountA, amountB }) => {
+                    smartContractService.getPairs().then((pairs) => {
+                        setPairs(pairs);
+                    });
+                });
+        return () => {
+            subscription.unsubscribe();
+        };
+    });
+
+    useEffect(() => {
         if (pairs.length > 0) {
             const newPair = pairs[0];
             setSelectedPair(newPair);
-            setLiquidityAvailable(
-                Number(
-                    await selectedPair.instance.balanceOf(
-                        await smartContractService.connectService.signer.getAddress()
-                    )
-                )
-            );
-            setLiquidityToRmove(liquidityAvailable);
         }
-    };
+    }, [pairs]);
 
     const onSelectedPairChange = async (event: any) => {
         setSelectedPair(event.target.value as IPair);
-        setLiquidityToRmove(
-            Number(
-                await (event.target.value as IPair).instance.balanceOf(
-                    smartContractService.connectService.signer.getAddress()
-                )
-            )
-        );
     };
-    useTokenTransferSubscription(smartContractService, fetchData);
-    useWalletSubscription(smartContractService, fetchData);
+
+    useEffect(() => {
+        console.log("selected pair is ", selectedPair.name);
+        smartContractService
+            .getLiquidityAvailable(selectedPair.instance)
+            .then((liq) => {
+                setLiquidityAvailable(Number(liq));
+                setLiquidityToRmove(Number(liq));
+            });
+    }, [selectedPair]);
+
+    //useTokenTransferSubscription(smartContractService, fetchData);
+    //useWalletSubscription(smartContractService, fetchData);
+    useDexInitSubscription(smartContractService, setDexInited);
+
+    useEffect(() => {
+        const subscription = smartContractService.blockchainSubscriptions
+            .LiquidityRemoved$()
+            .subscribe(({ amount0, amount1 }) => {
+                const msg = `Liquidity removed: pair ${selectedPair.name}. Amount 0: ${amount0}, amount 1:  ${amount1}`;
+                console.log(msg);
+                setSuccessSnackOpen(true);
+                setSuccessSnackMessage(msg);
+                setIsRemoveLoading(false);
+                smartContractService.getPairs().then((pairs) => {
+                    setPairs(pairs);
+                });
+            });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [isRemoveLoading]);
+
     return (
         <div>
             {pairs.length > 0 && (
@@ -99,8 +148,8 @@ export const RemoveLiquidityComponent = () => {
                                     </InputLabel>
                                     <Select
                                         value={selectedPair}
-                                        labelId="select-tokenA-to-addLiq-label"
-                                        id="select-token-to-mint"
+                                        labelId="select-remove-liq-pair-label"
+                                        id="select-remove-liq-pair"
                                         onChange={onSelectedPairChange}
                                     >
                                         {pairs.map((pr) => (
@@ -133,7 +182,17 @@ export const RemoveLiquidityComponent = () => {
                             onClick={clickRemoveLiquidity}
                         >
                             Remove Liquidity
-                            <RemoveCircleOutlineIcon style={styleIconsProps} />
+                            <Box sx={styleBox}>
+                                <RemoveCircleOutlineIcon
+                                    style={styleIconsProps}
+                                />
+                                {isRemoveLoading && (
+                                    <CircularProgress
+                                        size={30}
+                                        sx={styleCircularProgress}
+                                    />
+                                )}
+                            </Box>
                         </Button>
                     </CardContent>
                 </Card>
@@ -153,6 +212,23 @@ export const RemoveLiquidityComponent = () => {
                     sx={{ width: "100%" }}
                 >
                     {warningSnackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={successSnackOpen}
+                autoHideDuration={4000}
+                onClose={() => {
+                    setSuccessSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setSuccessSnackOpen(false);
+                    }}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    {successSnackMessage}
                 </Alert>
             </Snackbar>
         </div>

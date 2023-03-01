@@ -20,13 +20,12 @@ export interface IAddress {
 
 export interface IPair {
     name: string;
-    address: string;
-
-    instance: PancakePair;
-    token0: ITokenContract;
-    token1: ITokenContract;
-    reserve0: BigNumber;
-    reserve1: BigNumber;
+    address?: string;
+    instance?: PancakePair;
+    token0?: ITokenContract;
+    token1?: ITokenContract;
+    reserve0?: BigNumber;
+    reserve1?: BigNumber;
 }
 export const Apple: ITokenContract = {
     nameLong: "ERC20 Apple",

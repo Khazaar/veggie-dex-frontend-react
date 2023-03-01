@@ -20,8 +20,12 @@ export class SmartContractService implements ISmartContractService {
     public hasAdminRole = false;
     public hasOwnerRole = false;
     public roleUpdated = new Subject<void>();
+    public dexInited = new Subject<void>();
     public RoleUpdated$(): Observable<void> {
         return this.roleUpdated.asObservable();
+    }
+    public DexInited$(): Observable<void> {
+        return this.dexInited.asObservable();
     }
 
     constructor(public connectService: ConnectService) {
@@ -35,6 +39,7 @@ export class SmartContractService implements ISmartContractService {
             //await this.blockchainSubscriptions.unsubscribeAll();
             await this.blockchainSubscriptions.subscribeAll();
             await this.updateAdminOwnerRole();
+            this.dexInited.next();
         } catch (error) {
             console.log(
                 `Error in initSmartContractService: ${(error as Error).message}`
@@ -161,6 +166,14 @@ export class SmartContractService implements ISmartContractService {
         );
 
         await this.smartWait(tx);
+    }
+
+    public async getLiquidityAvailable(
+        contractPair: PancakePair
+    ): Promise<BigNumber> {
+        return await contractPair.balanceOf(
+            await this.connectService.signer.getAddress()
+        );
     }
 
     public async swap(

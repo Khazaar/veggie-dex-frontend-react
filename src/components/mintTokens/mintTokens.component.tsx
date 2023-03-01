@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Alert,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    CircularProgress,
     FormControl,
     InputLabel,
     MenuItem,
@@ -24,8 +26,14 @@ import {
     ITokenContract,
 } from "../../smart-contracts/smart-contract-data";
 import DiamondIcon from "@mui/icons-material/Diamond";
-import { styleIconsProps } from "../../assets/styles/stypeProps";
+import {
+    styleIconsProps,
+    styleBox,
+    styleCircularProgress,
+} from "../../assets/styles/stypeProps";
 import { BigNumber } from "ethers";
+import { green } from "@mui/material/colors";
+import { Subscription } from "rxjs";
 
 export const MintTokensComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -33,8 +41,12 @@ export const MintTokensComponent = () => {
     const [tokenToMint, setTokenToMint] = useState<ITokenContract>(Apple);
     const [amountToMint, setAmountToMint] = useState<number>(10000);
     const [mintedSnackOpen, setMintedSnackOpen] = useState<boolean>(false);
-
+    const [revertedSnackOpen, setRevertedSnackOpen] = useState<boolean>(false);
+    const [snackMessage, setSnackMessage] = useState<string>("");
+    const [isMintLoading, setIsMintLoading] = useState<boolean>(false);
+    const [mintClicked, setMintClicked] = useState<boolean>(false);
     const clickMint = async () => {
+        setMintClicked(true);
         try {
             if (amountToMint > 0) {
                 console.log(
@@ -43,26 +55,49 @@ export const MintTokensComponent = () => {
                 if (amountToMint > 1000000) {
                     console.log(`Please, mint less then 1000000 tokens`);
                 } else {
+                    setIsMintLoading(true);
                     await smartContractService.mintTokens(
                         tokenToMint.instance,
                         BigNumber.from(amountToMint)
                     );
                 }
             }
-        } catch (e) {
-            console.log(`Error occured while minting tokens: ${e}`);
+        } catch (e: any) {
+            console.log(`Error occured while minting tokens: ${e.message}`);
         }
     };
 
-    // useEffect(() => {
-    //     const sub = smartContractService.blockchainSubscriptions
-    //         .TokenMinted$()
-    //         .subscribe(() => {
-    //             setMintedSnackOpen(true);
-    //             console.log(`Mint done triggered`);
-    //         });
-    //     return () => sub.unsubscribe();
-    // });
+    useEffect(() => {
+        const subscription: Subscription =
+            smartContractService.blockchainSubscriptions
+                .TokenMinted$()
+                .subscribe(() => {
+                    setIsMintLoading(false);
+                    mintClicked && setMintedSnackOpen(true);
+                    setSnackMessage(
+                        `Minted ${amountToMint} of ${tokenToMint.nameShort} tokens!`
+                    );
+                    setMintClicked(false);
+                });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [mintClicked]);
+
+    useEffect(() => {
+        const subscription: Subscription =
+            smartContractService.blockchainSubscriptions
+                .MintRevertedPeriod$()
+                .subscribe((msg) => {
+                    setIsMintLoading(false);
+                    mintClicked && setRevertedSnackOpen(true);
+                    setSnackMessage(msg);
+                    setMintClicked(false);
+                });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [mintClicked]);
 
     return (
         <div>
@@ -119,13 +154,21 @@ export const MintTokensComponent = () => {
                         onClick={clickMint}
                     >
                         Mint
-                        <DiamondIcon style={styleIconsProps} />
+                        <Box sx={styleBox}>
+                            <DiamondIcon style={styleIconsProps} />
+                            {isMintLoading && (
+                                <CircularProgress
+                                    size={30}
+                                    sx={styleCircularProgress}
+                                />
+                            )}
+                        </Box>
                     </Button>
                 </CardContent>
             </Card>
             <Snackbar
                 open={mintedSnackOpen}
-                autoHideDuration={2000}
+                autoHideDuration={4000}
                 onClose={() => {
                     setMintedSnackOpen(false);
                 }}
@@ -137,7 +180,24 @@ export const MintTokensComponent = () => {
                     severity="success"
                     sx={{ width: "100%" }}
                 >
-                    Tokens minted!
+                    {snackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={revertedSnackOpen}
+                autoHideDuration={4000}
+                onClose={() => {
+                    setRevertedSnackOpen(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setRevertedSnackOpen(false);
+                    }}
+                    severity="warning"
+                    sx={{ width: "100%" }}
+                >
+                    {snackMessage}
                 </Alert>
             </Snackbar>
         </div>

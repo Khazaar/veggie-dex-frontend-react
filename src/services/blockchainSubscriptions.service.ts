@@ -2,6 +2,8 @@ import { BigNumber, ethers } from "ethers";
 import { Subject, Observable } from "rxjs";
 import { ITokenContract } from "../smart-contracts/smart-contract-data";
 import { IBlockchainSubscriptions } from "./interfaces/IBlockchainSubscriptions.service";
+import { ILiquidityAdded } from "./interfaces/ILiquidityAdded";
+import { ILiquidityRemoved } from "./interfaces/ILiquidityRemoved";
 import { SmartContractService } from "./smartContract.service";
 
 export class BlockchainSubscriptions implements IBlockchainSubscriptions {
@@ -22,9 +24,13 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     }
 
     // Router observables
-    private liquidityAdded = new Subject<void>();
-    public LiquidityAdded$(): Observable<void> {
+    private liquidityAdded = new Subject<ILiquidityAdded>();
+    public LiquidityAdded$(): Observable<ILiquidityAdded> {
         return this.liquidityAdded.asObservable();
+    }
+    private liquidityRemoved = new Subject<ILiquidityRemoved>();
+    public LiquidityRemoved$(): Observable<ILiquidityRemoved> {
+        return this.liquidityRemoved.asObservable();
     }
     private adminGranted = new Subject<string>();
     public AdminGranted$(): Observable<string> {
@@ -74,6 +80,12 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                     null,
                     null
                 );
+
+                const filterMintReverted =
+                    tokenContract.instance.filters.MintRevertedPeriod(
+                        null,
+                        null
+                    );
                 //tokenContract.instance.removeAllListeners("Transfer");
                 tokenContract.instance.on(
                     filterTransfer,
@@ -91,12 +103,13 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                         tokenContract.instance.removeAllListeners();
                     }
                 );
+
                 tokenContract.instance.on(
-                    "MintRevertedPeriod",
+                    filterMintReverted,
                     (timePassedSeconds, mintLimitPeriodSeconds) => {
-                        const err = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
-                        console.log(err);
-                        this.mintRevertedPeriod.next(err);
+                        const minRevertedPeriodMsg = `Passed only ${timePassedSeconds} seconds, required to wait ${mintLimitPeriodSeconds} seconds`;
+                        console.log(minRevertedPeriodMsg);
+                        this.mintRevertedPeriod.next(minRevertedPeriodMsg);
                     }
                 );
             }
@@ -140,7 +153,6 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                 null,
                 null
             );
-        //this.smartContractService.connectService.contractRouter_mod.removeAllListeners();
         this.smartContractService.connectService.contractRouter_mod.on(
             filterAddLiquidity,
             (amountA, amountB) => {
@@ -148,9 +160,26 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                     `Added liquidity: amountA ${amountA}, amountB ${amountB}`
                 );
 
-                this.liquidityAdded.next();
+                this.liquidityAdded.next({ amountA, amountB });
             }
         );
+
+        const filterRemoveLiquidity =
+            this.smartContractService.connectService.contractRouter_mod.filters.RemoveLiquidity(
+                null,
+                null
+            );
+        this.smartContractService.connectService.contractRouter_mod.on(
+            filterRemoveLiquidity,
+            (amount0, amount1) => {
+                console.info(
+                    `Removed liquidity: amount0 ${amount0}, amount1 ${amount1}`
+                );
+
+                this.liquidityRemoved.next({ amount0, amount1 });
+            }
+        );
+
         this.smartContractService.connectService.contractRouter_mod.on(
             "RoleGranted",
             (role, account) => {

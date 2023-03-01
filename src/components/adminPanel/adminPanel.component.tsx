@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import {
     Alert,
+    Box,
     Button,
     Card,
     CardContent,
     CardHeader,
+    CircularProgress,
     Divider,
     FormControl,
     InputLabel,
@@ -27,11 +29,16 @@ import {
 } from "../../smart-contracts/smart-contract-data";
 import CheckIcon from "@mui/icons-material/Check";
 import { useAdminRolesSubscription } from "../../hooks/useAdminRolesSubscription";
-import { styleIconsProps } from "../../assets/styles/stypeProps";
+import {
+    styleBox,
+    styleCircularProgress,
+    styleIconsProps,
+} from "../../assets/styles/stypeProps";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { colorGreenLight } from "../../assets/styles/theme";
 import { BigNumber } from "ethers";
 import { useWalletSubscription } from "../../hooks";
+import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
 
 export const AdminPanelComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -47,6 +54,8 @@ export const AdminPanelComponent = () => {
     const [warningSnackMessage, setWarningSnackMessage] = useState<string>("");
     const [successSnackOpen, setSuccessSnackOpen] = useState<boolean>(false);
     const [successSnackMessage, setSuccessSnackMessage] = useState<string>("");
+    const [isSetLoading, setIsSetLoading] = useState(false);
+    const [isSetClicked, setIsSetClicked] = useState(false);
 
     const clickWithdraw = async () => {
         console.log(`Going to withdraw fees`);
@@ -57,9 +66,11 @@ export const AdminPanelComponent = () => {
     };
 
     const clickSet = async () => {
+        setIsSetClicked(true);
         try {
             if (swapFeeNew > 0 && swapFeeNew !== swapFeeCurrent) {
                 console.log(`Going to set swap fee: ${swapFeeNew}`);
+                setIsSetLoading(true);
                 await smartContractService.setSwapFee(
                     BigNumber.from(swapFeeNew)
                 );
@@ -71,12 +82,14 @@ export const AdminPanelComponent = () => {
                 console.log(
                     `Going to set min LSR balance: ${minLSRBalanceNew}`
                 );
+                setIsSetLoading(true);
                 await smartContractService.setLsrMinBalance(
                     BigNumber.from(minLSRBalanceNew)
                 );
             }
-        } catch (e) {
-            console.log(`Error occured while setting: ${e}`);
+        } catch (e: any) {
+            setIsSetLoading(false);
+            console.log(`Error occured while minting tokens: ${e.message}`);
         }
     };
 
@@ -94,10 +107,16 @@ export const AdminPanelComponent = () => {
         );
         setMinLSRBalanceNew(minLSRBalanceCurrent);
     };
-    useWalletSubscription(smartContractService, fetchData);
 
     useEffect(() => {
-        smartContractService.blockchainSubscriptions
+        smartContractService.initSmartContractService();
+    }, []);
+
+    useWalletSubscription(smartContractService, fetchData);
+    useDexInitSubscription(smartContractService, fetchData);
+
+    useEffect(() => {
+        const subccription = smartContractService.blockchainSubscriptions
             .SetSwapFee$()
             .subscribe((data: BigNumber) => {
                 const msg = `Swap fee set to: ${data}`;
@@ -105,8 +124,30 @@ export const AdminPanelComponent = () => {
                 setSuccessSnackMessage(msg);
                 setSuccessSnackOpen(true);
                 setSwapFeeCurrent(swapFeeNew);
+                setIsSetLoading(false);
+                setIsSetClicked(false);
             });
-    });
+        return () => {
+            subccription.unsubscribe();
+        };
+    }, [isSetClicked]);
+
+    useEffect(() => {
+        const subccription = smartContractService.blockchainSubscriptions
+            .SetLsrMinBalance$()
+            .subscribe((data: BigNumber) => {
+                const msg = `Minimum LSR balance set to: ${data}`;
+                console.info(msg);
+                setSuccessSnackMessage(msg);
+                setSuccessSnackOpen(true);
+                setMinLSRBalanceCurrent(minLSRBalanceNew);
+                setIsSetLoading(false);
+                setIsSetClicked(false);
+            });
+        return () => {
+            subccription.unsubscribe();
+        };
+    }, [isSetClicked]);
 
     return (
         <div>
@@ -151,8 +192,17 @@ export const AdminPanelComponent = () => {
                         onClick={clickSet}
                     >
                         Set
-                        <CheckIcon style={styleIconsProps} />
+                        <Box sx={styleBox}>
+                            <CheckIcon style={styleIconsProps} />
+                            {isSetLoading && (
+                                <CircularProgress
+                                    size={30}
+                                    sx={styleCircularProgress}
+                                />
+                            )}
+                        </Box>
                     </Button>
+
                     <Divider
                         variant="middle"
                         style={{
@@ -217,9 +267,9 @@ export const AdminPanelComponent = () => {
             </Card>
             <Snackbar
                 open={successSnackOpen}
-                autoHideDuration={1500}
+                autoHideDuration={4000}
                 onClose={() => {
-                    setSuccessSnackMessage(successSnackMessage);
+                    setSuccessSnackOpen(false);
                 }}
             >
                 <Alert
