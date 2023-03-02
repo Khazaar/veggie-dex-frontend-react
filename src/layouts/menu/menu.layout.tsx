@@ -11,7 +11,7 @@ import { styleModalWindowBox } from "../../assets/styles/stypeProps";
 
 import { CodeContent, ContactContent, InfoContent } from "./content.components";
 
-export const MenuComponent = () => {
+export const MenuLayout = () => {
     const [openInfoModal, setOpenInfoModal] = useState(false);
     const [openContactModal, setOpenContactModal] = useState(false);
     const [openCodeModal, setOpenCodeModal] = useState(false);

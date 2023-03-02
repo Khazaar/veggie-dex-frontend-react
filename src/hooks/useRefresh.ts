@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Subscription } from "rxjs";
-import { ISmartContractService } from "../services/interfaces/ISmartContract.service";
+import { ISmartContractService } from "../services/ISmartContract.service";
 
 export const useRefresh = (
     smartContractService: ISmartContractService,
@@ -60,7 +60,7 @@ export const useRefresh = (
         );
         subscriptions.push(
             smartContractService.blockchainSubscriptions
-                .AdminGranted$()
+                .RoleGranted$()
                 .subscribe(async () => {
                     fetchData()
                         .then(() => {})
@@ -71,7 +71,7 @@ export const useRefresh = (
         );
         subscriptions.push(
             smartContractService.blockchainSubscriptions
-                .AdminRevoked$()
+                .RoleRevoked$()
                 .subscribe(async () => {
                     fetchData()
                         .then(() => {})

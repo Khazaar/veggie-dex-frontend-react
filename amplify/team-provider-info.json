@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-veggiedex-dev-113514-authRole",
+      "UnauthRoleArn": "arn:aws:iam::660831125782:role/amplify-veggiedex-dev-113514-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::660831125782:role/amplify-veggiedex-dev-113514-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-veggiedex-dev-113514-deployment",
+      "UnauthRoleName": "amplify-veggiedex-dev-113514-unauthRole",
+      "StackName": "amplify-veggiedex-dev-113514",
+      "StackId": "arn:aws:cloudformation:us-east-1:660831125782:stack/amplify-veggiedex-dev-113514/8b6775d0-b8dd-11ed-85b0-0e0df3ac4c57",
+      "AmplifyAppId": "d2vryayadfjwli"
+    }
+  }
+}

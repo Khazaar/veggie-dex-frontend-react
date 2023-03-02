@@ -10,6 +10,7 @@ export const theme = createTheme({
                 root: {
                     borderRadius: 16,
                     fontSize: fontSizeMain,
+                    height: "2.5rem",
                 },
             },
         },

@@ -1,3 +1,4 @@
+import { ERC20Basic } from "./../smart-contracts/types/ERC20Basic";
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
 import { Subject } from "rxjs/internal/Subject";
@@ -6,30 +7,44 @@ import {
     Potato,
     Apple,
     LSR,
-    ISmartContract,
+    ITokenContract,
     Factory,
     Router_mod,
     Tomato,
 } from "../smart-contracts/smart-contract-data";
-import { IConnectService } from "./interfaces/IConnect.service";
+import {
+    ERC20Apple,
+    ERC20Apple__factory,
+    ERC20LSR,
+    ERC20LSR__factory,
+    ERC20Potato,
+    ERC20Potato__factory,
+    ERC20Tomato,
+    ERC20Tomato__factory,
+    PancakeFactory,
+    PancakeFactory__factory,
+    PancakePair,
+    PancakeRouter_mod,
+    PancakeRouter_mod__factory,
+} from "../smart-contracts/types";
+import { IConnectService } from "./IConnect.service";
 
 export class ConnectService implements IConnectService {
     public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
-    public contractPotato: ethers.Contract;
-    public contractApple: ethers.Contract;
-    public contractTomato: ethers.Contract;
-    public contractLSR: ethers.Contract;
-    public contractFactory: ethers.Contract;
-    public contractPair: ethers.Contract;
-    public contractRouter_mod: ethers.Contract;
-    public tokenContracts: ISmartContract[] = [];
+    public contractPotato: ERC20Potato;
+    public contractApple: ERC20Apple;
+    public contractTomato: ERC20Tomato;
+    public contractLSR: ERC20LSR;
+    public contractFactory: PancakeFactory;
+    public contractPair: PancakePair;
+    public contractRouter_mod: PancakeRouter_mod;
+    public tokenContracts: ITokenContract[] = [];
     public network: INetwork;
     public defaultNetwork = Hardhat;
     public provider: ethers.providers.Web3Provider;
     public signer: ethers.providers.JsonRpcSigner;
-    public isConnected: boolean = false;
-    public walletConnected = new Subject<void>();
-    public walletConnected$(): Observable<void> {
+    public walletConnected = new Subject<string>();
+    public walletConnected$(): Observable<string> {
         return this.walletConnected.asObservable();
     }
 
@@ -41,13 +56,13 @@ export class ConnectService implements IConnectService {
             this.provider = new ethers.providers.Web3Provider(
                 (window as any).ethereum
             );
-            this.signer = this.provider.getSigner();
+            this.signer = await this.provider.getSigner();
             this.network = this.defaultNetwork;
-            await this.fetchSmartContracts();
-            console.log(`Is connected? ${this.isConnected}`);
-            console.log("Account:", await this.signer.getAddress());
 
-            this.walletConnected.next();
+            await this.fetchSmartContracts();
+            this.walletConnected.next(await this.signer.getAddress());
+
+            //this.walletConnected.next();
         } catch (error) {
             console.log(
                 `Error in initConnectService: ${(error as Error).message}`
@@ -68,50 +83,43 @@ export class ConnectService implements IConnectService {
             const network = this.network
                 .nameShort as keyof typeof Potato.address;
 
+            // Apple
+            this.contractApple = ERC20Apple__factory.connect(
+                Apple.address[network],
+                this.signer
+            );
+            Apple.instance = this.contractApple;
+
             // Potato
-            this.contractPotato = new ethers.Contract(
+            this.contractPotato = ERC20Potato__factory.connect(
                 Potato.address[network],
-                Potato.abi as any,
                 this.signer
             );
             Potato.instance = this.contractPotato;
 
             // Tomato
-            this.contractTomato = new ethers.Contract(
+            this.contractTomato = ERC20Tomato__factory.connect(
                 Tomato.address[network],
-                Tomato.abi as any,
                 this.signer
             );
             Tomato.instance = this.contractTomato;
 
-            // Apple
-            this.contractApple = new ethers.Contract(
-                Apple.address[network],
-                Apple.abi as any,
-                this.signer
-            );
-            Apple.instance = this.contractApple;
             // LSR
-            this.contractLSR = new ethers.Contract(
+            this.contractLSR = ERC20LSR__factory.connect(
                 LSR.address[network],
-                LSR.abi as any,
                 this.signer
             );
             LSR.instance = this.contractLSR;
             // Factory
-            this.contractFactory = new ethers.Contract(
+            this.contractFactory = PancakeFactory__factory.connect(
                 Factory.address[network],
-                Factory.abi as any,
                 this.signer
             );
-            Factory.instance = this.contractFactory;
 
-            this.contractRouter_mod = new ethers.Contract(
+            this.contractRouter_mod = PancakeRouter_mod__factory.connect(
                 Router_mod.address[network],
-                Router_mod.abi as any,
                 this.signer
             );
-            Router_mod.instance = this.contractRouter_mod;
             this.tokenContracts = [Apple, Potato, Tomato, LSR];
         } catch (error) {
             console.log(

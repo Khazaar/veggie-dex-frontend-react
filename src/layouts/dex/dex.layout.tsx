@@ -3,7 +3,7 @@ import { AddLiquidityComponent } from "../../components/addLiquidity/addLiquidit
 import { SwapComponent } from "../../components/swap/swap.component";
 import { LiquidityPoolsComponent } from "../../components/liquidityPools/liquidityPools.component";
 
-export const DexComponent = () => {
+export const DexLayout = () => {
     return (
         <div className="DexComponent">
             <AddLiquidityComponent></AddLiquidityComponent>
