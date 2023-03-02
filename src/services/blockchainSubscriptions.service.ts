@@ -128,33 +128,51 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     }
 
     public async subscribePairEvents() {
-        const pairs = await this.smartContractService.getPairs();
-        pairs.forEach((iPair) => {
-            const filterSwap = iPair.instance.filters.Swap(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            );
-            iPair.instance.removeAllListeners(filterSwap);
-            iPair.instance.on(
-                filterSwap,
-                (address, amount0In, amount1In, amount0Out, amount1Out, to) => {
-                    const msg = `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`;
-                    console.info(msg);
-                    const date = new Date();
-                    console.info(
-                        date.getSeconds(),
-                        " ",
-                        date.getMilliseconds()
-                    );
-                    this.swapped.next(msg);
-                    //iPair.instance.removeAllListeners();
-                }
-            );
-        });
+        try {
+            const nPairs =
+                await this.smartContractService.connectService.contractFactory.allPairsLength();
+            if (nPairs.toNumber() === 0) {
+                console.log("No pairs");
+                return;
+            }
+
+            const pairs = await this.smartContractService.getPairs();
+            pairs.forEach((iPair) => {
+                const filterSwap = iPair.instance.filters.Swap(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                );
+                iPair.instance.removeAllListeners(filterSwap);
+                iPair.instance.on(
+                    filterSwap,
+                    (
+                        address,
+                        amount0In,
+                        amount1In,
+                        amount0Out,
+                        amount1Out,
+                        to
+                    ) => {
+                        const msg = `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`;
+                        console.info(msg);
+                        const date = new Date();
+                        console.info(
+                            date.getSeconds(),
+                            " ",
+                            date.getMilliseconds()
+                        );
+                        this.swapped.next(msg);
+                        //iPair.instance.removeAllListeners();
+                    }
+                );
+            });
+        } catch (e) {
+            throw e;
+        }
     }
 
     public async subscribeRouterEvents() {

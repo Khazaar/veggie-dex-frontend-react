@@ -1,7 +1,10 @@
+import { BigNumber, ethers } from "ethers";
 export interface INetwork {
     nameShort: string;
     nameLong: string;
     nativeToken: string;
+    gasPrice?: BigNumber;
+    gasLimit?: BigNumber;
 }
 export const Hardhat: INetwork = {
     nameShort: "hardhat",
@@ -12,6 +15,7 @@ export const BSC: INetwork = {
     nameShort: "bsc",
     nameLong: "Binance Smart Chain",
     nativeToken: "Testnet BNB",
+    gasPrice: ethers.utils.parseUnits("20", "gwei"),
 };
 export const Testnet: INetwork = {
     nameShort: "testnet",

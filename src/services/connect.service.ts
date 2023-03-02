@@ -1,3 +1,4 @@
+import { BSC } from "./../smart-contracts/networks";
 import { ERC20Basic } from "./../smart-contracts/types/ERC20Basic";
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
@@ -11,6 +12,7 @@ import {
     Factory,
     Router_mod,
     Tomato,
+    IAddress,
 } from "../smart-contracts/smart-contract-data";
 import {
     ERC20Apple,
@@ -40,7 +42,7 @@ export class ConnectService implements IConnectService {
     public contractRouter_mod: PancakeRouter_mod;
     public tokenContracts: ITokenContract[] = [];
     public network: INetwork;
-    public defaultNetwork = Hardhat;
+    public defaultNetwork = BSC;
     public provider: ethers.providers.Web3Provider;
     public signer: ethers.providers.JsonRpcSigner;
     public walletConnected = new Subject<string>();
@@ -70,9 +72,9 @@ export class ConnectService implements IConnectService {
         }
     }
 
-    public setNetwork(network: INetwork) {
+    public async setNetwork(network: INetwork) {
         this.network = network;
-        this.fetchSmartContracts();
+        await this.fetchSmartContracts();
     }
 
     public getTokenContracts() {
@@ -80,8 +82,7 @@ export class ConnectService implements IConnectService {
     }
     public async fetchSmartContracts() {
         try {
-            const network = this.network
-                .nameShort as keyof typeof Potato.address;
+            const network = this.network.nameShort as keyof IAddress;
 
             // Apple
             this.contractApple = ERC20Apple__factory.connect(

@@ -21,11 +21,13 @@ import {
     useTokenTransferSubscription,
     useWalletSubscription,
 } from "../../hooks";
+import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
 
 export const LiquidityPoolsComponent = () => {
     const [liquidityPoolsData, setLiquidityPoolsData] = useState<
         ILiquidityPools[]
     >([]);
+    const [dexInited, setDexInited] = useState<boolean>(false);
 
     const smartContractService = useContext(SmartContractServiceContext);
 
@@ -44,8 +46,15 @@ export const LiquidityPoolsComponent = () => {
         setLiquidityPoolsData(updatedLiquidityPoolsData);
     };
 
-    useWalletSubscription(smartContractService, fetchData);
+    useEffect(() => {
+        if (dexInited) {
+            fetchData();
+        }
+    }, [dexInited]);
+
+    //useWalletSubscription(smartContractService, fetchData);
     useTokenTransferSubscription(smartContractService, fetchData);
+    useDexInitSubscription(smartContractService, setDexInited);
 
     return (
         <Card className="LiquidityPoolsComponent">

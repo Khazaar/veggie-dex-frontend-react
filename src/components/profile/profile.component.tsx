@@ -4,7 +4,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
 import "./style.css";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { SmartContractServiceContext } from "../../App";
 
 export const ProfileComponent = () => {
@@ -14,6 +14,11 @@ export const ProfileComponent = () => {
     });
     const { disconnect } = useDisconnect();
     const smartContractService = useContext(SmartContractServiceContext);
+    useEffect(() => {
+        if (isConnected) {
+            smartContractService.initSmartContractService();
+        }
+    }, []);
 
     if (isConnected)
         return (

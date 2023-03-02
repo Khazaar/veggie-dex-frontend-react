@@ -14,15 +14,15 @@ import { SmartContractServiceContext } from "../../App";
 
 export const SelectNetworkComponent = () => {
     const networks: INetwork[] = [Hardhat, BSC, Goerli];
-    const [network, setNetwork] = useState<INetwork>(Hardhat);
+    const [network, setNetwork] = useState<INetwork>(BSC);
     const smartContractService = useContext(SmartContractServiceContext);
 
-    const handleChange = (event: SelectChangeEvent<INetwork>) => {
+    const handleChange = async (event: SelectChangeEvent<INetwork>) => {
         const {
             target: { value },
         } = event;
         setNetwork(value as INetwork);
-        smartContractService.connectService.setNetwork(value as INetwork);
+        await smartContractService.connectService.setNetwork(value as INetwork);
         console.log(value);
     };
 
