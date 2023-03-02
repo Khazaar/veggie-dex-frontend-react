@@ -1,12 +1,12 @@
-import { BlockchainSubscriptions } from "../blockchainSubscriptions.service";
+import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { BigNumber, ethers } from "ethers";
 import {
     IPair,
     Potato,
     ITokenContract,
-} from "../../smart-contracts/smart-contract-data";
+} from "../smart-contracts/smart-contract-data";
 import { IConnectService } from "./IConnect.service";
-import { ERC20Basic } from "../../smart-contracts/types";
+import { ERC20Basic } from "../smart-contracts/types";
 import { Subject, Observable } from "rxjs";
 
 export interface ISmartContractService {

@@ -1,10 +1,11 @@
 import { BigNumber, ethers } from "ethers";
 import { Subject, Observable } from "rxjs";
 import { ITokenContract } from "../smart-contracts/smart-contract-data";
-import { IBlockchainSubscriptions } from "./interfaces/IBlockchainSubscriptions.service";
-import { ILiquidityAdded } from "./interfaces/ILiquidityAdded";
-import { ILiquidityRemoved } from "./interfaces/ILiquidityRemoved";
+import { IBlockchainSubscriptions } from "./IBlockchainSubscriptions.service";
+import { ILiquidityAdded } from "../interfaces/ILiquidityAdded";
+import { ILiquidityRemoved } from "../interfaces/ILiquidityRemoved";
 import { SmartContractService } from "./smartContract.service";
+import { IRoleChanged } from "../interfaces/IRoleChanged";
 
 export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     constructor(private smartContractService: SmartContractService) {}
@@ -32,14 +33,14 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
     public LiquidityRemoved$(): Observable<ILiquidityRemoved> {
         return this.liquidityRemoved.asObservable();
     }
-    private adminGranted = new Subject<string>();
-    public AdminGranted$(): Observable<string> {
-        return this.adminGranted.asObservable();
+    private roleGranted = new Subject<IRoleChanged>();
+    public RoleGranted$(): Observable<IRoleChanged> {
+        return this.roleGranted.asObservable();
     }
 
-    private adminRevoked = new Subject<string>();
-    public AdminRevoked$(): Observable<string> {
-        return this.adminRevoked.asObservable();
+    private roleRevoked = new Subject<IRoleChanged>();
+    public RoleRevoked$(): Observable<IRoleChanged> {
+        return this.roleRevoked.asObservable();
     }
     private feeCharged = new Subject<string>();
     public FeeCharged$(): Observable<string> {
@@ -216,19 +217,33 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
             }
         );
 
+        const filterRoleGranted =
+            this.smartContractService.connectService.contractRouter_mod.filters.RoleGranted(
+                null,
+                null
+            );
+
         this.smartContractService.connectService.contractRouter_mod.on(
-            "RoleGranted",
-            (role, account) => {
-                console.log(`Role ${role} granted to ${account}`);
-                this.adminGranted.next(account);
+            filterRoleGranted,
+            (role, account, sender) => {
+                console.log(`Role ${role} granted to ${account} by ${sender}`);
+                this.roleGranted.next({ role, account, sender });
             }
         );
 
+        const filterRoleRevoked =
+            this.smartContractService.connectService.contractRouter_mod.filters.RoleRevoked(
+                null,
+                null
+            );
+
         this.smartContractService.connectService.contractRouter_mod.on(
-            "RoleRevoked",
-            (role, account) => {
-                console.log(`Role ${role} revoked from ${account}`);
-                this.adminRevoked.next(account);
+            filterRoleRevoked,
+            (role, account, sender) => {
+                console.log(
+                    `Role ${role} revoked from ${account} by ${sender}`
+                );
+                this.roleRevoked.next({ role, account, sender });
             }
         );
     }

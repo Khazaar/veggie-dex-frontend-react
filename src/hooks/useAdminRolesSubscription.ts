@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Subscription } from "rxjs";
-import { ISmartContractService } from "../services/interfaces/ISmartContract.service";
+import { ISmartContractService } from "../services/ISmartContract.service";
 
 export const useAdminRolesSubscription = (
     smartContractService: ISmartContractService,
@@ -10,7 +10,7 @@ export const useAdminRolesSubscription = (
         const subscriptions: Subscription[] = [];
         subscriptions.push(
             smartContractService.blockchainSubscriptions
-                .AdminGranted$()
+                .RoleGranted$()
                 .subscribe(async () => {
                     fetchData()
                         .then(() => {})
@@ -21,7 +21,7 @@ export const useAdminRolesSubscription = (
         );
         subscriptions.push(
             smartContractService.blockchainSubscriptions
-                .AdminRevoked$()
+                .RoleRevoked$()
                 .subscribe(async () => {
                     fetchData()
                         .then(() => {})
@@ -33,7 +33,7 @@ export const useAdminRolesSubscription = (
 
         return () => {
             subscriptions.forEach((subscription) => {
-                //subscription.unsubscribe();
+                subscription.unsubscribe();
             });
         };
     }, []);

@@ -7,7 +7,7 @@ import {
 } from "../smart-contracts/smart-contract-data";
 import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
-import { ISmartContractService } from "./interfaces/ISmartContract.service";
+import { ISmartContractService } from "./ISmartContract.service";
 import { ERC20Basic, PancakePair } from "../smart-contracts/types";
 import { Hardhat } from "../smart-contracts/networks";
 import { Observable, Subject } from "rxjs";
@@ -290,18 +290,14 @@ export class SmartContractService implements ISmartContractService {
     }
 
     public async grantAdminRole(adminRoleAddress: string) {
-        try {
-            if (ethers.utils.isAddress(adminRoleAddress)) {
-                let tx =
-                    await this.connectService.contractRouter_mod.addAdminAddress(
-                        adminRoleAddress
-                    );
-                this.smartWait(tx);
-            } else {
-                throw new Error("Invalid address");
-            }
-        } catch (error) {
-            console.log(error);
+        if (ethers.utils.isAddress(adminRoleAddress)) {
+            let tx =
+                await this.connectService.contractRouter_mod.addAdminAddress(
+                    adminRoleAddress
+                );
+            this.smartWait(tx);
+        } else {
+            throw new Error("Invalid address");
         }
     }
     public async revokeAdminRole(adminRoleAddress: string) {

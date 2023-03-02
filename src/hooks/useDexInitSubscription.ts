@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Subscription } from "rxjs";
-import { ISmartContractService } from "../services/interfaces/ISmartContract.service";
+import { ISmartContractService } from "../services/ISmartContract.service";
 
 export const useDexInitSubscription = (
     smartContractService: ISmartContractService,

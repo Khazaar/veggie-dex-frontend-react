@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
-import { INetwork } from "../../smart-contracts/networks";
-import { ITokenContract } from "../../smart-contracts/smart-contract-data";
+import { INetwork } from "../smart-contracts/networks";
+import { ITokenContract } from "../smart-contracts/smart-contract-data";
 import {
     ERC20Potato,
     ERC20Apple,
@@ -10,7 +10,7 @@ import {
     PancakeFactory,
     PancakePair,
     PancakeRouter_mod,
-} from "../../smart-contracts/types";
+} from "../smart-contracts/types";
 
 export interface IConnectService {
     ADMIN_ROLE: string;

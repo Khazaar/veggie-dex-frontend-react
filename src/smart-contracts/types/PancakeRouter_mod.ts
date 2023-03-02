@@ -413,8 +413,8 @@ export type AddLiquidityEvent = TypedEvent<
 export type AddLiquidityEventFilter = TypedEventFilter<AddLiquidityEvent>;
 
 export interface FeeChargedEventObject {
-  _token: string;
-  _fee: BigNumber;
+  token: string;
+  fee: BigNumber;
 }
 export type FeeChargedEvent = TypedEvent<
   [string, BigNumber],
@@ -424,8 +424,8 @@ export type FeeChargedEvent = TypedEvent<
 export type FeeChargedEventFilter = TypedEventFilter<FeeChargedEvent>;
 
 export interface RemoveLiquidityEventObject {
-  amountA: BigNumber;
-  amountB: BigNumber;
+  amount0: BigNumber;
+  amount1: BigNumber;
 }
 export type RemoveLiquidityEvent = TypedEvent<
   [BigNumber, BigNumber],
@@ -1106,21 +1106,21 @@ export interface PancakeRouter_mod extends BaseContract {
     ): AddLiquidityEventFilter;
 
     "FeeCharged(address,uint256)"(
-      _token?: PromiseOrValue<string> | null,
-      _fee?: PromiseOrValue<BigNumberish> | null
+      token?: PromiseOrValue<string> | null,
+      fee?: PromiseOrValue<BigNumberish> | null
     ): FeeChargedEventFilter;
     FeeCharged(
-      _token?: PromiseOrValue<string> | null,
-      _fee?: PromiseOrValue<BigNumberish> | null
+      token?: PromiseOrValue<string> | null,
+      fee?: PromiseOrValue<BigNumberish> | null
     ): FeeChargedEventFilter;
 
     "RemoveLiquidity(uint256,uint256)"(
-      amountA?: PromiseOrValue<BigNumberish> | null,
-      amountB?: PromiseOrValue<BigNumberish> | null
+      amount0?: PromiseOrValue<BigNumberish> | null,
+      amount1?: PromiseOrValue<BigNumberish> | null
     ): RemoveLiquidityEventFilter;
     RemoveLiquidity(
-      amountA?: PromiseOrValue<BigNumberish> | null,
-      amountB?: PromiseOrValue<BigNumberish> | null
+      amount0?: PromiseOrValue<BigNumberish> | null,
+      amount1?: PromiseOrValue<BigNumberish> | null
     ): RemoveLiquidityEventFilter;
 
     "RoleAdminChanged(bytes32,bytes32,bytes32)"(

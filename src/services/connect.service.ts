@@ -27,7 +27,7 @@ import {
     PancakeRouter_mod,
     PancakeRouter_mod__factory,
 } from "../smart-contracts/types";
-import { IConnectService } from "./interfaces/IConnect.service";
+import { IConnectService } from "./IConnect.service";
 
 export class ConnectService implements IConnectService {
     public ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["ADMIN"]);
