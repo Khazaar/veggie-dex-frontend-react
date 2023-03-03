@@ -70,9 +70,15 @@ export const RemoveLiquidityComponent = () => {
     };
 
     useEffect(() => {
-        smartContractService.getPairs().then((pairs) => {
-            setPairs(pairs);
-        });
+        isDexInited &&
+            smartContractService
+                .getPairs()
+                .then((pairs) => {
+                    setPairs(pairs);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
     }, [isDexInited]);
     useEffect(() => {
         const subscription: Subscription =
@@ -89,7 +95,7 @@ export const RemoveLiquidityComponent = () => {
     });
 
     useEffect(() => {
-        if (pairs.length > 0) {
+        if (pairs && pairs.length > 0) {
             const newPair = pairs[0];
             setSelectedPair(newPair);
         }
@@ -100,13 +106,13 @@ export const RemoveLiquidityComponent = () => {
     };
 
     useEffect(() => {
-        console.log("selected pair is ", selectedPair.name);
-        smartContractService
-            .getLiquidityAvailable(selectedPair.instance)
-            .then((liq) => {
-                setLiquidityAvailable(Number(liq));
-                setLiquidityToRmove(Number(liq));
-            });
+        selectedPair != pairZero &&
+            smartContractService
+                .getLiquidityAvailable(selectedPair.instance)
+                .then((liq) => {
+                    setLiquidityAvailable(Number(liq));
+                    setLiquidityToRmove(Number(liq));
+                });
     }, [selectedPair]);
 
     //useTokenTransferSubscription(smartContractService, fetchData);
@@ -133,7 +139,7 @@ export const RemoveLiquidityComponent = () => {
 
     return (
         <div>
-            {pairs.length > 0 && (
+            {pairs && pairs.length > 0 && (
                 <Card className="RemoveLiquidityComponent">
                     <CardHeader
                         title="Rmove Liquidity"

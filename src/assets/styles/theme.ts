@@ -1,16 +1,33 @@
+import { Typography } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 export const colorGreenLight = "#1aba00";
 export const colorGreenLight2 = "#1ee200";
 export const fontSizeMain = "1.1rem";
 
-export const theme = createTheme({
+export let theme = createTheme({
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 500,
+            md: 810,
+            lg: 950,
+            xl: 1920,
+        },
+    },
+});
+theme = createTheme(theme, {
     components: {
         MuiButton: {
             styleOverrides: {
                 root: {
                     borderRadius: 16,
-                    fontSize: fontSizeMain,
+                    fontSize: "1.1rem",
+
                     height: "2.5rem",
+                    [theme.breakpoints.down("sm")]: {
+                        height: "1.75rem",
+                        fontSize: "0.9rem",
+                    },
                 },
             },
         },
@@ -20,14 +37,17 @@ export const theme = createTheme({
                     borderRadius: 25,
                     backgroundColor: "transparent",
                     border: `3px solid ${colorGreenLight}`,
+
                     width: "400px",
+                    [theme.breakpoints.down("sm")]: {
+                        width: "300px",
+                    },
                     display: "flex",
                     alignItems: "center",
                     flexDirection: "column",
-
                     marginTop: "12px",
                     marginBottom: "6px",
-                    padding: "0",
+                    padding: "6px",
                 },
             },
         },
@@ -112,8 +132,18 @@ export const theme = createTheme({
         MuiTableCell: {
             styleOverrides: {
                 root: {
+                    [theme.breakpoints.down("sm")]: {
+                        padding: "10px 3px 10px 5px",
+                    },
+
                     fontSize: fontSizeMain,
                 },
+            },
+        },
+
+        MuiTable: {
+            styleOverrides: {
+                root: {},
             },
         },
         MuiInputLabel: {
@@ -142,18 +172,32 @@ export const theme = createTheme({
     },
     typography: {
         h1: {
+            //Card header
             color: colorGreenLight2,
             fontSize: "1.7rem",
+            [theme.breakpoints.down("sm")]: {
+                fontSize: "1.4rem",
+            },
             fontWeight: "bold",
+        },
+        h2: {
+            // fontSize: "1.1rem",
+            // [theme.breakpoints.down("sm")]: {
+            //     fontSize: "0.8rem",
+            // },
+            fontSize: { xs: 100, sm: 150, md: 150, lg: 150 },
         },
         h3: {
             color: colorGreenLight,
-            fontSize: "1.5rem",
+            fontSize: { xs: 100, sm: 150, md: 150, lg: 150 },
             margin: "0.5rem",
         },
         h4: {
             color: colorGreenLight,
             fontSize: "1rem",
+        },
+        h5: {
+            fontSize: "0.8rem",
         },
         body1: {
             margin: 0,

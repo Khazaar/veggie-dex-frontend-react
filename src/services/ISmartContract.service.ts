@@ -8,10 +8,10 @@ import {
 import { IConnectService } from "./IConnect.service";
 import { ERC20Basic } from "../smart-contracts/types";
 import { Subject, Observable } from "rxjs";
+import { INetwork } from "../smart-contracts/networks";
 
 export interface ISmartContractService {
     tokenPairs: IPair[];
-    network: keyof typeof Potato.address;
     gasLimit: number;
     connectService: IConnectService;
     blockchainSubscriptions: BlockchainSubscriptions;
@@ -22,7 +22,6 @@ export interface ISmartContractService {
     DexInited$(): Observable<void>;
 
     initSmartContractService(): Promise<void>;
-    updateSmatrContractServiceNetwork(): void;
     mintTokens(contract: ERC20Basic, amount: BigNumber): Promise<void>;
     getTokensBalance(contract: ERC20Basic): Promise<BigNumber>;
     addLiquidity(
@@ -36,6 +35,6 @@ export interface ISmartContractService {
         contractB: ERC20Basic,
         amountA: BigNumber
     ): Promise<void>;
-    getIContractByAddress(address: string): Promise<ITokenContract>;
+    getContractByAddress(address: string): ITokenContract;
     getPairs(): Promise<IPair[]>;
 }

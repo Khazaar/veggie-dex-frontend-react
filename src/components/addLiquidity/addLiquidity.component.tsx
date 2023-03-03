@@ -75,7 +75,6 @@ export const AddLiquidityComponent = () => {
             setWarningSnackOpen(true);
         } else {
             try {
-                await smartContractService.blockchainSubscriptions.subscribePairEvents();
                 setIsAddLoading(true);
                 await smartContractService.addLiquidity(
                     tokenA.instance,
@@ -83,6 +82,7 @@ export const AddLiquidityComponent = () => {
                     BigNumber.from(amountA),
                     BigNumber.from(amountB)
                 );
+                await smartContractService.blockchainSubscriptions.subscribePairEvents();
             } catch (e: any) {
                 const msg = `Error occured while adding liquidity: ${e.message}`;
                 console.error(msg);

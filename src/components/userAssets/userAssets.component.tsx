@@ -23,6 +23,7 @@ import {
 } from "../../hooks";
 import { Subscription } from "rxjs";
 import { useRefresh } from "../../hooks/useRefresh";
+import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
 
 export const UserAssetsComponent = () => {
     let initAssets: ITokenAsset[] = [
@@ -33,6 +34,7 @@ export const UserAssetsComponent = () => {
     ];
     const [ETHBalance, setETHBalance] = useState("");
     const [assetsData, setAssetsData] = useState<ITokenAsset[]>(initAssets);
+    const [dexInited, setDexInited] = useState<boolean>(false);
 
     const smartContractService = useContext(SmartContractServiceContext);
 
@@ -68,34 +70,34 @@ export const UserAssetsComponent = () => {
             ).substring(0, 8)
         );
     };
-    const subscriptions: Subscription[] = [];
+    useDexInitSubscription(smartContractService, setDexInited);
     useEffect(() => {
+        dexInited && fetchData().then(() => {});
+        const subscriptions: Subscription[] = [];
         // Wallet subscriptions
-        subscriptions.push(
-            smartContractService.connectService
-                .walletConnected$()
-                .subscribe(() => {
-                    fetchData();
-                })
-        );
-        subscriptions.push(
-            smartContractService.blockchainSubscriptions
-                .TokenTransfered$()
-                .subscribe(() => {
-                    fetchData();
-                })
-        );
+        dexInited &&
+            subscriptions.push(
+                smartContractService.connectService
+                    .walletConnected$()
+                    .subscribe(() => {
+                        fetchData().then(() => {});
+                    })
+            );
+        dexInited &&
+            subscriptions.push(
+                smartContractService.blockchainSubscriptions
+                    .TokenTransfered$()
+                    .subscribe(() => {
+                        fetchData().then(() => {});
+                    })
+            );
 
         return () => {
             subscriptions.forEach((subscription) => {
-                //subscription.unsubscribe();
+                subscription.unsubscribe();
             });
         };
-    });
-    //useRefresh(smartContractService, fetchData);
-
-    //useTokenTransferSubscription(smartContractService, fetchData);
-    //useWalletSubscription(smartContractService, fetchData);
+    }, [dexInited]);
 
     return (
         <div className="user-assets">

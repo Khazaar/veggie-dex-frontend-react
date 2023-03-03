@@ -133,8 +133,8 @@ export const SwapComponent = () => {
                     titleTypographyProps={{ variant: "h1" }}
                 ></CardHeader>
                 <CardContent>
-                    <div className="select-text-wrapper">
-                        <div className="item-wrapper-left">
+                    <Box className="select-text-wrapper">
+                        <Box className="item-wrapper-left">
                             <FormControl variant="filled">
                                 <InputLabel id="select-tokenA-to-addLiq-label">
                                     Token A
@@ -161,8 +161,8 @@ export const SwapComponent = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </div>
-                        <div className="item-wrapper-right">
+                        </Box>
+                        <Box className="item-wrapper-right">
                             <TextField
                                 className="item-wrapper"
                                 id="outlined-basic"
@@ -173,15 +173,13 @@ export const SwapComponent = () => {
                                     setAmountA(Number(event.target.value));
                                 }}
                             />
-                        </div>
-                    </div>
-
-                    <div className="select-text-wrapper">
-                        <div className="item-wrapper-left">
+                        </Box>
+                    </Box>
+                    <Box className="select-text-wrapper">
+                        <Box className="item-wrapper-left">
                             <FormControl
                                 variant="filled"
                                 className="item-wrapper"
-                                sx={{ width: 188 }}
                             >
                                 <InputLabel id="select-token-to-mint-label">
                                     Token B
@@ -208,8 +206,15 @@ export const SwapComponent = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </div>
-                        <div className="swapButtonWrapper">
+                        </Box>
+                        <Box
+                            className="item-wrapper-right"
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
                             <Button
                                 variant="contained"
                                 color="success"
@@ -228,8 +233,8 @@ export const SwapComponent = () => {
                                     )}
                                 </Box>
                             </Button>
-                        </div>
-                    </div>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
             <Snackbar

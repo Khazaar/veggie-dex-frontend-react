@@ -1,6 +1,8 @@
+import { INetwork } from "./../smart-contracts/networks";
 import { PancakePair__factory } from "../smart-contracts/types/factories";
 import { BigNumber, ethers } from "ethers";
 import {
+    IAddress,
     IPair,
     ITokenContract,
     Potato,
@@ -14,7 +16,6 @@ import { Observable, Subject } from "rxjs";
 
 export class SmartContractService implements ISmartContractService {
     public tokenPairs: IPair[] = [];
-    public network: keyof typeof Potato.address;
     public gasLimit = 50000;
     public blockchainSubscriptions: BlockchainSubscriptions;
     public hasAdminRole = false;
@@ -27,23 +28,24 @@ export class SmartContractService implements ISmartContractService {
     public DexInited$(): Observable<void> {
         return this.dexInited.asObservable();
     }
+    public connectService: ConnectService;
+    public undefinedToken: ITokenContract = {
+        nameLong: "undef",
+        nameShort: "undef",
+    };
 
-    constructor(public connectService: ConnectService) {
+    constructor() {
+        this.connectService = new ConnectService();
         this.blockchainSubscriptions = new BlockchainSubscriptions(this);
     }
 
     public async initSmartContractService() {
         try {
-            await this.connectService.initConnectService();
-            this.updateSmatrContractServiceNetwork();
-            //await this.blockchainSubscriptions.unsubscribeAll();
             await this.blockchainSubscriptions.subscribeAll();
             await this.updateAdminOwnerRole();
             this.dexInited.next();
         } catch (error) {
-            console.log(
-                `Error in initSmartContractService: ${(error as Error).message}`
-            );
+            console.error(`Error in initSmartContractService:`, error);
         }
     }
 
@@ -71,16 +73,13 @@ export class SmartContractService implements ISmartContractService {
         this.roleUpdated.next();
     }
 
-    public updateSmatrContractServiceNetwork() {
-        this.network = this.connectService.network
-            .nameShort as keyof typeof Potato.address;
-    }
-
     public async mintTokens(contract: ERC20Basic, amount: BigNumber) {
         //this.fetchSmartContract();
 
         //await contract.getTokens(amount.toString());
-        await contract.getTokens(amount);
+        await contract.getTokens(amount, {
+            gasPrice: this.connectService.network.gasPrice,
+        });
     }
 
     public async getTokensBalance(contract: ERC20Basic): Promise<BigNumber> {
@@ -96,17 +95,16 @@ export class SmartContractService implements ISmartContractService {
         amountA: BigNumber,
         amountB: BigNumber
     ) {
-        this.updateSmatrContractServiceNetwork();
         let tx = await contractA.approve(
             this.connectService.contractRouter_mod.address,
             amountA.toString(),
-            { gasLimit: this.gasLimit }
+            { gasLimit: this.connectService.network.gasLimit }
         );
         await this.smartWait(tx);
         tx = await contractB.approve(
             this.connectService.contractRouter_mod.address,
             amountB.toString(),
-            { gasLimit: this.gasLimit }
+            { gasLimit: this.connectService.network.gasLimit }
         );
         await this.smartWait(tx);
         console.log(
@@ -129,7 +127,8 @@ export class SmartContractService implements ISmartContractService {
             1,
             1,
             await this.connectService.signer.getAddress(),
-            216604939048
+            216604939048,
+            { gasLimit: this.connectService.network.gasLimit }
         );
         await this.smartWait(tx);
     }
@@ -139,7 +138,6 @@ export class SmartContractService implements ISmartContractService {
         contractB: ERC20Basic,
         liquidity: BigNumber
     ) {
-        this.updateSmatrContractServiceNetwork();
         const pairAddress = await this.connectService.contractFactory.getPair(
             await contractA.address,
             await contractB.address
@@ -181,7 +179,6 @@ export class SmartContractService implements ISmartContractService {
         contractB: ERC20Basic,
         amountA: BigNumber
     ) {
-        this.updateSmatrContractServiceNetwork();
         let tx = await contractA.approve(
             await this.connectService.contractRouter_mod.address,
             amountA.toString()
@@ -205,29 +202,32 @@ export class SmartContractService implements ISmartContractService {
         await this.smartWait(tx);
         //await this.subscribePairEvents();
     }
-    public getIContractByAddress(address: string): Promise<ITokenContract> {
-        return new Promise((resolve, reject) => {
-            this.connectService
-                .getTokenContracts()
-                .forEach((contract: ITokenContract) => {
-                    if (
-                        contract.address[this.network].toLowerCase() === address
-                    ) {
-                        resolve(contract);
-                        return;
-                    }
-                });
-            reject();
-        });
+    public getContractByAddress(address: string): ITokenContract {
+        let resContract = this.undefinedToken;
+        this.connectService.tokenContracts.forEach(
+            (contract: ITokenContract) => {
+                if (
+                    contract.address[
+                        this.connectService.network.nameShort as keyof IAddress
+                    ].toLowerCase() === address
+                ) {
+                    resContract = contract;
+                }
+            }
+        );
+        return resContract;
     }
+
     public async getPairs(): Promise<IPair[]> {
-        this.updateSmatrContractServiceNetwork();
-        this.connectService.fetchSmartContracts();
-        const nPairs =
-            await this.connectService.contractFactory.allPairsLength();
-        const tokenPairs: IPair[] = [];
-        for (let i = 0; i < nPairs.toNumber(); i++) {
-            try {
+        try {
+            //await this.connectService.fetchSmartContracts();
+            const nPairs =
+                await this.connectService.contractFactory.allPairsLength();
+            if (nPairs.toNumber() === 0) {
+                return [];
+            }
+            const tokenPairs: IPair[] = [];
+            for (let i = 0; i < nPairs.toNumber(); i++) {
                 const pairAddress =
                     await this.connectService.contractFactory.allPairs(i);
 
@@ -242,29 +242,34 @@ export class SmartContractService implements ISmartContractService {
                 const token1Address = (
                     await pancakePair.token1()
                 ).toLowerCase();
-                const token0: ITokenContract = await this.getIContractByAddress(
-                    token0Address
-                );
-                const token1: ITokenContract = await this.getIContractByAddress(
-                    token1Address
-                );
-                const [reserve0, reserve1] = await pancakePair.getReserves();
-                const pair: IPair = {
-                    name: `${token0.nameShort}/${token1.nameShort}`,
-                    address: pairAddress,
-                    instance: pancakePair,
-                    token0: token0,
-                    token1: token1,
-                    reserve0: reserve0,
-                    reserve1: reserve1,
-                };
-                tokenPairs.push(pair);
-            } catch (error) {
-                console.log(error);
+                const token0: ITokenContract | string =
+                    this.getContractByAddress(token0Address);
+                const token1: ITokenContract | string =
+                    this.getContractByAddress(token1Address);
+                if (
+                    token0 !== this.undefinedToken &&
+                    token1 !== this.undefinedToken
+                ) {
+                    const [reserve0, reserve1] =
+                        await pancakePair.getReserves();
+                    const pair: IPair = {
+                        name: `${token0.nameShort}/${token1.nameShort}`,
+                        address: pairAddress,
+                        instance: pancakePair,
+                        token0: token0,
+                        token1: token1,
+                        reserve0: reserve0,
+                        reserve1: reserve1,
+                    };
+                    pair && tokenPairs.push(pair);
+                }
             }
+            this.tokenPairs = tokenPairs;
+
+            return tokenPairs;
+        } catch (error) {
+            console.error("Error in getPairs. ", error);
         }
-        this.tokenPairs = tokenPairs;
-        return tokenPairs;
     }
 
     public async getRouterAdmins() {
