@@ -129,10 +129,6 @@ export const AdminPanelComponent = () => {
         setMinLSRBalanceNew(minLSRBalanceCurrent);
     };
 
-    useEffect(() => {
-        smartContractService.initSmartContractService();
-    }, []);
-
     useWalletSubscription(smartContractService, fetchData);
     useDexInitSubscription(smartContractService, fetchData);
 

@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -16,9 +16,16 @@ export const ProfileComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
     useEffect(() => {
         if (isConnected) {
-            smartContractService.initSmartContractService();
+            smartContractService.connectService
+                .initConnectService()
+                .then(() => {
+                    console.info("Connect service initialized");
+                    smartContractService.initSmartContractService().then(() => {
+                        console.info("Smart contract service initialized");
+                    });
+                });
         }
-    }, []);
+    }, [isConnected]);
 
     if (isConnected)
         return (
@@ -31,7 +38,7 @@ export const ProfileComponent = () => {
                 >
                     Disconnect wallet
                 </Button>
-                <div>{address}</div>
+                <Typography variant="h5">{address} </Typography>
             </div>
         );
     return (

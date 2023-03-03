@@ -106,7 +106,6 @@ export const RemoveLiquidityComponent = () => {
     };
 
     useEffect(() => {
-        console.log("selected pair is ", selectedPair.name);
         selectedPair != pairZero &&
             smartContractService
                 .getLiquidityAvailable(selectedPair.instance)

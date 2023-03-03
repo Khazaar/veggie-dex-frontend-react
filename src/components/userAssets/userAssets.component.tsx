@@ -72,7 +72,7 @@ export const UserAssetsComponent = () => {
     };
     useDexInitSubscription(smartContractService, setDexInited);
     useEffect(() => {
-        fetchData().then(() => {});
+        dexInited && fetchData().then(() => {});
         const subscriptions: Subscription[] = [];
         // Wallet subscriptions
         dexInited &&

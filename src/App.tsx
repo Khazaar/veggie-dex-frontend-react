@@ -7,24 +7,32 @@ import { UserLayout } from "./layouts/user/user.layout";
 import { DexLayout } from "./layouts/dex/dex.layout";
 import { theme } from "./assets/styles/theme";
 import { MenuLayout } from "./layouts/menu/menu.layout";
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
+import { Box, useMediaQuery } from "@mui/material";
+
+import { styled, SxProps } from "@mui/system";
 
 export const SmartContractServiceContext = createContext<SmartContractService>(
-    new SmartContractService(new ConnectService())
+    new SmartContractService()
 );
 
-export const IsLoading = createContext<boolean>(false);
-
 function App() {
+    const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
+    const sxBoxContent: SxProps = {
+        display: "flex",
+        flexDirection: { xs: "column", sm: "column", md: "column", lg: "row" },
+        width: "100%",
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <div className="global-wrapper">
                 <HeaderLayout></HeaderLayout>
                 <div className="content-menu-wrapper">
-                    <div className="content-wrapper">
+                    <Box sx={sxBoxContent}>
                         <DexLayout></DexLayout>
                         <UserLayout></UserLayout>
-                    </div>
+                    </Box>
                     <MenuLayout></MenuLayout>
                 </div>
             </div>

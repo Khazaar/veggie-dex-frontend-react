@@ -35,6 +35,6 @@ export interface ISmartContractService {
         contractB: ERC20Basic,
         amountA: BigNumber
     ): Promise<void>;
-    getIContractByAddress(address: string): Promise<ITokenContract>;
+    getContractByAddress(address: string): ITokenContract;
     getPairs(): Promise<IPair[]>;
 }

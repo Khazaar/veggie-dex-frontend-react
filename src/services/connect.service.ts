@@ -50,6 +50,8 @@ export class ConnectService implements IConnectService {
         return this.walletConnected.asObservable();
     }
 
+    constructor() {}
+
     public async initConnectService() {
         try {
             await (window as any).ethereum.request({

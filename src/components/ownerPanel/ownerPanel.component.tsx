@@ -81,12 +81,6 @@ export const OwnerPanelComponent = () => {
     };
 
     useEffect(() => {
-        smartContractService.initSmartContractService().then(() => {
-            fetchData();
-        });
-    }, []);
-
-    useEffect(() => {
         const subscriptions: Subscription[] = [];
         subscriptions.push(
             smartContractService.blockchainSubscriptions

@@ -1,4 +1,5 @@
 import {
+    Box,
     FormControl,
     FormHelperText,
     InputLabel,
@@ -27,8 +28,12 @@ export const SelectNetworkComponent = () => {
     };
 
     return (
-        <div className="SelectNetworkComponentStyle">
-            <FormControl sx={{ width: 150 }}>
+        <Box sx={{ display: "flex", alignItems: "center", marginRight: "3px" }}>
+            <FormControl
+                sx={{
+                    width: { xs: 100, sm: 150, md: 150, lg: 150 },
+                }}
+            >
                 <InputLabel id="elect-network-label1">Network</InputLabel>
                 <Select
                     value={network}
@@ -36,6 +41,9 @@ export const SelectNetworkComponent = () => {
                     id="select-network333"
                     onChange={handleChange}
                     label="Network"
+                    sx={{
+                        height: { xs: 35, sm: 40, md: 50, lg: 50 },
+                    }}
                 >
                     {networks.map((name) => (
                         //@ts-ignore - necessary to load object into value
@@ -45,6 +53,6 @@ export const SelectNetworkComponent = () => {
                     ))}
                 </Select>
             </FormControl>
-        </div>
+        </Box>
     );
 };
