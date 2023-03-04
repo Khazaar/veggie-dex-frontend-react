@@ -166,6 +166,9 @@ theme = createTheme(theme, {
                     "& :hover": {
                         color: colorGreenLight,
                     },
+                    [theme.breakpoints.down("sm")]: {
+                        padding: "4px 15px 0 15px",
+                    },
                 },
             },
         },
@@ -198,6 +201,9 @@ theme = createTheme(theme, {
         },
         h5: {
             fontSize: "0.8rem",
+            [theme.breakpoints.down("sm")]: {
+                fontSize: "0.5rem",
+            },
         },
         body1: {
             margin: 0,

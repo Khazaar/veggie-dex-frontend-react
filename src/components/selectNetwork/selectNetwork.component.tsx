@@ -10,11 +10,17 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import "./style.css";
 import { useContext, useState } from "react";
-import { BSC, Goerli, Hardhat, INetwork } from "../../smart-contracts/networks";
+import {
+    BSC,
+    Goerli,
+    Hardhat,
+    INetwork,
+    Sepolia,
+} from "../../smart-contracts/networks";
 import { SmartContractServiceContext } from "../../App";
 
 export const SelectNetworkComponent = () => {
-    const networks: INetwork[] = [Hardhat, BSC, Goerli];
+    const networks: INetwork[] = [Hardhat, BSC, Sepolia];
     const [network, setNetwork] = useState<INetwork>(BSC);
     const smartContractService = useContext(SmartContractServiceContext);
 

@@ -1,5 +1,4 @@
 import { BSC } from "./../smart-contracts/networks";
-import { ERC20Basic } from "./../smart-contracts/types/ERC20Basic";
 import { ethers } from "ethers";
 import { Observable } from "rxjs";
 import { Subject } from "rxjs/internal/Subject";
@@ -61,7 +60,7 @@ export class ConnectService implements IConnectService {
                 (window as any).ethereum
             );
             this.signer = await this.provider.getSigner();
-            this.network = this.defaultNetwork;
+            //this.network = this.defaultNetwork;
 
             await this.fetchSmartContracts();
             this.walletConnected.next(await this.signer.getAddress());

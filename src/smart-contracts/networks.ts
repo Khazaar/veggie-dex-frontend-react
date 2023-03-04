@@ -10,6 +10,7 @@ export const Hardhat: INetwork = {
     nameShort: "hardhat",
     nameLong: "Hardhat local",
     nativeToken: "Hardhat ETH",
+    gasPrice: ethers.utils.parseUnits("20", "gwei"),
 };
 export const BSC: INetwork = {
     nameShort: "bsc",
@@ -27,4 +28,11 @@ export const Goerli: INetwork = {
     nameShort: "goerli",
     nameLong: "Goerli",
     nativeToken: "Goerli ETH",
+};
+
+export const Sepolia: INetwork = {
+    nameShort: "sepolia",
+    nameLong: "Sepolia",
+    nativeToken: "SepETH",
+    gasPrice: ethers.utils.parseUnits("20", "gwei"),
 };

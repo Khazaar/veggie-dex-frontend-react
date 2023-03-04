@@ -1,24 +1,3 @@
-import type {
-BaseContract,
-BigNumberish,
-BytesLike,
-FunctionFragment,
-Result,
-Interface,
-EventFragment,
-} from "ethers";
-import type { AddressLike } from "ethers/types/types/address";
-import type { ContractRunner } from "ethers/types/types/providers";
-import type { ContractMethod } from "ethers/types/types/contract";
-import type { Listener } from "ethers/types/types/utils";
-import type {
-TypedContractEvent,
-TypedDeferredTopicFilter,
-TypedEventLog,
-TypedListener,
-TypedContractMethod,
-} from "./common";
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

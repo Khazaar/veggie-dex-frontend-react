@@ -21,7 +21,29 @@ export const MenuLayout = () => {
 
     return (
         <div>
-            <div className="MenuComponent">
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: {
+                        xs: "row",
+                        sm: "column",
+                        md: "column",
+                        lg: "column",
+                    },
+                    paddingTop: {
+                        xs: "0",
+                        sm: "6rem",
+                        md: "6rem",
+                        lg: "6rem",
+                    },
+                    marginBottom: {
+                        xs: "-5px",
+                        sm: "0",
+                        md: "0",
+                        lg: "0",
+                    },
+                }}
+            >
                 <IconButton
                     aria-label="upload picture"
                     component="label"
@@ -46,7 +68,7 @@ export const MenuLayout = () => {
                 >
                     <MailOutlineIcon style={swgStyle} />
                 </IconButton>
-            </div>
+            </Box>
             <Modal
                 open={openInfoModal}
                 onClose={() => {

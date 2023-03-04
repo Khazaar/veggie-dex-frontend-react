@@ -141,7 +141,12 @@ export const UserAssetsComponent = () => {
                         </Table>
                     </TableContainer>
                     <div className="text-balance">
-                        <Typography variant="h4">ETH balance: </Typography>
+                        <Typography variant="h4">
+                            {dexInited &&
+                                smartContractService.connectService.network
+                                    .nativeToken}{" "}
+                            balance:{" "}
+                        </Typography>
                         <Typography variant="h4">{ETHBalance} </Typography>
                     </div>
                 </CardContent>

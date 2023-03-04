@@ -11,29 +11,50 @@ import { createContext, useEffect } from "react";
 import { Box, useMediaQuery } from "@mui/material";
 
 import { styled, SxProps } from "@mui/system";
+import { renderToStaticMarkup } from "react-dom/server";
+import backImage from "./assets/images/apple-bg.svg";
 
 export const SmartContractServiceContext = createContext<SmartContractService>(
     new SmartContractService()
 );
 
 function App() {
-    const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
     const sxBoxContent: SxProps = {
         display: "flex",
         flexDirection: { xs: "column", sm: "column", md: "column", lg: "row" },
         width: "100%",
+    };
+    const svgString = encodeURIComponent(renderToStaticMarkup(backImage));
+    const sxBoxContentMenu: SxProps = {
+        display: "flex",
+        flexDirection: {
+            xs: "column-reverse",
+            sm: "row",
+            md: "row",
+            lg: "row",
+        },
+        width: "100%",
+        height: "100%",
+        alignItems: {
+            xs: "center",
+            sm: "flex-start",
+            md: "flex-start",
+            lg: "flex-start",
+        },
     };
 
     return (
         <ThemeProvider theme={theme}>
             <div className="global-wrapper">
                 <HeaderLayout></HeaderLayout>
-                <div className="content-menu-wrapper">
-                    <Box sx={sxBoxContent}>
-                        <DexLayout></DexLayout>
-                        <UserLayout></UserLayout>
+                <div className="background-image">
+                    <Box sx={sxBoxContentMenu}>
+                        <Box sx={sxBoxContent}>
+                            <DexLayout></DexLayout>
+                            <UserLayout></UserLayout>
+                        </Box>
+                        <MenuLayout></MenuLayout>
                     </Box>
-                    <MenuLayout></MenuLayout>
                 </div>
             </div>
         </ThemeProvider>

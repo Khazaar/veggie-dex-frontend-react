@@ -1,4 +1,3 @@
-import { INetwork } from "./../smart-contracts/networks";
 import { PancakePair__factory } from "../smart-contracts/types/factories";
 import { BigNumber, ethers } from "ethers";
 import {
@@ -11,7 +10,6 @@ import { BlockchainSubscriptions } from "./blockchainSubscriptions.service";
 import { ConnectService } from "./connect.service";
 import { ISmartContractService } from "./ISmartContract.service";
 import { ERC20Basic, PancakePair } from "../smart-contracts/types";
-import { Hardhat } from "../smart-contracts/networks";
 import { Observable, Subject } from "rxjs";
 
 export class SmartContractService implements ISmartContractService {
