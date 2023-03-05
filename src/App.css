@@ -1,16 +1,10 @@
-.content-wrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
 .background-image {
     background-size: cover;
-    background-image: url("/src/assets/images/apple-bg.svg");
+    background-image: url("/src/assets/images/apple-bg-no-color.svg");
+    min-height: 100vh;
+    background-color: #121212;
 }
 
-/* @media screen and (max-width: 1050px) {
-    .content-wrapper {
-        flex-direction: column-reverse;
-    }
-} */
+.test {
+    background-color: #1ee200b7;
+}

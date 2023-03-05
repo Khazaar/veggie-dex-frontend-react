@@ -1,15 +1,25 @@
 import "./style.css";
 
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import {
+    Box,
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    IconButton,
+    Typography,
+} from "@mui/material";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import CodeIcon from "@mui/icons-material/Code";
-import { colorGreenLight } from "../../assets/styles/theme";
+
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useState } from "react";
-import Modal from "@mui/material/Modal";
-import { styleModalWindowBox } from "../../assets/styles/stypeProps";
 
-import { CodeContent, ContactContent, InfoContent } from "./content.components";
+import {
+    CodeContent,
+    ContactContent,
+    InfoContent,
+} from "./contentMenu.components";
 
 export const MenuLayout = () => {
     const [openInfoModal, setOpenInfoModal] = useState(false);
@@ -69,43 +79,62 @@ export const MenuLayout = () => {
                     <MailOutlineIcon style={swgStyle} />
                 </IconButton>
             </Box>
-            <Modal
+            <Dialog
                 open={openInfoModal}
                 onClose={() => {
                     setOpenInfoModal(false);
                 }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="Project-modal-title"
+                aria-describedby="Project-modal-description"
+                fullWidth={true}
+                maxWidth={"md"}
             >
-                <Box sx={styleModalWindowBox}>
-                    <InfoContent></InfoContent>
-                </Box>
-            </Modal>
-            <Modal
-                open={openContactModal}
-                onClose={() => {
-                    setOpenContactModal(false);
-                }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={styleModalWindowBox}>
-                    <ContactContent></ContactContent>
-                </Box>
-            </Modal>
-
-            <Modal
+                <DialogTitle id="scroll-dialog-title">
+                    Project information
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        <InfoContent></InfoContent>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
+            <Dialog
                 open={openCodeModal}
                 onClose={() => {
                     setOpenCodeModal(false);
                 }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="Code-modal-title"
+                aria-describedby="Code-modal-description"
+                fullWidth={true}
+                maxWidth={"md"}
             >
-                <Box sx={styleModalWindowBox}>
-                    <CodeContent></CodeContent>
-                </Box>
-            </Modal>
+                <DialogTitle id="scroll-dialog-title">
+                    Code information
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        <CodeContent></CodeContent>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog
+                open={openContactModal}
+                onClose={() => {
+                    setOpenContactModal(false);
+                }}
+                aria-labelledby="contact-modal-title"
+                aria-describedby="contact-modal-description"
+                fullWidth={false}
+                maxWidth={"md"}
+            >
+                <DialogTitle id="scroll-dialog-title">Contact</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        <ContactContent></ContactContent>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

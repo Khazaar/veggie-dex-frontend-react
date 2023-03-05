@@ -38,7 +38,11 @@ export const ProfileComponent = () => {
                 >
                     Disconnect wallet
                 </Button>
-                <Typography variant="h5">{address} </Typography>
+                <Typography variant="h5">
+                    {address.substring(0, 6) +
+                        "..." +
+                        address.substring(38, 42)}{" "}
+                </Typography>
             </div>
         );
     return (

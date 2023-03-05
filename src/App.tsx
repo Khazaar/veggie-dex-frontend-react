@@ -7,12 +7,10 @@ import { UserLayout } from "./layouts/user/user.layout";
 import { DexLayout } from "./layouts/dex/dex.layout";
 import { theme } from "./assets/styles/theme";
 import { MenuLayout } from "./layouts/menu/menu.layout";
-import { createContext, useEffect } from "react";
-import { Box, useMediaQuery } from "@mui/material";
+import { createContext } from "react";
+import { Box } from "@mui/material";
 
-import { styled, SxProps } from "@mui/system";
-import { renderToStaticMarkup } from "react-dom/server";
-import backImage from "./assets/images/apple-bg.svg";
+import { SxProps } from "@mui/system";
 
 export const SmartContractServiceContext = createContext<SmartContractService>(
     new SmartContractService()
@@ -23,8 +21,9 @@ function App() {
         display: "flex",
         flexDirection: { xs: "column", sm: "column", md: "column", lg: "row" },
         width: "100%",
+        height: "100%",
+        //backgroundColor: "#121212",
     };
-    const svgString = encodeURIComponent(renderToStaticMarkup(backImage));
     const sxBoxContentMenu: SxProps = {
         display: "flex",
         flexDirection: {
@@ -33,30 +32,33 @@ function App() {
             md: "row",
             lg: "row",
         },
-        width: "100%",
-        height: "100%",
+        maxWidth: "1200px",
         alignItems: {
             xs: "center",
             sm: "flex-start",
             md: "flex-start",
             lg: "flex-start",
         },
+        //backgroundColor: "#121212",
+        height: "100%",
     };
 
     return (
         <ThemeProvider theme={theme}>
-            <div className="global-wrapper">
-                <HeaderLayout></HeaderLayout>
+            <Box sx={{ backgroundColor: "#121212" }}>
                 <div className="background-image">
-                    <Box sx={sxBoxContentMenu}>
-                        <Box sx={sxBoxContent}>
-                            <DexLayout></DexLayout>
-                            <UserLayout></UserLayout>
+                    <HeaderLayout></HeaderLayout>
+                    <Box sx={{ maxWidth: "1200px", margin: "0 auto" }}>
+                        <Box sx={sxBoxContentMenu}>
+                            <Box sx={sxBoxContent}>
+                                <DexLayout></DexLayout>
+                                <UserLayout></UserLayout>
+                            </Box>
+                            <MenuLayout></MenuLayout>
                         </Box>
-                        <MenuLayout></MenuLayout>
                     </Box>
                 </div>
-            </div>
+            </Box>
         </ThemeProvider>
     );
 }

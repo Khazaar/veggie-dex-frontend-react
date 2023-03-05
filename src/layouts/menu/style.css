@@ -5,19 +5,3 @@
     align-items: center;
     right: 0;
 }
-
-.containerContactInner {
-    display: flex;
-    flex-direction: column;
-    padding: 0.3rem;
-}
-
-.containerContactOuter {
-    display: flex;
-    flex-direction: row;
-    padding: 0.3rem;
-}
-
-p {
-    margin: 0;
-}

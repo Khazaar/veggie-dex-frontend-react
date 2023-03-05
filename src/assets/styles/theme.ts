@@ -1,8 +1,9 @@
 import { Typography } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 export const colorGreenLight = "#1aba00";
-export const colorGreenLight2 = "#1ee200";
+export const colorGreenLight2 = "#1ee200b7"; // "#1ee200";
 export const fontSizeMain = "1.1rem";
+export const backgroundColorLight = "#fbfbfb";
 
 export let theme = createTheme({
     breakpoints: {
@@ -17,6 +18,15 @@ export let theme = createTheme({
 });
 theme = createTheme(theme, {
     components: {
+        components: {
+            MuiPaper: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: backgroundColorLight,
+                    },
+                },
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -141,9 +151,11 @@ theme = createTheme(theme, {
             },
         },
 
-        MuiTable: {
+        MuiTableHead: {
             styleOverrides: {
-                root: {},
+                root: {
+                    backgroundColor: "#eaeaea",
+                },
             },
         },
         MuiInputLabel: {
@@ -169,6 +181,21 @@ theme = createTheme(theme, {
                     [theme.breakpoints.down("sm")]: {
                         padding: "4px 15px 0 15px",
                     },
+                },
+            },
+        },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: {
+                    padding: "16px 0 0 0",
+                    textAlign: "center",
+                },
+            },
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 10,
                 },
             },
         },
@@ -199,12 +226,14 @@ theme = createTheme(theme, {
             color: colorGreenLight,
             fontSize: "1rem",
         },
-        h5: {
-            fontSize: "0.8rem",
-            [theme.breakpoints.down("sm")]: {
-                fontSize: "0.5rem",
+        h5:
+            //Wallet number
+            {
+                fontSize: "1.1rem",
+                [theme.breakpoints.down("sm")]: {
+                    fontSize: "0.9rem",
+                },
             },
-        },
         body1: {
             margin: 0,
         },

@@ -1,45 +1,58 @@
 import "./style.css";
-import React from "react";
-import { ConnectWalletComponent } from "../../components/connectWallet/connectWallet.component";
 import logo from "../../assets/images/Logo_2.png";
 import { SelectNetworkComponent } from "../../components/selectNetwork/selectNetwork.component";
 import { ConnectWalletWeb3ModalComponent } from "../../components/connectWalletWeb3Modal/connectWalletWeb3Modal.component";
 import { Box } from "@mui/material";
+import { backgroundColorLight } from "../../assets/styles/theme";
 
 export const HeaderLayout = () => {
     return (
         <Box
             sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "3px",
-                alignItems: "center",
-                flexDirection: {
-                    xs: "column",
-                    sm: "column",
-                    md: "row",
-                    lg: "row",
-                },
+                backgroundColor: backgroundColorLight,
             }}
         >
             <Box
                 sx={{
-                    width: {
-                        xs: "270px",
-                        sm: "350px",
-                        md: "350px",
-                        lg: "350px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "3px",
+                    alignItems: "center",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "column",
+                        md: "row",
+                        lg: "row",
                     },
-                    marginBottom: "-5px",
-                    padding: "0px",
+                    maxWidth: "1200px",
+                    margin: "0 auto",
                 }}
             >
-                <img className="image-wrapper" src={logo} alt="#" />
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                <SelectNetworkComponent></SelectNetworkComponent>
+                <Box
+                    sx={{
+                        width: {
+                            xs: "270px",
+                            sm: "350px",
+                            md: "350px",
+                            lg: "350px",
+                        },
+                        marginBottom: "0px",
+                        padding: "0px",
+                        alignItems: "center",
+                    }}
+                >
+                    <img className="image-wrapper" src={logo} alt="#" />
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                >
+                    <SelectNetworkComponent></SelectNetworkComponent>
 
-                <ConnectWalletWeb3ModalComponent></ConnectWalletWeb3ModalComponent>
+                    <ConnectWalletWeb3ModalComponent></ConnectWalletWeb3ModalComponent>
+                </Box>
             </Box>
         </Box>
     );
