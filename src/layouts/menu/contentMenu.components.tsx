@@ -3,7 +3,7 @@ import portrait from "../../assets/images/Egor-budda.jpeg";
 
 export const InfoContent = (): JSX.Element => {
     return (
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <Box>
             <p>
                 Veggie dex is a Web3 app - <b>Uniswap v2 </b>fork decentralized
                 exchange with 4 listed ERC-20 tokens: Apple (APL), Potato (PTT),
@@ -50,80 +50,78 @@ export const InfoContent = (): JSX.Element => {
                 &nbsp; with the Hardhat project. You can use this project to
                 connect this Web3 app to the <b>Hardhat Local</b> network.
             </p>
-        </Typography>
+        </Box>
     );
 };
 export const ContactContent = (): JSX.Element => {
     return (
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <Box
-                sx={{
-                    display: "flex",
-                    marginRight: "6px",
-                    flexDirection: {
-                        xs: "column",
-                        sm: "column",
-                        md: "row",
-                        lg: "row",
-                    },
-                    alignItems: "center",
-                }}
-            >
-                <Box sx={{ marginRight: "12px" }}>
-                    <img src={portrait} alt="" width="300rem" />
-                </Box>
-                <Box>
-                    <p>
-                        <b>Yoav Khazar</b>
-                    </p>
-                    <p>Full-stack web3 developer, Ph.D.</p>
-                    <p>Solidity, Hadrhat, Brownie, Angular</p>
-
-                    <p>
-                        e-mail:
-                        <a
-                            href="mailto: eeguar@gmail.com"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            eeguar@gmail.com
-                        </a>
-                    </p>
-                    <p>
-                        Telegram &nbsp;
-                        <a
-                            href="https://telegram.me/khazaaaar"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            @khazaaaar
-                        </a>
-                    </p>
-                    <p>
-                        Tel:
-                        <a href="+972533210038" target="_blank">
-                            +972533210038
-                        </a>
-                    </p>
-                    <p>
-                        Linked-in:
-                        <a
-                            href="https://www.linkedin.com/in/egor-kozharinov-6361169b/"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Yoav Khazar
-                        </a>
-                    </p>
-                </Box>
+        <Box
+            sx={{
+                display: "flex",
+                marginRight: "6px",
+                flexDirection: {
+                    xs: "column",
+                    sm: "column",
+                    md: "row",
+                    lg: "row",
+                },
+                alignItems: "center",
+            }}
+        >
+            <Box sx={{ marginRight: "12px" }}>
+                <img src={portrait} alt="" width="300rem" />
             </Box>
-        </Typography>
+            <Box>
+                <p>
+                    <b>Yoav Khazar</b>
+                </p>
+                <p>Full-stack web3 developer, Ph.D.</p>
+                <p>Solidity, Hadrhat, Brownie, Angular</p>
+
+                <p>
+                    e-mail:
+                    <a
+                        href="mailto: eeguar@gmail.com"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        eeguar@gmail.com
+                    </a>
+                </p>
+                <p>
+                    Telegram &nbsp;
+                    <a
+                        href="https://telegram.me/khazaaaar"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        @khazaaaar
+                    </a>
+                </p>
+                <p>
+                    Tel:
+                    <a href="+972533210038" target="_blank">
+                        +972533210038
+                    </a>
+                </p>
+                <p>
+                    Linked-in:
+                    <a
+                        href="https://www.linkedin.com/in/egor-kozharinov-6361169b/"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Yoav Khazar
+                    </a>
+                </p>
+            </Box>
+        </Box>
     );
 };
 
 export const CodeContent = (): JSX.Element => {
     return (
-        <Typography id="modal-modal-description" sx={{ mt: 2, margin: 0 }}>
+        <Box>
             <p>
                 <b>Veggie dex</b> application is developed with React library
                 using such web3 modules as ethers-v5, typechain and wagmi
@@ -181,6 +179,6 @@ export const CodeContent = (): JSX.Element => {
                 "0x62ac2A242A7E996E1329AB8320669ec9064527aA"
                 <br></br>Sepolia: "0xf1f8c1B19e56f34220B2eef5B19a15c2DF504f5F"
             </p>
-        </Typography>
+        </Box>
     );
 };

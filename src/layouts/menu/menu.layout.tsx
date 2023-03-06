@@ -93,9 +93,7 @@ export const MenuLayout = () => {
                     Project information
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        <InfoContent></InfoContent>
-                    </DialogContentText>
+                    <InfoContent></InfoContent>
                 </DialogContent>
             </Dialog>
             <Dialog
@@ -112,9 +110,7 @@ export const MenuLayout = () => {
                     Code information
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        <CodeContent></CodeContent>
-                    </DialogContentText>
+                    <CodeContent></CodeContent>
                 </DialogContent>
             </Dialog>
 
@@ -130,9 +126,7 @@ export const MenuLayout = () => {
             >
                 <DialogTitle id="scroll-dialog-title">Contact</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        <ContactContent></ContactContent>
-                    </DialogContentText>
+                    <ContactContent></ContactContent>
                 </DialogContent>
             </Dialog>
         </div>

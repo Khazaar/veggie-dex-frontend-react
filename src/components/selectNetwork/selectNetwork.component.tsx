@@ -1,10 +1,4 @@
-import {
-    Box,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem } from "@mui/material";
 
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
@@ -17,13 +11,19 @@ import {
     Sepolia,
 } from "../../smart-contracts/networks";
 import { SmartContractServiceContext } from "../../App";
-import { useNetwork } from "wagmi";
+import { useAccount, useNetwork, useSigner, useSwitchNetwork } from "wagmi";
 
 export const SelectNetworkComponent = () => {
-    const networks: INetwork[] = [Hardhat, BSC, Sepolia];
+    const networks: { [name: string]: INetwork } = {
+        ["Binance Smart Chain Testnet"]: BSC,
+        ["Sepolia"]: Sepolia,
+        ["Hardhat"]: Hardhat,
+    };
     const [network, setNetwork] = useState<INetwork>(BSC);
     const smartContractService = useContext(SmartContractServiceContext);
-    const { chain, chains } = useNetwork();
+    const { chain } = useNetwork();
+    const { connector: activeConnector, isConnected } = useAccount();
+    const { switchNetwork } = useSwitchNetwork();
 
     const handleChange = async (event: SelectChangeEvent<INetwork>) => {
         const {
@@ -31,24 +31,33 @@ export const SelectNetworkComponent = () => {
         } = event;
         setNetwork(value as INetwork);
         await smartContractService.connectService.setNetwork(value as INetwork);
-        await smartContractService.connectService.initConnectService();
+        await smartContractService.connectService.initConnectService(
+            await activeConnector.getSigner()
+        );
         console.log(value);
+        switchNetwork((value as INetwork).id);
         //console.log("chain", chain.name);
     };
 
     useEffect(() => {
         const init = async () => {
-            await smartContractService.connectService.setNetwork(network);
-            await smartContractService.connectService.initConnectService();
+            console.log("Connected to chain ", chain.name);
+            setNetwork(networks[chain.name]);
+            await smartContractService.connectService.setNetwork(
+                networks[chain.name]
+            );
+            await smartContractService.connectService.initConnectService(
+                await activeConnector.getSigner()
+            );
         };
-        init();
-    });
+        isConnected && activeConnector && init();
+    }, [activeConnector, isConnected]);
 
     return (
         <Box sx={{ display: "flex", alignItems: "center", marginRight: "8px" }}>
             <FormControl
                 sx={{
-                    width: { xs: 100, sm: 150, md: 150, lg: 150 },
+                    width: { xs: 120, sm: 130, md: 130, lg: 130 },
                 }}
             >
                 <InputLabel id="elect-network-label1">Network</InputLabel>
@@ -62,10 +71,10 @@ export const SelectNetworkComponent = () => {
                         height: { xs: 35, sm: 40, md: 50, lg: 50 },
                     }}
                 >
-                    {networks.map((name) => (
+                    {Object.entries(networks).map(([key, value]) => (
                         //@ts-ignore - necessary to load object into value
-                        <MenuItem value={name} key={name.nameShort}>
-                            {name.nameShort}
+                        <MenuItem value={value} key={value.nameShort}>
+                            {value.nameShort}
                         </MenuItem>
                     ))}
                 </Select>

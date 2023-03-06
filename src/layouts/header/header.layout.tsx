@@ -1,9 +1,9 @@
 import "./style.css";
 import logo from "../../assets/images/Logo_2.png";
 import { SelectNetworkComponent } from "../../components/selectNetwork/selectNetwork.component";
-import { ConnectWalletWeb3ModalComponent } from "../../components/connectWalletWeb3Modal/connectWalletWeb3Modal.component";
 import { Box } from "@mui/material";
 import { backgroundColorLight } from "../../assets/styles/theme";
+import { ProfileComponent } from "../../components/profile/profile.component";
 
 export const HeaderLayout = () => {
     return (
@@ -36,7 +36,12 @@ export const HeaderLayout = () => {
                             md: "350px",
                             lg: "350px",
                         },
-                        marginBottom: "0px",
+                        marginBottom: {
+                            xs: "5px",
+                            sm: "5px",
+                            md: "0",
+                            lg: "0",
+                        },
                         padding: "0px",
                         alignItems: "center",
                     }}
@@ -50,8 +55,7 @@ export const HeaderLayout = () => {
                     }}
                 >
                     <SelectNetworkComponent></SelectNetworkComponent>
-
-                    <ConnectWalletWeb3ModalComponent></ConnectWalletWeb3ModalComponent>
+                    <ProfileComponent></ProfileComponent>
                 </Box>
             </Box>
         </Box>

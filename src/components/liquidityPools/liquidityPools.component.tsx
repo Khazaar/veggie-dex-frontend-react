@@ -49,7 +49,6 @@ export const LiquidityPoolsComponent = () => {
         }
     }, [dexInited]);
 
-    //useWalletSubscription(smartContractService, fetchData);
     useTokenTransferSubscription(smartContractService, fetchData);
     useDexInitSubscription(smartContractService, setDexInited);
 

@@ -115,6 +115,7 @@ export const OwnerPanelComponent = () => {
                         });
                 })
         );
+        fetchData();
 
         return () => {
             subscriptions.forEach((subscription) => {

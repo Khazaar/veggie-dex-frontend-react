@@ -165,14 +165,7 @@ export class BlockchainSubscriptions implements IBlockchainSubscriptions {
                         ) => {
                             const msg = `Swap in Pair ${iPair.name}: address ${address}, amount0In ${amount0In}, amount1In ${amount1In}, amount0Out ${amount0Out}, amount1Out ${amount1Out}, to ${to}`;
                             console.info(msg);
-                            const date = new Date();
-                            console.info(
-                                date.getSeconds(),
-                                " ",
-                                date.getMilliseconds()
-                            );
                             this.swapped.next(msg);
-                            //iPair.instance.removeAllListeners();
                         }
                     );
                 });

@@ -25,10 +25,6 @@ import {
     styleCircularProgress,
     styleIconsProps,
 } from "../../assets/styles/stypeProps";
-import {
-    useTokenTransferSubscription,
-    useWalletSubscription,
-} from "../../hooks";
 import { BigNumber } from "ethers";
 import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
 import { Subscription } from "rxjs";
@@ -115,8 +111,6 @@ export const RemoveLiquidityComponent = () => {
                 });
     }, [selectedPair]);
 
-    //useTokenTransferSubscription(smartContractService, fetchData);
-    //useWalletSubscription(smartContractService, fetchData);
     useDexInitSubscription(smartContractService, setDexInited);
 
     useEffect(() => {
