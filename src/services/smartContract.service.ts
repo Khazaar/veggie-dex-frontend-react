@@ -75,7 +75,7 @@ export class SmartContractService implements ISmartContractService {
         //this.fetchSmartContract();
 
         //await contract.getTokens(amount.toString());
-        await contract.getTokens(amount, {
+        await contract.connect(this.connectService.signer).getTokens(amount, {
             gasPrice: this.connectService.network.gasPrice,
         });
     }

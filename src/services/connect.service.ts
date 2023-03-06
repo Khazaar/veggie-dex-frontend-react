@@ -1,5 +1,5 @@
 import { BSC } from "./../smart-contracts/networks";
-import { ethers } from "ethers";
+import { ethers, Signer } from "ethers";
 import { Observable } from "rxjs";
 import { Subject } from "rxjs/internal/Subject";
 import { Hardhat, INetwork } from "../smart-contracts/networks";
@@ -43,7 +43,7 @@ export class ConnectService implements IConnectService {
     public network: INetwork;
     public defaultNetwork = BSC;
     public provider: ethers.providers.Web3Provider;
-    public signer: ethers.providers.JsonRpcSigner;
+    public signer: Signer;
     public walletConnected = new Subject<string>();
     public walletConnected$(): Observable<string> {
         return this.walletConnected.asObservable();
@@ -51,15 +51,9 @@ export class ConnectService implements IConnectService {
 
     constructor() {}
 
-    public async initConnectService() {
+    public async initConnectService(signer: Signer) {
         try {
-            await (window as any).ethereum.request({
-                method: "eth_requestAccounts",
-            });
-            this.provider = new ethers.providers.Web3Provider(
-                (window as any).ethereum
-            );
-            this.signer = await this.provider.getSigner();
+            this.signer = signer;
             //this.network = this.defaultNetwork;
 
             await this.fetchSmartContracts();

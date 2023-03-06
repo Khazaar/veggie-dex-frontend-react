@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, Signer } from "ethers";
 import { Observable } from "rxjs";
 import { INetwork } from "../smart-contracts/networks";
 import { ITokenContract } from "../smart-contracts/smart-contract-data";
@@ -28,7 +28,7 @@ export interface IConnectService {
     signer: any;
     walletConnected: Observable<string>;
     walletConnected$(): Observable<string>;
-    initConnectService(): Promise<void>;
+    initConnectService(signer: Signer): Promise<void>;
     setNetwork(network: INetwork): void;
     getTokenContracts(): ITokenContract[];
     fetchSmartContracts(): Promise<void>;

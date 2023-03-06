@@ -17,13 +17,19 @@ import {
     Sepolia,
 } from "../../smart-contracts/networks";
 import { SmartContractServiceContext } from "../../App";
-import { useNetwork } from "wagmi";
+import { useAccount, useNetwork, useSigner } from "wagmi";
 
 export const SelectNetworkComponent = () => {
-    const networks: INetwork[] = [Hardhat, BSC, Sepolia];
+    const networks: { [name: string]: INetwork } = {
+        ["Binance Smart Chain Testnet"]: BSC,
+        ["Sepolia"]: Sepolia,
+        ["Hardhat"]: Hardhat,
+    };
     const [network, setNetwork] = useState<INetwork>(BSC);
     const smartContractService = useContext(SmartContractServiceContext);
     const { chain, chains } = useNetwork();
+    const { data: signer, isError, isLoading } = useSigner();
+    const { connector: activeConnector, isConnected, address } = useAccount();
 
     const handleChange = async (event: SelectChangeEvent<INetwork>) => {
         const {
@@ -31,17 +37,23 @@ export const SelectNetworkComponent = () => {
         } = event;
         setNetwork(value as INetwork);
         await smartContractService.connectService.setNetwork(value as INetwork);
-        await smartContractService.connectService.initConnectService();
+        await smartContractService.connectService.initConnectService(signer);
         console.log(value);
         //console.log("chain", chain.name);
     };
 
     useEffect(() => {
         const init = async () => {
-            await smartContractService.connectService.setNetwork(network);
-            await smartContractService.connectService.initConnectService();
+            console.log("Connected to chain ", chain.name);
+            setNetwork(networks[chain.name]);
+            await smartContractService.connectService.setNetwork(
+                networks[chain.name]
+            );
+            await smartContractService.connectService.initConnectService(
+                signer
+            );
         };
-        init();
+        isConnected && init();
     });
 
     return (
@@ -62,10 +74,10 @@ export const SelectNetworkComponent = () => {
                         height: { xs: 35, sm: 40, md: 50, lg: 50 },
                     }}
                 >
-                    {networks.map((name) => (
+                    {Object.entries(networks).map(([key, value]) => (
                         //@ts-ignore - necessary to load object into value
-                        <MenuItem value={name} key={name.nameShort}>
-                            {name.nameShort}
+                        <MenuItem value={value} key={value.nameShort}>
+                            {value.nameShort}
                         </MenuItem>
                     ))}
                 </Select>

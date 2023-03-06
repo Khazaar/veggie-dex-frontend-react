@@ -1,31 +1,44 @@
 import { Button, Typography } from "@mui/material";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import {
+    useAccount,
+    useConnect,
+    useDisconnect,
+    useNetwork,
+    useSigner,
+    useSwitchNetwork,
+} from "wagmi";
+
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
 import "./style.css";
-import { useContext, useEffect } from "react";
+import { Provider, useContext, useEffect } from "react";
 import { SmartContractServiceContext } from "../../App";
 
 export const ProfileComponent = () => {
-    const { address, isConnected } = useAccount();
-    const { connect } = useConnect({
-        connector: new InjectedConnector(),
-    });
+    const { connector: activeConnector, isConnected, address } = useAccount();
+    const { connect, connectors } = useConnect();
     const { disconnect } = useDisconnect();
+    const { data: signer } = useSigner();
+    const { chain } = useNetwork();
+    const { chains, pendingChainId, switchNetwork } = useSwitchNetwork();
     const smartContractService = useContext(SmartContractServiceContext);
     useEffect(() => {
         if (isConnected) {
-            smartContractService.connectService
-                .initConnectService()
-                .then(() => {
-                    console.info("Connect service initialized");
-                    smartContractService.initSmartContractService().then(() => {
-                        console.info("Smart contract service initialized");
+            signer &&
+                smartContractService.connectService
+                    .initConnectService(signer)
+                    .then(() => {
+                        console.info("Connect service initialized");
+                        smartContractService
+                            .initSmartContractService()
+                            .then(() => {
+                                console.info(
+                                    "Smart contract service initialized"
+                                );
+                            });
                     });
-                });
         }
-    }, [isConnected]);
+    }, [isConnected, signer]);
 
     if (isConnected)
         return (
@@ -42,6 +55,7 @@ export const ProfileComponent = () => {
                     {address.substring(0, 6) +
                         "..." +
                         address.substring(38, 42)}{" "}
+                    {/* {activeConnector.name} */}
                 </Typography>
             </div>
         );
@@ -51,7 +65,8 @@ export const ProfileComponent = () => {
             color="success"
             className="b-style"
             onClick={async () => {
-                connect();
+                connect({ connector: connectors[0] });
+
                 await smartContractService.initSmartContractService();
             }}
         >
