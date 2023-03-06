@@ -17,19 +17,14 @@ import {
 import "./style.css";
 import { ITokenAsset } from "../../interfaces/tokenAssets.interface";
 import { BigNumber } from "ethers";
-import {
-    useTokenTransferSubscription,
-    useWalletSubscription,
-} from "../../hooks";
 import { Subscription } from "rxjs";
-import { useRefresh } from "../../hooks/useRefresh";
 import { useDexInitSubscription } from "../../hooks/useDexInitSubscription";
 
 export const UserAssetsComponent = () => {
     let initAssets: ITokenAsset[] = [
-        { position: 2, name: "Apple", amount: BigNumber.from(0) },
-        { position: 3, name: "Potato", amount: BigNumber.from(0) },
-        { position: 3, name: "Tomato", amount: BigNumber.from(0) },
+        { position: 2, name: "APL (Apple)", amount: BigNumber.from(0) },
+        { position: 3, name: "PTT (Potato)", amount: BigNumber.from(0) },
+        { position: 3, name: "TMT (Tomato)", amount: BigNumber.from(0) },
         { position: 4, name: "LSR", amount: BigNumber.from(0) },
     ];
     const [ETHBalance, setETHBalance] = useState("");
@@ -145,7 +140,7 @@ export const UserAssetsComponent = () => {
                             {dexInited &&
                                 smartContractService.connectService.network
                                     .nativeToken}{" "}
-                            balance:{" "}
+                            BALANCE:{" "}
                         </Typography>
                         <Typography variant="h4">{ETHBalance} </Typography>
                     </div>

@@ -5,18 +5,21 @@ export interface INetwork {
     nativeToken: string;
     gasPrice?: BigNumber;
     gasLimit?: BigNumber;
+    id?: number;
 }
 export const Hardhat: INetwork = {
     nameShort: "hardhat",
     nameLong: "Hardhat local",
     nativeToken: "Hardhat ETH",
     gasPrice: ethers.utils.parseUnits("20", "gwei"),
+    id: 31337,
 };
 export const BSC: INetwork = {
     nameShort: "bsc",
     nameLong: "Binance Smart Chain",
     nativeToken: "Testnet BNB",
     gasPrice: ethers.utils.parseUnits("20", "gwei"),
+    id: 97,
 };
 export const Testnet: INetwork = {
     nameShort: "testnet",
@@ -35,4 +38,5 @@ export const Sepolia: INetwork = {
     nameLong: "Sepolia",
     nativeToken: "SepETH",
     gasPrice: ethers.utils.parseUnits("20", "gwei"),
+    id: 11155111,
 };

@@ -2,10 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { SmartContractServiceContext } from "../../App";
 import { Button } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-
 import "./style.css";
 import { styleIconsProps } from "../../assets/styles/stypeProps";
-import { useWalletSubscription } from "../../hooks";
 
 export const ConnectWalletComponent = () => {
     const smartContractService = useContext(SmartContractServiceContext);
@@ -27,8 +25,6 @@ export const ConnectWalletComponent = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
-    // useWalletSubscription(smartContractService, fetchData);
 
     async function clickConnect() {
         await fetchData();

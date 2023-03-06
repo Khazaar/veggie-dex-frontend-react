@@ -36,7 +36,12 @@ export const HeaderLayout = () => {
                             md: "350px",
                             lg: "350px",
                         },
-                        marginBottom: "0px",
+                        marginBottom: {
+                            xs: "5px",
+                            sm: "5px",
+                            md: "0",
+                            lg: "0",
+                        },
                         padding: "0px",
                         alignItems: "center",
                     }}
