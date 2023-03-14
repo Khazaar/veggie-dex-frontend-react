@@ -129,7 +129,7 @@ export const AddLiquidityComponent = () => {
     //useTokenTransferSubscription(smartContractService, async () => {});
 
     return (
-        <div>
+        <>
             <Card className="AddLiquidityComponent">
                 <CardHeader
                     title="Add Liquidity"
@@ -275,6 +275,6 @@ export const AddLiquidityComponent = () => {
                     {successSnackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };

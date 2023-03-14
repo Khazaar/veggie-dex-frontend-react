@@ -35,7 +35,7 @@ theme = createTheme(theme, {
 
                     height: "2.5rem",
                     [theme.breakpoints.down("sm")]: {
-                        height: "1.75rem",
+                        height: "2rem",
                         fontSize: "0.9rem",
                     },
                 },

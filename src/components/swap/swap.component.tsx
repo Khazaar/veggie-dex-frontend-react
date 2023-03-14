@@ -126,7 +126,7 @@ export const SwapComponent = () => {
     }, [tokenA, tokenB]);
 
     return (
-        <div>
+        <>
             <Card className="SwapComponent">
                 <CardHeader
                     title="Swap Tokens"
@@ -288,6 +288,6 @@ export const SwapComponent = () => {
                     {successFeeChargedSnackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };
