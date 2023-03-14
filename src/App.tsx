@@ -54,7 +54,12 @@ function App() {
     const { connector: activeConnector, isConnected, address } = useAccount();
     const sxBoxContent: SxProps = {
         display: "flex",
-        flexDirection: { xs: "column", sm: "column", md: "column", lg: "row" },
+        flexDirection: {
+            xs: "column",
+            sm: "column",
+            md: "column",
+            lg: "row-reverse",
+        },
         width: "100%",
         height: "100%",
         //backgroundColor: "#121212",

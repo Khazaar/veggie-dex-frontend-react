@@ -132,7 +132,7 @@ export const RemoveLiquidityComponent = () => {
     }, [isRemoveLoading]);
 
     return (
-        <div>
+        <>
             {pairs && pairs.length > 0 && (
                 <Card className="RemoveLiquidityComponent">
                     <CardHeader
@@ -231,6 +231,6 @@ export const RemoveLiquidityComponent = () => {
                     {successSnackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };

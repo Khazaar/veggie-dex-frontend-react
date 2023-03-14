@@ -101,7 +101,7 @@ export const MintTokensComponent = () => {
     }, [mintClicked]);
 
     return (
-        <div>
+        <>
             <Card className="MintTokensComponent">
                 <CardHeader
                     title="Mint Tokens"
@@ -201,6 +201,6 @@ export const MintTokensComponent = () => {
                     {snackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };

@@ -41,7 +41,11 @@ export const ProfileComponent = () => {
                     await smartContractService.initSmartContractService();
                 }}
             >
-                {"Address: " +
+                <AccountBalanceWalletIcon
+                    style={styleIconsProps}
+                    sx={{ marginRight: "3px" }}
+                />
+                {" Addr.: " +
                     address.substring(0, 6) +
                     "..." +
                     address.substring(38, 42)}{" "}

@@ -90,7 +90,7 @@ export const MenuLayout = () => {
                 maxWidth={"md"}
             >
                 <DialogTitle id="scroll-dialog-title">
-                    Project information
+                    Veggie dex project information
                 </DialogTitle>
                 <DialogContent>
                     <InfoContent></InfoContent>

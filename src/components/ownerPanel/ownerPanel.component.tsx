@@ -125,7 +125,7 @@ export const OwnerPanelComponent = () => {
     }, []);
 
     return (
-        <div>
+        <>
             <Card className="AdminPanelComponent">
                 <CardHeader
                     title="Owner Panel"
@@ -253,6 +253,6 @@ export const OwnerPanelComponent = () => {
                     {successSnackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };

@@ -1,46 +1,25 @@
-# Getting Started with Create React App
+# Veggie dex project information
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Veggie dex is a Web3 app - Uniswap v2 fork decentralized exchange with 4 listed ERC-20 tokens: Apple (APL), Potato (PTT), Tomato(TMT) and LSR. Supported networks are: Sepolia, BSC Testnet and Hardhat Local.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+Pleace, connect your wallet to the DEX and select the network to get access to User features and DEX functionality.
 
-### `npm start`
+## Basic features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+To start interacting with DEX for the first time user can mint some listed tokens in the "Mint tokens" section. The balance of listed tokens is shown in the "User assets" section. Users can mint only a limited amount of tokens in an assigned period. These limitations could be changed by the smart contract Owner.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Advanced features
 
-### `npm test`
+PancakeRouter_mod smart contract can have an Admin, who can set the transfer fee, withdraw the transfer fee set the required LSR amount to avoid paying a trading fee. Admin role could be assigned or revoked by the Owner.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+You can become a liquidity provider by adding liquidity to a corresponding pair in the "Add liquidity" section. Swap tokens feature is available in the "Swap" section
 
-### `npm run build`
+All available liquidity pools with corresponding reserves are shown in the "Liquidity pools" section
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Usefull links
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Smart contracts of this DEX could be found in the corresponding GitHub repository with the Hardhat project:
+https://github.com/Khazaar/pancake-router
+You can use this project to connect this Web3 app to the Hardhat Local network.

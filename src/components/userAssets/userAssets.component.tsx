@@ -14,7 +14,6 @@ import {
     Typography,
 } from "@mui/material";
 
-import "./style.css";
 import { ITokenAsset } from "../../interfaces/tokenAssets.interface";
 import { BigNumber } from "ethers";
 import { Subscription } from "rxjs";
@@ -95,57 +94,54 @@ export const UserAssetsComponent = () => {
     }, [dexInited]);
 
     return (
-        <div className="user-assets">
-            <Card>
-                <CardHeader
-                    title="User Assets"
-                    titleTypographyProps={{ variant: "h1" }}
-                ></CardHeader>
-                <CardContent>
-                    <TableContainer
-                        component={Paper}
-                        sx={{ margin: "6px", width: 300 }}
-                    >
-                        <Table aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Token</TableCell>
-                                    <TableCell>Amount</TableCell>
+        <Card>
+            <CardHeader
+                title="User Assets"
+                titleTypographyProps={{ variant: "h1" }}
+            ></CardHeader>
+            <CardContent>
+                <TableContainer
+                    component={Paper}
+                    sx={{ margin: "6px", width: 300 }}
+                >
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Token</TableCell>
+                                <TableCell>Amount</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {assetsData.map((row) => (
+                                <TableRow
+                                    key={row.name}
+                                    sx={{
+                                        "&:last-child td, &:last-child th": {
+                                            border: 0,
+                                        },
+                                    }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.amount.toString()}
+                                    </TableCell>
                                 </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {assetsData.map((row) => (
-                                    <TableRow
-                                        key={row.name}
-                                        sx={{
-                                            "&:last-child td, &:last-child th":
-                                                {
-                                                    border: 0,
-                                                },
-                                        }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            {row.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.amount.toString()}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <div className="text-balance">
-                        <Typography variant="h4">
-                            {dexInited &&
-                                smartContractService.connectService.network
-                                    .nativeToken}{" "}
-                            BALANCE:{" "}
-                        </Typography>
-                        <Typography variant="h4">{ETHBalance} </Typography>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <div className="text-balance">
+                    <Typography variant="h4">
+                        {dexInited &&
+                            smartContractService.connectService.network
+                                .nativeToken}{" "}
+                        BALANCE:{" "}
+                    </Typography>
+                    <Typography variant="h4">{ETHBalance} </Typography>
+                </div>
+            </CardContent>
+        </Card>
     );
 };

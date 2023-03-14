@@ -189,7 +189,7 @@ export const AdminPanelComponent = () => {
     }, [isWithdrawLoading]);
 
     return (
-        <div>
+        <>
             <Card className="AdminPanelComponent">
                 <CardHeader
                     title="Admin Panel"
@@ -329,6 +329,6 @@ export const AdminPanelComponent = () => {
                     {successSnackMessage}
                 </Alert>
             </Snackbar>
-        </div>
+        </>
     );
 };
