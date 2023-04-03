@@ -28,7 +28,7 @@ export const InfoContent = (): JSX.Element => {
                 amount to avoid paying a trading fee. Admin role could be
                 assigned or revoked by the Owner.
             </p>
-            <p>
+            <p>∑∑∑∑
                 You can become a liquidity provider by adding liquidity to a
                 corresponding pair in the &nbsp; <b>"Add liquidity"</b> section.
                 Swap tokens feature is available in the <b>"Swap"</b> section
@@ -107,7 +107,7 @@ export const ContactContent = (): JSX.Element => {
                 <p>
                     Linked-in:
                     <a
-                        href="https://www.linkedin.com/in/egor-kozharinov-6361169b/"
+                        href="https://www.linkedin.com/in/yoav-khazar-6361169b/"
                         target="_blank"
                         rel="noreferrer"
                     >
